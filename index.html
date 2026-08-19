@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ruslan Karymov — Design Ops &amp; Creative Automation Lead</title>
+<meta name="description" content="Design lead who builds the machinery, not just the artwork. Eleven years owning design at Exness through 250× growth. Figma API pipelines, custom AI brand models, EU institutional work.">
+<meta property="og:title" content="Ruslan Karymov — Design Ops &amp; Creative Automation Lead">
+<meta property="og:description" content="Brand systems at scale. Design that survives contact with growth.">
+<meta property="og:type" content="website">
+<style>
+  :root{
+    --bg:#08090b; --bg2:#0e1013; --line:#1e2228;
+    --fg:#f2f4f7; --mid:#a4adba; 
+    --dim:#707a88; --accent:#5b9dff; --accent2:#7ee0c0;
+    --max:980px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    background:var(--bg); color:var(--fg);
+    font:400 16px/1.62 -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Helvetica,Arial,sans-serif;
+    -webkit-font-smoothing:antialiased; overflow-x:hidden;
+  }
+  .wrap{max-width:var(--max);margin:0 auto;padding:0 28px}
+  a{color:var(--accent);text-decoration:none}
+  a:hover{text-decoration:underline}
+
+  /* ---------- hero ---------- */
+  header{
+    padding:96px 0 64px; position:relative; overflow:hidden;
+    border-bottom:1px solid var(--line);
+  }
+  header::before{
+    content:"";position:absolute;inset:-40% -10% auto auto;width:760px;height:760px;
+    background:radial-gradient(circle at 60% 40%, rgba(91,157,255,.14), transparent 62%);
+    pointer-events:none;
+  }
+  header::after{
+    content:"";position:absolute;inset:0;pointer-events:none;opacity:.5;
+    background-image:linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px);
+    background-size:64px 64px;
+    -webkit-mask-image:radial-gradient(ellipse 80% 60% at 70% 20%,#000,transparent 75%);
+    mask-image:radial-gradient(ellipse 80% 60% at 70% 20%,#000,transparent 75%);
+  }
+  header .wrap{position:relative;z-index:1}
+  h1{
+    font-size:clamp(2.6rem,7.5vw,4.6rem); line-height:1.02; letter-spacing:-.035em;
+    font-weight:800; margin-bottom:20px;
+  }
+  .role{
+    font-size:clamp(1.05rem,2.4vw,1.4rem); font-weight:600; letter-spacing:-.01em;
+    color:var(--accent); margin-bottom:10px;
+  }
+  .sub{color:var(--mid); font-size:1.02rem; margin-bottom:34px}
+  .lede{
+    font-size:clamp(1.12rem,2.5vw,1.42rem); line-height:1.5; letter-spacing:-.015em;
+    max-width:44ch; margin-bottom:34px; color:var(--fg);
+  }
+  .lede b{font-weight:700}
+  .links{display:flex;flex-wrap:wrap;gap:10px}
+  .links a{
+    display:inline-block;padding:9px 16px;border:1px solid var(--line);border-radius:999px;
+    color:var(--fg);font-size:.9rem;font-weight:500;background:var(--bg2);
+    transition:border-color .18s, color .18s, transform .18s;
+  }
+  .links a:hover{border-color:var(--accent);color:var(--accent);text-decoration:none;transform:translateY(-1px)}
+
+  /* ---------- sections ---------- */
+  section{padding:72px 0;border-bottom:1px solid var(--line)}
+  h2{
+    font-size:.76rem;letter-spacing:.19em;text-transform:uppercase;color:var(--dim);
+    font-weight:600;margin-bottom:34px;
+  }
+  h3{font-size:1.42rem;letter-spacing:-.02em;font-weight:700;margin-bottom:6px}
+
+  /* ---------- numbers ---------- */
+  .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(168px,1fr));gap:2px;background:var(--line);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+  .stat{background:var(--bg2);padding:26px 22px}
+  .stat .n{font-size:2.1rem;font-weight:800;letter-spacing:-.04em;line-height:1;color:var(--accent2);margin-bottom:8px}
+  .stat .l{font-size:.85rem;color:var(--mid);line-height:1.4}
+
+  /* ---------- brands ---------- */
+  .brands{display:grid;gap:18px}
+  .brow{display:grid;grid-template-columns:132px 1fr;gap:20px;align-items:baseline}
+  .brow .via{font-size:.76rem;letter-spacing:.13em;text-transform:uppercase;color:var(--dim);font-weight:600;padding-top:4px}
+  .brow .names{display:flex;flex-wrap:wrap;gap:8px}
+  .brow .names span{
+    font-size:.92rem;padding:5px 12px;border:1px solid var(--line);border-radius:6px;
+    background:var(--bg2);color:var(--fg);white-space:nowrap;
+  }
+
+  /* ---------- cases ---------- */
+  .case{border:1px solid var(--line);border-radius:12px;background:var(--bg2);margin-bottom:14px;overflow:hidden}
+  .case summary{
+    padding:22px 26px;cursor:pointer;list-style:none;display:flex;gap:18px;align-items:baseline;
+    transition:background .16s;
+  }
+  .case summary::-webkit-details-marker{display:none}
+  .case summary:hover{background:#12151a}
+  .case summary::after{
+    content:"+";margin-left:auto;color:var(--dim);font-size:1.3rem;font-weight:400;line-height:1;flex:none;
+    transition:transform .2s,color .2s;
+  }
+  .case[open] summary::after{transform:rotate(45deg);color:var(--accent)}
+  .case .yr{font-size:.82rem;color:var(--dim);font-variant-numeric:tabular-nums;flex:none;width:96px;padding-top:5px}
+  .case .ttl{font-size:1.12rem;font-weight:650;letter-spacing:-.015em;line-height:1.35}
+  .case .ttl em{display:block;font-style:normal;font-size:.86rem;color:var(--mid);font-weight:400;margin-top:4px}
+  .body{padding:0 26px 26px 140px;color:var(--mid);font-size:.96rem}
+  .body p{margin-bottom:14px}
+  .body p strong{color:var(--fg)}
+  .body ul{list-style:none;margin-bottom:16px}
+  .body li{padding-left:18px;position:relative;margin-bottom:8px}
+  .body li::before{content:"";position:absolute;left:2px;top:.7em;width:5px;height:5px;border-radius:50%;background:var(--accent)}
+  .body li b{color:var(--fg);font-weight:600}
+  .result{
+    border-left:2px solid var(--accent2);padding:2px 0 2px 16px;color:var(--fg);
+    font-size:1rem;margin-bottom:16px;
+  }
+  .tags{display:flex;flex-wrap:wrap;gap:7px;padding-top:4px}
+  .tags span{font-size:.76rem;color:var(--dim);border:1px solid var(--line);padding:3px 9px;border-radius:5px}
+
+  /* ---------- toolkit ---------- */
+  .kit{display:grid;gap:2px;background:var(--line);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+  .krow{display:grid;grid-template-columns:210px 1fr;gap:24px;background:var(--bg2);padding:20px 24px}
+  .krow dt{font-weight:650;font-size:.95rem;letter-spacing:-.01em}
+  .krow dd{color:var(--mid);font-size:.92rem;line-height:1.6}
+
+  /* ---------- edu / footer ---------- */
+  .edu li{list-style:none;padding:14px 0;border-bottom:1px solid var(--line);color:var(--mid);font-size:.98rem}
+  .edu li:last-child{border-bottom:0}
+  .edu b{color:var(--fg);font-weight:650}
+  footer{padding:64px 0 90px}
+  footer .big{font-size:clamp(1.7rem,4.5vw,2.5rem);font-weight:800;letter-spacing:-.03em;margin-bottom:14px;line-height:1.15}
+  footer .meta{color:var(--mid);margin-bottom:26px}
+
+  @media(max-width:760px){
+    header{padding:64px 0 48px}
+    section{padding:52px 0}
+    .brow{grid-template-columns:1fr;gap:8px}
+    .case summary{flex-wrap:wrap;gap:6px;padding:18px 20px}
+    .case .yr{width:auto;padding-top:0;order:2;flex-basis:100%}
+    .case summary::after{order:1}
+    .body{padding:0 20px 22px}
+    .krow{grid-template-columns:1fr;gap:6px}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <div class="role">Design Ops &amp; Creative Automation Lead</div>
+    <h1>Ruslan<br>Karymov</h1>
+    <p class="sub">Brand systems at scale · Presentation &amp; information design · Creative automation · Data-driven<br>Varna, Bulgaria — remote worldwide, open to contract</p>
+    <p class="lede"><b>Design that survives contact with scale.</b> For eleven years I owned the brand of a company that went from twenty people to five thousand. The artwork was never the hard part — the machine that produces it correctly, in 23 languages, every week, was.</p>
+    <div class="links">
+      <a href="mailto:karusrus@gmail.com">karusrus@gmail.com</a>
+      <a href="https://www.linkedin.com/in/ruslankarymov/" target="_blank" rel="noopener">LinkedIn</a>
+      <a href="https://readymag.website/4042830" target="_blank" rel="noopener">Visual portfolio</a>
+      <a href="https://github.com/karusrus" target="_blank" rel="noopener">GitHub</a>
+      <a href="https://karusrus.github.io/rc-scanner" target="_blank" rel="noopener">Live tool</a>
+      <a href="https://public.tableau.com/app/profile/ruslan.karymov" target="_blank" rel="noopener">Tableau</a>
+    </div>
+  </div>
+</header>
+
+<section>
+  <div class="wrap">
+    <h2>By the numbers</h2>
+    <div class="stats">
+      <div class="stat"><div class="n">250×</div><div class="l">Headcount growth at Exness while I owned the brand</div></div>
+      <div class="stat"><div class="n">23</div><div class="l">Localised markets running in parallel</div></div>
+      <div class="stat"><div class="n">500+</div><div class="l">Creative assets shipped weekly</div></div>
+      <div class="stat"><div class="n">50%+</div><div class="l">Landing page conversion lift from A/B testing</div></div>
+      <div class="stat"><div class="n">20–25%</div><div class="l">CPA reduction from automated creative selection</div></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>What makes this different</h2>
+    <div class="body" style="padding:0;color:var(--mid);font-size:1.02rem;max-width:70ch">
+      <p><strong>I build the production line, not just the poster.</strong> A Figma API and Airtable pipeline that removed the manual step from localised banner production across 23 language markets. Custom Midjourney style models so brand identity reproduces at scale instead of drifting. BambooHR REST API into personalised interactive PDF offers, then NFT certificates on Polygon — an industry-first use of blockchain for employer branding.</p>
+      <p><strong>Design decisions I can defend with numbers.</strong> Conversion lift from iterative A/B testing, not from taste. CPA reduction from an SQL-integrated creative management system. Frankfurt Airport selected for out-of-home by weighted scoring matrix on CPM, GRP, passenger volume and geo-profile.</p>
+      <p><strong>Brand governance under real pressure.</strong> Real Madrid, Cristiano Ronaldo, Red Bull Racing, Inter Milan, WWF — each with its own approval chain and no tolerance for a wrong shade. Gartner, Cisco and Dell through Curvature, where the slide goes to a CIO.</p>
+      <p><strong>Institutional register.</strong> European Commission and European Parliament deliverables through GDSI. A different discipline entirely: a tender is read by a committee scoring you against a rubric, not by someone who likes your work.</p>
+      <p><strong>Trained as an engineer.</strong> Licensed Chief Engineer of Projects before I was a designer. That is why every creative problem starts, for me, as a systems problem.</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>Brands &amp; clients</h2>
+    <div class="brands">
+      <div class="brow"><div class="via">via Exness</div><div class="names"><span>Real Madrid CF</span><span>Cristiano Ronaldo</span><span>Red Bull Racing</span><span>Inter Milan</span><span>WWF</span></div></div>
+      <div class="brow"><div class="via">via Curvature</div><div class="names"><span>Gartner</span><span>Cisco</span><span>Dell</span></div></div>
+      <div class="brow"><div class="via">via Twigeo</div><div class="names"><span>Uniswap</span><span>Duolingo</span><span>SoundCloud</span><span>AVID</span><span>Heatonist</span><span>Swimply</span></div></div>
+      <div class="brow"><div class="via">via GDSI</div><div class="names"><span>European Commission</span><span>European Parliament</span><span>Asian Development Bank</span><span>World Bank</span></div></div>
+      <div class="brow"><div class="via">Direct</div><div class="names"><span>DexTools</span><span>Government of Kazakhstan</span><span>LUKOIL</span><span>Gazprom</span></div></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>Selected work</h2>
+
+    <details class="case" open>
+      <summary><span class="yr">2011–2022</span><span class="ttl">Brand system for a company that grew 250×<em>Exness — Design Lead</em></span></summary>
+      <div class="body">
+        <p><strong>Challenge.</strong> Own the visual identity of a fintech from twenty people to five thousand, across 23 language markets, without the brand fragmenting.</p>
+        <ul>
+          <li>Owned the brand book and corporate identity system through a decade of evolution — startup mark to globally recognised fintech</li>
+          <li>Ran an output of <b>500+ creative assets weekly</b> across all markets</li>
+          <li>Art directed elite co-branding: <b>Real Madrid CF</b> (2+ years, 20+ markets), <b>Cristiano Ronaldo</b> (motion design), <b>Red Bull Racing</b> (OOH, social, localised), <b>Inter Milan</b></li>
+          <li>Directed global environmental campaign design for <b>WWF</b> as an Exness co-branding initiative, under strict brand integrity requirements</li>
+          <li>Built the localisation machine: multilingual UTM tracking across 23+ languages, 23+ translators coordinated through CrowdIn</li>
+          <li>HTML5 interactive banner campaigns in Google Web Designer; large-scale digital ad libraries</li>
+          <li>Selected Frankfurt Airport as optimal OOH placement via a weighted scoring matrix on CPM, GRP, passenger volume and geo-profile</li>
+        </ul>
+        <p class="result">A brand system that held together through 250× headcount growth and 23 simultaneous markets — and a 50%+ landing page conversion increase from iterative A/B testing on Unbounce.</p>
+        <div class="tags"><span>Brand systems</span><span>Art direction</span><span>Localisation ops</span><span>A/B testing</span><span>OOH</span><span>CrowdIn</span></div>
+      </div>
+    </details>
+
+    <details class="case">
+      <summary><span class="yr">2011–2025</span><span class="ttl">Presentation &amp; information design — making a decision findable<em>Curvature · GDSI · Exness · DexTools</em></span></summary>
+      <div class="body">
+        <p><strong>Challenge.</strong> The hardest audience is not the one that dislikes your work. It is the one with ten minutes, no context, and a decision to make. Board members, CIOs, evaluation committees.</p>
+        <ul>
+          <li><b>Curvature</b> — turned dense <b>Gartner</b> analyst research into C-suite visual narratives; co-branding decks for <b>Cisco</b> and <b>Dell</b> where the slide ends up in front of a CIO</li>
+          <li><b>GDSI</b> — authored <b>100+ page strategic tender documents</b> for the European Parliament, read by an evaluation committee scoring against a rubric, not by someone admiring the layout</li>
+          <li><b>GDSI</b> — institutional-grade infographics aggregating heterogeneous multi-expert and financial inputs for the European Commission, ADB and World Bank; architected the <b>“Europa Experience”</b> spaces across European capitals</li>
+          <li><b>Exness</b> — a decade of executive dashboards and campaign performance reviews delivered to CEO, CTO and CMO</li>
+          <li><b>DexTools</b> — delivered an entire platform audit as an <b>authored video walkthrough</b> instead of a deck: the narrative itself was the deliverable</li>
+        </ul>
+        <p class="result">A separate discipline from brand design, and a rarer one. A committee does not ask whether it is beautiful — it asks whether the answer is findable in the time it has. I build for that, and for the boardroom, with the same hands.</p>
+        <div class="tags"><span>Executive decks</span><span>Tender documentation</span><span>Institutional infographics</span><span>Data storytelling</span><span>Video walkthroughs</span><span>Information hierarchy</span></div>
+      </div>
+    </details>
+
+    <details class="case">
+      <summary><span class="yr">2022–2023</span><span class="ttl">Creative automation on the Figma API<em>Twigeo — Creative Performance Lead</em></span></summary>
+      <div class="body">
+        <p><strong>Challenge.</strong> Localised banner production across 23+ markets was a manual bottleneck. Creative testing was slow enough that winners deployed after the campaign had moved on.</p>
+        <ul>
+          <li>Built an automated localised banner production pipeline on the <b>Figma API + Airtable</b> — no manual step from source design to market-ready asset</li>
+          <li>Built an SQL-integrated creative management system that selected A/B winners automatically and deployed them in evergreen mode</li>
+          <li>Developed custom <b>Midjourney</b> style models so brand visual identity reproduced consistently at scale; Jasper AI for multi-market copy</li>
+          <li>Directed creative and UX strategy for <b>Uniswap</b>, the largest decentralised exchange: audience analysis, performance metrics, competitive landscape mapping</li>
+        </ul>
+        <p class="result">20–25% CPA reduction with CTR improvement, across pools of 6–8 creative variants per campaign.</p>
+        <div class="tags"><span>Figma API</span><span>Airtable</span><span>Midjourney models</span><span>SQL</span><span>Tableau</span><span>Sigma</span></div>
+      </div>
+    </details>
+
+    <details class="case">
+      <summary><span class="yr">2018–2022</span><span class="ttl">HR offer automation and NFT certificates<em>Exness — an industry first</em></span></summary>
+      <div class="body">
+        <p><strong>Challenge.</strong> Manual offer generation for premium candidates, with no way to make an offer document verifiable.</p>
+        <ul>
+          <li>BambooHR REST API into personalised interactive PDF offers, each with a unique secured URL</li>
+          <li>Extended the system to <b>NFT tokens on Polygon</b> with embedded share count and vesting conditions — verifiable, non-transferable offer certificates</li>
+          <li>Polygon chosen over Ethereum mainnet on gas cost</li>
+        </ul>
+        <p class="result">Full automation of the HR offer process, plus an employer-branding artefact nobody else in the sector had.</p>
+        <div class="tags"><span>BambooHR API</span><span>Polygon</span><span>NFT smart contracts</span><span>PDF automation</span></div>
+      </div>
+    </details>
+
+    <details class="case">
+      <summary><span class="yr">2024–2025</span><span class="ttl">Institutional data narratives for the EU<em>GDSI Limited — Strategic Visualisation &amp; AI Expert</em></span></summary>
+      <div class="body">
+        <p><strong>Challenge.</strong> Aggregate heterogeneous multi-expert and financial inputs into proposals that score well with an EU evaluation committee.</p>
+        <ul>
+          <li>Final strategic link in tender proposals for the <b>European Commission</b>, <b>European Parliament</b> and <b>Asian Development Bank</b></li>
+          <li>Authored <b>100+ page strategic tender documents</b> for the European Parliament</li>
+          <li>Architected <b>“Europa Experience”</b> physical and digital spaces across European capitals</li>
+          <li>AI Expert on Horizon Europe projects: NLP-driven analysis of public discourse at scale</li>
+          <li>Applied NotebookLM and custom AI workflows to make complex data legible to non-technical committees</li>
+        </ul>
+        <div class="tags"><span>Institutional infographics</span><span>Tender documentation</span><span>NotebookLM</span><span>NLP</span><span>EU communication</span></div>
+      </div>
+    </details>
+
+    <details class="case">
+      <summary><span class="yr">2022</span><span class="ttl">Enterprise visual narrative<em>Curvature — Gartner, Cisco, Dell</em></span></summary>
+      <div class="body">
+        <p><strong>Challenge.</strong> Turn dense Gartner analyst research into material a C-suite audience will actually read and decide from.</p>
+        <ul>
+          <li>Built synthesised visual narratives for C-suite decision-making from <b>Gartner</b> research</li>
+          <li>Managed complex co-branding initiatives across <b>Cisco</b> and <b>Dell</b></li>
+          <li>Enterprise brand governance under multi-party approval chains</li>
+        </ul>
+        <div class="tags"><span>Executive communication</span><span>Co-branding governance</span><span>Information design</span></div>
+      </div>
+    </details>
+
+    <details class="case">
+      <summary><span class="yr">2024</span><span class="ttl">Dashboard audit for a top DEX analytics platform<em>DexTools — freelance</em></span></summary>
+      <div class="body">
+        <p><strong>Challenge.</strong> Identify where a leading DeFi analytics platform loses users to its own information density.</p>
+        <ul>
+          <li>Audited the platform's data presentation: signal-to-noise ratio, information hierarchy, first-view metrics, widget layout</li>
+          <li>Analysed user scenarios and navigation patterns</li>
+          <li>Chart-type recommendations for trading data — time series, volume, liquidity depth</li>
+          <li>Delivered findings as an authored video walkthrough, prioritised on an impact and effort matrix</li>
+        </ul>
+        <p class="result">Prioritised, actionable recommendations delivered as narrative video rather than a deck — data storytelling as the deliverable itself.</p>
+        <div class="tags"><span>Dashboard audit</span><span>Data visualisation</span><span>UX analytics</span><span>DeFi</span></div>
+      </div>
+    </details>
+
+    <details class="case">
+      <summary><span class="yr">2024–now</span><span class="ttl">Solana DEX Signal Scanner<em>Personal project — designed, built and shipped solo</em></span></summary>
+      <div class="body">
+        <p><strong>Challenge.</strong> Build a statistically validated signal tool for Solana DEX tokens, where existing platforms surface noise.</p>
+        <ul>
+          <li>Pre-filtered the top 300 Early-Bird wallets via Helius and BitQuery APIs, sniper bots excluded manually</li>
+          <li>Bootstrapped validation in Python: <b>1,000 iterations</b>, 70/30 train-validation splits</li>
+          <li>Built the entire front end: score per token, buy-pressure signal, volume velocity, BUY / STRONG BUY / NEUTRAL / AVOID filter, grid and table views, light and dark modes, fully responsive</li>
+          <li>Zero dependencies — pure HTML, CSS and JavaScript against the GeckoTerminal API, refreshing every 60 seconds</li>
+        </ul>
+        <p class="result">A live production tool. The interface, the statistics and the deployment — all mine. <a href="https://karusrus.github.io/rc-scanner" target="_blank" rel="noopener">See it running →</a></p>
+        <div class="tags"><span>Python</span><span>Helius API</span><span>BitQuery</span><span>Bootstrapping</span><span>Front-end</span><span>Product design</span></div>
+      </div>
+    </details>
+
+    <details class="case">
+      <summary><span class="yr">2010</span><span class="ttl">National e-government data infrastructure<em>Loyalty Peak — Government of Kazakhstan (egov.kz)</em></span></summary>
+      <div class="body">
+        <p><strong>Challenge.</strong> Standardise data across 8,000+ government forms from incompatible ministries for a national platform.</p>
+        <ul>
+          <li>Built the complete Data Dictionary: field typing, validation rules, formats</li>
+          <li>Developed the Data Hierarchy and Taxonomy — citizen, document, agency, service</li>
+          <li>Created the Master Data Model with canonical identifiers and conflict resolution rules</li>
+          <li>Led <b>8 analysts across 4 countries</b></li>
+        </ul>
+        <p class="result">Unique data fields reduced by ~40%. egov.kz now ranks in the global top 10 of the UN E-Government Development Index 2024.</p>
+        <div class="tags"><span>Master data management</span><span>Data taxonomy</span><span>Data quality</span><span>Distributed teams</span></div>
+      </div>
+    </details>
+
+    <details class="case">
+      <summary><span class="yr">2007–2011</span><span class="ttl">Engineering analytics and industrial design systems<em>UECHM &amp; Teploproekt — Chief Engineer (ГИП)</em></span></summary>
+      <div class="body">
+        <p><strong>Where the systems thinking comes from.</strong> Licensed Chief Engineer of Projects for industrial infrastructure serving <b>LUKOIL</b> and <b>Gazprom</b>, working to ISO and GOST standards.</p>
+        <ul>
+          <li>Led a team of <b>50 engineers</b> at UECHM</li>
+          <li>ANSYS finite element analysis, MATLAB modelling, TRIZ methodology for systematic contradiction analysis</li>
+        </ul>
+        <p class="result">Production costs cut by 17%+ at Katur Invest, verified by the client.</p>
+        <div class="tags"><span>ANSYS</span><span>MATLAB</span><span>TRIZ</span><span>ISO / GOST</span></div>
+      </div>
+    </details>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>Toolkit</h2>
+    <dl class="kit">
+      <div class="krow"><dt>Design &amp; art direction</dt><dd>Adobe CC (Photoshop, Illustrator, InDesign, After Effects) · Figma · Affinity · brand systems and brand books · OOH and DOOH · print · HTML5 interactive banners</dd></div>
+      <div class="krow"><dt>Presentation &amp; narrative</dt><dd>Executive decks for C-suite and evaluation committees · institutional infographics · 100+ page tender documents · data storytelling · authored video walkthroughs · impact/effort prioritisation</dd></div>
+      <div class="krow"><dt>Video &amp; motion</dt><dd>Apple Motion · Final Cut Pro · After Effects · OBS · ProRes 4444 and WebM alpha workflows · stinger transitions · broadcast overlays</dd></div>
+      <div class="krow"><dt>Design ops &amp; automation</dt><dd>Figma API pipelines · Airtable · design systems and components · RTL/LTR localisation across 23+ markets · CrowdIn · PDF automation · BambooHR REST API</dd></div>
+      <div class="krow"><dt>AI &amp; automation</dt><dd>Midjourney custom style models · Stable Diffusion · NotebookLM · Jasper AI · MiroFish · OpenClaw · local LLAMA models · prompt engineering · AI agent configuration</dd></div>
+      <div class="krow"><dt>Data &amp; analytics</dt><dd>SQL · Python · Tableau · Power BI · Sigma · dashboard and infographic design · A/B testing · UTM tracking · funnel analysis · CRO · CPM/GRP media mix analysis · bootstrapping</dd></div>
+      <div class="krow"><dt>Web3</dt><dd>On-chain analytics (Helius, BitQuery) · Solana · NFT smart contracts · Polygon</dd></div>
+      <div class="krow"><dt>Leadership</dt><dd>Distributed and cross-functional teams · SCRUM · Jira · Monday.com · MS Project · executive reporting · budgeting · EU institutional communication</dd></div>
+    </dl>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>Education &amp; certification</h2>
+    <ul class="edu">
+      <li><b>Engineer's degree — Applied Physics &amp; Information Technologies</b>, Ural State Technical University (UrFU)</li>
+      <li><b>Licensed Chief Engineer of Projects (ГИП)</b> — industrial infrastructure</li>
+      <li><b>Machine Learning</b> — Stanford University, Andrew Ng (2017)</li>
+      <li><b>Big Data, 5-course track</b> — UC San Diego · <b>Deep Learning</b> — DeepLearning.AI (Andrew Ng)</li>
+      <li><b>Languages</b> — Russian (native) · English (fluent) · Bulgarian (fluent)</li>
+    </ul>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <p class="big">Let's build design operations that don't break.</p>
+    <p class="meta">Varna, Bulgaria · Remote worldwide · open to contract and freelance</p>
+    <div class="links">
+      <a href="mailto:karusrus@gmail.com">karusrus@gmail.com</a>
+      <a href="https://www.linkedin.com/in/ruslankarymov/" target="_blank" rel="noopener">LinkedIn</a>
+      <a href="https://readymag.website/4042830" target="_blank" rel="noopener">Visual portfolio</a>
+      <a href="https://github.com/karusrus" target="_blank" rel="noopener">GitHub</a>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
