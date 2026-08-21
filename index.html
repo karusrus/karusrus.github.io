@@ -144,6 +144,19 @@
     .body{padding:0 20px 22px}
     .krow{grid-template-columns:1fr;gap:6px}
   }
+
+    /* --- work gallery --- */
+    .gal{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:22px;margin-top:26px}
+    .gcard{background:var(--bg2);border:1px solid rgba(255,255,255,.07);border-radius:10px;overflow:hidden;
+           transition:border-color .18s ease, transform .18s ease}
+    .gcard:hover{border-color:rgba(91,157,255,.5);transform:translateY(-2px)}
+    .gcard img{display:block;width:100%;height:auto}
+    .gcap{padding:14px 16px 16px}
+    .gcap b{display:block;font-size:15px;font-weight:600;margin-bottom:4px}
+    .gcap span{display:block;font-size:13px;line-height:1.45;color:var(--muted)}
+    .galnote{margin-top:26px;font-size:14px;color:var(--muted)}
+    .galnote a{color:var(--accent);text-decoration:none;border-bottom:1px solid rgba(91,157,255,.35)}
+    @media(max-width:640px){.gal{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -157,7 +170,8 @@
     <div class="links">
       <a href="mailto:karusrus@gmail.com">karusrus@gmail.com</a>
       <a href="https://www.linkedin.com/in/ruslankarymov/" target="_blank" rel="noopener">LinkedIn</a>
-      <a href="https://readymag.website/4042830" target="_blank" rel="noopener">Visual portfolio</a>
+      <a href="https://www.behance.net/karusrus" target="_blank" rel="noopener">Behance</a>
+      <a href="https://dribbble.com/karusrus" target="_blank" rel="noopener">Dribbble</a>
       <a href="https://github.com/karusrus" target="_blank" rel="noopener">GitHub</a>
       <a href="https://karusrus.github.io/rc-scanner" target="_blank" rel="noopener">Live tool</a>
       <a href="https://public.tableau.com/app/profile/ruslan.karymov" target="_blank" rel="noopener">Tableau</a>
@@ -201,6 +215,25 @@
       <div class="brow"><div class="via">via GDSI</div><div class="names"><span>European Commission</span><span>European Parliament</span><span>Asian Development Bank</span><span>World Bank</span></div></div>
       <div class="brow"><div class="via">Direct</div><div class="names"><span>DexTools</span><span>Government of Kazakhstan</span><span>LUKOIL</span><span>Gazprom</span></div></div>
     </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>The work</h2>
+    <div class="gal">
+      <figure class="gcard"><img src="w-exness-system.jpg" alt="One design system, 23 languages" loading="lazy" width="1200"><figcaption class="gcap"><b>One design system, 23 languages</b><span>Weekly market content across Latin, Arabic RTL, Thai, Bengali and CJK</span></figcaption></figure>
+      <figure class="gcard"><img src="w-real-madrid.jpg" alt="Real Madrid CF × Exness" loading="lazy" width="1200"><figcaption class="gcap"><b>Real Madrid CF × Exness</b><span>Campaign creative that earned a 400,000-copy magazine spread</span></figcaption></figure>
+      <figure class="gcard"><img src="w-red-bull.jpg" alt="Red Bull Racing × Exness" loading="lazy" width="1200"><figcaption class="gcap"><b>Red Bull Racing × Exness</b><span>A season-long contest across 23 markets, two guideline sets</span></figcaption></figure>
+      <figure class="gcard"><img src="w-swimply.jpg" alt="Swimply — 300 creatives a day" loading="lazy" width="1200"><figcaption class="gcap"><b>Swimply — 300 creatives a day</b><span>Listings to five paid channels through the Bannerbear API</span></figcaption></figure>
+      <figure class="gcard"><img src="w-nft-offers.jpg" alt="Job offers as NFTs on Polygon" loading="lazy" width="1200"><figcaption class="gcap"><b>Job offers as NFTs on Polygon</b><span>Two to three days per offer became seconds. 100+ issued</span></figcaption></figure>
+      <figure class="gcard"><img src="w-curvature.jpg" alt="Enterprise co-branding, two legal teams" loading="lazy" width="1200"><figcaption class="gcap"><b>Enterprise co-branding, two legal teams</b><span>Cisco, Dell EMC and Gartner in one banner system</span></figcaption></figure>
+      <figure class="gcard"><img src="w-gdsi.jpg" alt="Making institutional data legible" loading="lazy" width="1200"><figcaption class="gcap"><b>Making institutional data legible</b><span>European Commission, Parliament, ADB — 100+ page tenders</span></figcaption></figure>
+      <figure class="gcard"><img src="w-uniswap.jpg" alt="Advertising a protocol, not a purchase" loading="lazy" width="1200"><figcaption class="gcap"><b>Advertising a protocol, not a purchase</b><span>Creative and UX strategy for the largest DEX</span></figcaption></figure>
+    </div>
+    <p class="galnote">Full case studies with process and credits on
+      <a href="https://www.behance.net/karusrus" target="_blank" rel="noopener">Behance</a> ·
+      shots on <a href="https://dribbble.com/karusrus" target="_blank" rel="noopener">Dribbble</a></p>
   </div>
 </section>
 
@@ -395,7 +428,8 @@
     <div class="links">
       <a href="mailto:karusrus@gmail.com">karusrus@gmail.com</a>
       <a href="https://www.linkedin.com/in/ruslankarymov/" target="_blank" rel="noopener">LinkedIn</a>
-      <a href="https://readymag.website/4042830" target="_blank" rel="noopener">Visual portfolio</a>
+      <a href="https://www.behance.net/karusrus" target="_blank" rel="noopener">Behance</a>
+      <a href="https://dribbble.com/karusrus" target="_blank" rel="noopener">Dribbble</a>
       <a href="https://github.com/karusrus" target="_blank" rel="noopener">GitHub</a>
     </div>
   </div>
