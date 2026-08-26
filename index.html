@@ -117,6 +117,12 @@
     border-left:2px solid var(--accent2);padding:2px 0 2px 16px;color:var(--fg);
     font-size:1rem;margin-bottom:16px;
   }
+  .shots{display:grid;gap:14px;margin:4px 0 18px}
+  .shots figure{margin:0;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:#0d1014}
+  .shots img{display:block;width:100%;height:auto}
+  .shots figcaption{font-size:.82rem;color:var(--dim);padding:9px 12px;border-top:1px solid var(--line)}
+  .decision{border-left:2px solid var(--accent);padding-left:14px;margin:0 0 14px}
+  .decision b{color:var(--fg)}
   .tags{display:flex;flex-wrap:wrap;gap:7px;padding-top:4px}
   .tags span{font-size:.76rem;color:var(--dim);border:1px solid var(--line);padding:3px 9px;border-radius:5px}
 
@@ -348,17 +354,22 @@
     </details>
 
     <details class="case">
-      <summary><span class="yr">2024–now</span><span class="ttl">Solana DEX Signal Scanner<em>Personal project — designed, built and shipped solo</em></span></summary>
+      <summary><span class="yr">2024&ndash;now</span><span class="ttl">Solana DEX Signal Scanner<em>Personal project &mdash; problem framing, interface, integration, release and validation, all mine</em></span></summary>
       <div class="body">
-        <p><strong>Challenge.</strong> Build a statistically validated signal tool for Solana DEX tokens, where existing platforms surface noise.</p>
-        <ul>
-          <li>Pre-filtered the top 300 Early-Bird wallets via Helius and BitQuery APIs, sniper bots excluded manually</li>
-          <li>Bootstrapped validation in Python: <b>1,000 iterations</b>, 70/30 train-validation splits</li>
-          <li>Built the entire front end: score per token, buy-pressure signal, volume velocity, BUY / STRONG BUY / NEUTRAL / AVOID filter, grid and table views, light and dark modes, fully responsive</li>
-          <li>Zero dependencies — pure HTML, CSS and JavaScript against the GeckoTerminal API, refreshing every 60 seconds</li>
-        </ul>
-        <p class="result">A live production tool. The interface, the statistics and the deployment — all mine. <a href="https://karusrus.github.io/rc-scanner" target="_blank" rel="noopener">See it running →</a></p>
-        <div class="tags"><span>Python</span><span>Helius API</span><span>BitQuery</span><span>Bootstrapping</span><span>Front-end</span><span>Product design</span></div>
+        <p><strong>The problem.</strong> Thousands of tokens appear on Solana every day. Screeners rank them by volume and price change &mdash; the two numbers easiest to fake. A trader is asking something else: is anyone who is usually right buying this, and is it happening now? I built a tool for that question rather than a shop window for data.</p>
+        <p><strong>Constraints I had to design around.</strong> Public APIs with rate limits &mdash; GeckoTerminal for market data, Helius and BitQuery on-chain. A 60-second refresh as the compromise between a fresh signal and those limits. No backend and no dependencies, so the tool lives on static hosting and needs no maintenance. Sniper bots corrupt the on-chain picture and had to be excluded before the score is computed, not after.</p>
+        <div class="shots">
+          <figure><img src="scanner-grid-dark.jpg" alt="Solana DEX Signal Scanner, grid view"><figcaption>Grid view. Four summary tiles, then one card per pool: score, signal, price, movement across three windows, volume, liquidity, FDV, and the buy/sell split as a bar.</figcaption></figure>
+          <figure><img src="scanner-table-dark.jpg" alt="Solana DEX Signal Scanner, table view"><figcaption>The same set as a table. A toggle, not a second section: comparison and browsing are two ways of reading one dataset.</figcaption></figure>
+          <figure><img src="scanner-grid-light.jpg" alt="Solana DEX Signal Scanner, light theme"><figcaption>Light theme. Dark is the default because the tool is opened on top of a trading terminal.</figcaption></figure>
+        </div>
+        <p class="decision"><b>A score plus a verdict, not a score alone.</b> The number answers how strong, the label answers so what &mdash; STRONG BUY, BUY, NEUTRAL, AVOID. A trader decision is binary; a bare 0&ndash;100 scale makes them invent their own threshold every time. The buy threshold is stated on the page, so the label is auditable rather than magic.</p>
+        <p class="decision"><b>Four metrics on the card, the rest on demand.</b> The first version carried nine. A metric nobody acts on takes space from one they do.</p>
+        <p class="decision"><b>Filters that match how it is used.</b> Not a range slider but three states: all, above the buy threshold, below the discard line. That is how the tool is actually read &mdash; what is worth looking at, and what is worth ignoring.</p>
+        <p class="decision"><b>What I chose not to build.</b> No alerts, no portfolio, no trade history. Each of those turns a tool into a service that must be maintained and that becomes answerable for someone else money. The boundary was drawn deliberately and it holds.</p>
+        <p><strong>Validation.</strong> The signal was checked by bootstrapping in Python: 1,000 iterations on a 70/30 split. That does not prove profitability and was never meant to &mdash; it checks that the pattern does not fall apart on subsamples. Pre-filtering used the top 300 Early-Bird wallets via Helius and BitQuery, with sniper bots excluded.</p>
+        <p class="result">Live since 2024, running unattended. Zero dependencies, zero hosting cost, pure HTML, CSS and JavaScript against the GeckoTerminal API. <a href="https://karusrus.github.io/rc-scanner" target="_blank" rel="noopener">See it running &rarr;</a></p>
+        <div class="tags"><span>Product design</span><span>Design decisions</span><span>Data-heavy UI</span><span>Light &amp; dark</span><span>Third-party APIs</span><span>Python</span><span>Bootstrapping</span><span>Front-end</span></div>
       </div>
     </details>
 
