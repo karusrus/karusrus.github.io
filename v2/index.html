@@ -330,7 +330,7 @@ footer{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;paddin
         </div>
         <div class="phone" id="phone">
           <div class="island"></div>
-          <div class="screen"><video src="assets/snowball.mp4" poster="assets/snowball-poster.jpg" muted loop playsinline preload="metadata"></video></div>
+          <div class="screen"><video src="assets/exness-gifs.mp4" poster="assets/exness-gifs-poster.jpg" muted loop playsinline preload="metadata"></video></div>
           <div class="glare"></div>
         </div>
       </div>
@@ -338,11 +338,11 @@ footer{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;paddin
     <div class="devices-copy">
       <div class="eyebrow mono rv">Motion &amp; broadcast</div>
       <h2 class="rv">The same brand, at 25 frames a second.</h2>
-      <p class="lead rv">Cristiano Ronaldo for Exness on the laptop: a co-branding spot where the approval chain runs through a global athlete's team and a fintech's compliance desk at once. On the phone, a seasonal greeting from the same system — built as a template so 23 markets got their own language without a second animator.</p>
+      <p class="lead rv">Cristiano Ronaldo for Exness on the laptop: a co-branding spot where the approval chain runs through a global athlete's team and a fintech's compliance desk at once. On the phone, the social feed from the same system: a series of looped animations for the weekly market posts — one yellow, one line weight, one template, so the illustration changes and nothing else does.</p>
       <ul class="list rv">
         <li><b>Motion design</b> Apple Motion, After Effects, Final Cut Pro</li>
         <li><b>Broadcast</b> ProRes 4444 and WebM alpha workflows, stinger transitions, overlays</li>
-        <li><b>Localised at source</b> text layers as data, so a market change is a field change</li>
+        <li><b>Social motion</b> looped icon animations for the feed, one template for the whole series</li>
       </ul>
     </div>
   </div>
@@ -354,7 +354,7 @@ footer{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;paddin
     <div class="work-head">
       <div>
         <div class="eyebrow mono rv">Work</div>
-        <h2 class="h2 rv">Twelve cases. <span style="color:var(--muted)">One production line.</span></h2>
+        <h2 class="h2 rv">Thirteen cases. <span style="color:var(--muted)">One production line.</span></h2>
       </div>
       <div class="filters rv" id="filters"></div>
     </div>
@@ -480,10 +480,35 @@ window.CASES = [
     {src:'assets/ex-top-ko.jpg',cls:'p',cap:'Korean top-stock edition.'},
     {src:'assets/ex-ath-es.jpg',cls:'p',cap:'Crypto all-time-high tracker, Spanish.'},
     {src:'assets/ex-instr-vi.jpg',cls:'p',cap:'Instrument spotlight, Vietnamese.'},
-    {src:'assets/ex-xmas.jpg',cls:'p',cap:'Seasonal animated greeting, 2018 — one of 23 language versions.'},
     {src:'assets/rb-frame.jpg',cls:'',cap:'Red Bull Racing OOH frame.'},
     {src:'assets/rb-contest.jpg',cls:'p',cap:'Contest creative, French market.'},
     {src:'assets/rb-carousel.jpg',cls:'w',cap:'Social carousel, Malaysian market.'}
+  ],
+  links:[{t:'Case on Behance',u:'https://www.behance.net/karusrus'}]
+},
+{
+  id:'exness-print', size:'', cat:'brand',
+  title:'Brand system in print: three brochures, four languages',
+  client:'Exness', role:'Design Lead', years:'2021–2022',
+  cover:'assets/br-crypto-1.jpg', pos:'50% 50%',
+  sub:'Client, partner and crypto brochures from one grid — English, Portuguese, French, Bengali',
+  tags:['Brand systems','Print','Editorial grid','Localisation','Information design'],
+  challenge:'Three audiences — retail clients, partners, crypto traders — each needed its own brochure, and each brochure had to survive translation into languages that run up to forty percent longer than English without a second layout.',
+  bullets:[
+    'One editorial grid, one type scale, one chart style across the client, partner and crypto brochures',
+    'Numbers as the argument: trading volume, client count, spreads and payouts laid out as infographics rather than paragraphs',
+    'Product screens rendered inside real devices, so the brochure sells the platform, not the brand alone',
+    'Every text frame built with room for Portuguese, French and Bengali expansion — translated editions dropped in without re-flowing the spread'
+  ],
+  result:'Four languages, three audiences, one system. The Bengali edition went to print on the same grid as the English original.',
+  gallery:[
+    {src:'assets/br-client-1.jpg',cls:'w',cap:'Client brochure, English — outer spread: numbers, advantages, fifteen years of trust.'},
+    {src:'assets/br-client-2.jpg',cls:'w',cap:'Client brochure, inner spread: why Exness, products, accounts, platforms.'},
+    {src:'assets/br-partner-1.jpg',cls:'',cap:'Partner brochure, Portuguese — outer spread.'},
+    {src:'assets/br-partner-2.jpg',cls:'',cap:'Partner brochure, Portuguese — numbers and the case for partnering.'},
+    {src:'assets/br-crypto-1.jpg',cls:'',cap:'Crypto brochure, French — A5 half-fold, dark edition of the same grid.'},
+    {src:'assets/br-crypto-2.jpg',cls:'',cap:'Crypto brochure, French — 30 CFDs, advantages.'},
+    {src:'assets/br-bn.jpg',cls:'p',cap:'Promo flyer, Bengali — same type scale, a script that runs a third longer.'}
   ],
   links:[{t:'Case on Behance',u:'https://www.behance.net/karusrus'}]
 },
@@ -696,7 +721,7 @@ window.CASES = [
   links:[{t:'See it running',u:'https://karusrus.github.io/rc-scanner'}]
 },
 {
-  id:'egov', size:'x3', cat:'info',
+  id:'egov', size:'', cat:'info',
   title:'National e-government data infrastructure',
   client:'Loyalty Peak — Government of Kazakhstan (egov.kz)', role:'Lead analyst', years:'2010',
   cover:'assets/egov.jpg', pos:'50% 50%',
@@ -716,7 +741,7 @@ window.CASES = [
   links:[]
 },
 {
-  id:'engineering', size:'x3', cat:'info',
+  id:'engineering', size:'', cat:'info',
   title:'Engineering analytics and industrial design systems',
   client:'UECHM & Teploproekt', role:'Chief Engineer of Projects (ГИП)', years:'2007–2011',
   cover:'assets/engineering.jpg', pos:'50% 50%',
@@ -741,7 +766,7 @@ window.BRANDS = [
   ['European Commission','via GDSI'],['European Parliament','via GDSI'],['Asian Development Bank','via GDSI'],['World Bank','via GDSI'],
   ['DexTools','direct'],['Government of Kazakhstan','direct'],['LUKOIL','direct'],['Gazprom','direct']
 ];
-window.HERO_IMGS = ['rm-1','rb-frame','ex-ath-es','sw-post','uni-1','gdsi-mep','nft-cards','dextools','egov','w-pipeline-overview','scanner-grid-dark','cv-cisco','ex-news','gdsi-youth','fibo-brochure','ex-wwf','ex-top-ko','w-curvature'];
+window.HERO_IMGS = ['rm-1','br-crypto-1','rb-frame','ex-ath-es','sw-post','uni-1','gdsi-mep','nft-cards','dextools','egov','w-pipeline-overview','scanner-grid-dark','cv-cisco','ex-news','gdsi-youth','fibo-brochure','ex-wwf','ex-top-ko','w-curvature'];
 </script>
 
 <script>
