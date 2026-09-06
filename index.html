@@ -354,6 +354,25 @@
     </details>
 
     <details class="case">
+      <summary><span class="yr">2026</span><span class="ttl">Pipeline Map &mdash; pitching a system before it exists<em>Personal tool &mdash; one HTML file, built in an evening for a creative-producer test, released as open source</em></span></summary>
+      <div class="body">
+        <p><strong>The problem.</strong> A test assignment asked for three ad concepts. The concepts were the easy part; the harder question was how those concepts would be produced at volume, week after week. Describing a production pipeline in prose loses the one thing that matters &mdash; what flows where. Screenshots of n8n or ComfyUI show the wiring but not the movement, and a slide with boxes shows neither.</p>
+        <p><strong>What I built.</strong> A node-graph canvas in the visual language of ComfyUI: typed sockets, coloured wires, groups, widgets inside nodes. Then the two things a pitch needs that a workflow editor does not have: animated traffic along every wire, with three levels of intensity per wire, and a camera with five saved views that fly between each other while you talk. No build step, no backend, no dependencies &mdash; a single file that saves its own state in the browser.</p>
+        <div class="shots">
+          <figure><img src="w-pipeline-overview.jpg" alt="Pipeline Map, full view with flow animation"><figcaption>The whole map with flow on. Six groups: inputs, concept engine, three production branches, gates, launch, and the learning loop back into the inputs.</figcaption></figure>
+          <figure><img src="w-pipeline-selector.jpg" alt="Pipeline Map, camera on the selector agent"><figcaption>Camera slot 1. The opening frame of the walkthrough: the node that would pick the concepts, with its rubric and threshold as widgets.</figcaption></figure>
+          <figure><img src="w-pipeline-inbox.jpg" alt="Pipeline Map, escalation inbox"><figcaption>Camera slot 5. The one human node on the map, named by its real mechanism: an n8n send-and-wait-for-approval step with a four-hour timeout.</figcaption></figure>
+        </div>
+        <p class="decision"><b>Motion is the argument, not decoration.</b> The main spine runs at full intensity, feedback loops at the lowest. Without touching a label, a viewer sees which path is the business and which paths are learning.</p>
+        <p class="decision"><b>Humans by exception, drawn as such.</b> The first draft had five human gates. The second replaced them with agents that carry a confidence score, and routed everything below threshold to one inbox. Every node names the real tool behind it &mdash; Slack send-and-wait, Meta automated rules, a weekly Airtable job &mdash; so the map can be challenged line by line instead of admired.</p>
+        <p class="decision"><b>A camera, because a map is read in an order.</b> Saved views turn the canvas into a presentation without slides: open close, pull back, fly to where the point lands, move one node so the audience sees the wires follow.</p>
+        <p class="decision"><b>What I chose not to build.</b> No accounts, no cloud save, no export. Each would turn a tool into a service. The layout lives in the browser and travels as JSON; that is enough for the job it has.</p>
+        <p class="result">Open source under MIT, live on GitHub Pages. Built with an AI assistant as the production method; every design decision above is mine. <a href="https://karusrus.github.io/pipeline-map/" target="_blank" rel="noopener">Open the map &rarr;</a> &middot; <a href="https://github.com/karusrus/pipeline-map" target="_blank" rel="noopener">Source &rarr;</a></p>
+        <div class="tags"><span>Information design</span><span>Interaction design</span><span>Creative ops</span><span>Agentic workflows</span><span>n8n</span><span>ComfyUI</span><span>Front-end</span><span>Open source</span></div>
+      </div>
+    </details>
+
+    <details class="case">
       <summary><span class="yr">2024&ndash;now</span><span class="ttl">Solana DEX Signal Scanner<em>Personal project &mdash; problem framing, interface, integration, release and validation, all mine</em></span></summary>
       <div class="body">
         <p><strong>The problem.</strong> Thousands of tokens appear on Solana every day. Screeners rank them by volume and price change &mdash; the two numbers easiest to fake. A trader is asking something else: is anyone who is usually right buying this, and is it happening now? I built a tool for that question rather than a shop window for data.</p>
