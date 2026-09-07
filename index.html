@@ -1,473 +1,1064 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Ruslan Karymov — Design Ops &amp; Creative Automation Lead</title>
-<meta name="description" content="Design lead who builds the machinery, not just the artwork. Eleven years owning design at Exness through 250× growth. Figma API pipelines, custom AI brand models, EU institutional work.">
-<meta property="og:title" content="Ruslan Karymov — Design Ops &amp; Creative Automation Lead">
-<meta property="og:description" content="Brand systems at scale. Design that survives contact with growth.">
-<meta property="og:type" content="website">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Ruslan Karymov — Design Ops & Creative Automation Lead</title>
+<meta name="description" content="Brand systems at scale, presentation and information design, creative automation, data-driven decisions. Eleven years owning the brand of a company that grew 250×. Varna, Bulgaria — remote worldwide.">
+<meta property="og:title" content="Ruslan Karymov — Design Ops & Creative Automation Lead">
+<meta property="og:description" content="Design that survives contact with scale. Brand systems, creative automation, information design.">
+<meta property="og:image" content="https://karusrus.github.io/assets/w-real-madrid.jpg">
+<meta name="theme-color" content="#08090c">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%2308090c'/%3E%3Ctext x='32' y='42' text-anchor='middle' font-family='Helvetica,Arial' font-weight='700' font-size='30' fill='%235b9dff'%3ERK%3C/text%3E%3C/svg%3E">
+<link rel="preload" href="fonts/bricolage-grotesque-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/instrument-sans-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
 <style>
-  :root{
-    --bg:#08090b; --bg2:#0e1013; --line:#1e2228;
-    --fg:#f2f4f7; --mid:#a4adba; 
-    --dim:#707a88; --accent:#5b9dff; --accent2:#7ee0c0;
-    --max:980px;
-  }
-  *{box-sizing:border-box;margin:0;padding:0}
-  html{scroll-behavior:smooth}
-  body{
-    background:var(--bg); color:var(--fg);
-    font:400 16px/1.62 -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Helvetica,Arial,sans-serif;
-    -webkit-font-smoothing:antialiased; overflow-x:hidden;
-  }
-  .wrap{max-width:var(--max);margin:0 auto;padding:0 28px}
-  a{color:var(--accent);text-decoration:none}
-  a:hover{text-decoration:underline}
+@font-face{font-family:'Bricolage';font-style:normal;font-display:swap;font-weight:200 800;src:url(fonts/bricolage-grotesque-latin-wght-normal.woff2) format('woff2-variations');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:'Bricolage';font-style:normal;font-display:swap;font-weight:200 800;src:url(fonts/bricolage-grotesque-latin-ext-wght-normal.woff2) format('woff2-variations');unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF}
+@font-face{font-family:'Instrument';font-style:normal;font-display:swap;font-weight:400 700;src:url(fonts/instrument-sans-latin-wght-normal.woff2) format('woff2-variations');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:'Instrument';font-style:normal;font-display:swap;font-weight:400 700;src:url(fonts/instrument-sans-latin-ext-wght-normal.woff2) format('woff2-variations');unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF}
+@font-face{font-family:'JBMono';font-style:normal;font-display:swap;font-weight:100 800;src:url(fonts/jetbrains-mono-latin-wght-normal.woff2) format('woff2-variations')}
 
-  /* ---------- hero ---------- */
-  header{
-    padding:96px 0 64px; position:relative; overflow:hidden;
-    border-bottom:1px solid var(--line);
-  }
-  header::before{
-    content:"";position:absolute;inset:-40% -10% auto auto;width:760px;height:760px;
-    background:radial-gradient(circle at 60% 40%, rgba(91,157,255,.14), transparent 62%);
-    pointer-events:none;
-  }
-  header::after{
-    content:"";position:absolute;inset:0;pointer-events:none;opacity:.5;
-    background-image:linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px);
-    background-size:64px 64px;
-    -webkit-mask-image:radial-gradient(ellipse 80% 60% at 70% 20%,#000,transparent 75%);
-    mask-image:radial-gradient(ellipse 80% 60% at 70% 20%,#000,transparent 75%);
-  }
-  header .wrap{position:relative;z-index:1}
-  h1{
-    font-size:clamp(2.6rem,7.5vw,4.6rem); line-height:1.02; letter-spacing:-.035em;
-    font-weight:800; margin-bottom:20px;
-  }
-  .role{
-    font-size:clamp(1.05rem,2.4vw,1.4rem); font-weight:600; letter-spacing:-.01em;
-    color:var(--accent); margin-bottom:10px;
-  }
-  .sub{color:var(--mid); font-size:1.02rem; margin-bottom:34px}
-  .lede{
-    font-size:clamp(1.12rem,2.5vw,1.42rem); line-height:1.5; letter-spacing:-.015em;
-    max-width:44ch; margin-bottom:34px; color:var(--fg);
-  }
-  .lede b{font-weight:700}
-  .links{display:flex;flex-wrap:wrap;gap:10px}
-  .links a{
-    display:inline-block;padding:9px 16px;border:1px solid var(--line);border-radius:999px;
-    color:var(--fg);font-size:.9rem;font-weight:500;background:var(--bg2);
-    transition:border-color .18s, color .18s, transform .18s;
-  }
-  .links a:hover{border-color:var(--accent);color:var(--accent);text-decoration:none;transform:translateY(-1px)}
+:root{
+  --bg:#08090c;--bg2:#0d0f14;--surface:#12151b;--surface2:#181c24;--line:rgba(255,255,255,.08);--line2:rgba(255,255,255,.14);
+  --text:#f3f2ee;--muted:#9aa0ad;--dim:#666c78;--accent:#5b9dff;--accent2:#ffd166;--accent3:#7bf1c1;
+  --display:'Bricolage',ui-sans-serif,system-ui,-apple-system,'Helvetica Neue',Arial,sans-serif;
+  --body:'Instrument',ui-sans-serif,system-ui,-apple-system,'Helvetica Neue',Arial,sans-serif;
+  --mono:'JBMono',ui-monospace,SFMono-Regular,Menlo,monospace;
+  --r:22px;--pad:clamp(20px,4vw,64px);--max:1400px;
+}
+*{box-sizing:border-box}
+html{background:var(--bg);color:var(--text);scroll-behavior:auto;overflow-x:clip}
+html.lenis,html.lenis body{height:auto}.lenis.lenis-smooth{scroll-behavior:auto!important}.lenis.lenis-stopped{overflow:hidden}
+body{margin:0;font-family:var(--body);font-size:17px;line-height:1.55;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;overflow-x:clip}
+a{color:inherit;text-decoration:none}
+img,video{display:block;max-width:100%}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer;padding:0}
+::selection{background:var(--accent);color:#fff}
+h1,h2,h3{font-family:var(--display);font-weight:600;letter-spacing:-.02em;line-height:1.02;margin:0}
+.mono{font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:500}
+.wrap{max-width:var(--max);margin:0 auto;padding:0 var(--pad)}
+section{position:relative}
+.eyebrow{display:flex;align-items:center;gap:12px;margin-bottom:22px}
+.eyebrow::before{content:"";width:28px;height:1px;background:var(--accent)}
+.h2{font-size:clamp(38px,6vw,84px);max-width:16ch}
+.lead{font-size:clamp(18px,1.6vw,22px);color:var(--muted);max-width:60ch;margin:22px 0 0}
+.lead b,.card-body b{color:var(--text);font-weight:600}
+.grain{pointer-events:none;position:fixed;inset:0;z-index:60;opacity:.045;mix-blend-mode:overlay;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
 
-  /* ---------- sections ---------- */
-  section{padding:72px 0;border-bottom:1px solid var(--line)}
-  h2{
-    font-size:.76rem;letter-spacing:.19em;text-transform:uppercase;color:var(--dim);
-    font-weight:600;margin-bottom:34px;
-  }
-  h3{font-size:1.42rem;letter-spacing:-.02em;font-weight:700;margin-bottom:6px}
+/* ---------- nav ---------- */
+.nav{position:fixed;top:0;left:0;right:0;z-index:50;display:flex;align-items:center;justify-content:space-between;padding:18px var(--pad);transition:background .4s,backdrop-filter .4s,border-color .4s;border-bottom:1px solid transparent}
+.nav.solid{background:rgba(8,9,12,.62);backdrop-filter:saturate(160%) blur(18px);-webkit-backdrop-filter:saturate(160%) blur(18px);border-color:var(--line)}
+.logo{display:flex;align-items:center;gap:12px;font-family:var(--display);font-weight:700;font-size:16px;letter-spacing:-.01em}
+.logo i{width:32px;height:32px;border-radius:9px;background:linear-gradient(135deg,#5b9dff,#8a5bff);display:grid;place-items:center;font-style:normal;font-size:12px;letter-spacing:.02em;color:#fff;box-shadow:0 8px 24px -8px rgba(91,157,255,.8)}
+.nav ul{display:flex;gap:6px;list-style:none;margin:0;padding:0}
+.nav ul a{padding:8px 14px;border-radius:999px;color:var(--muted);font-size:14px;font-weight:500;transition:color .2s,background .2s}
+.nav ul a:hover{color:var(--text);background:rgba(255,255,255,.06)}
+.btn{display:inline-flex;align-items:center;gap:10px;padding:13px 22px;border-radius:999px;font-weight:600;font-size:15px;line-height:1;transition:transform .25s cubic-bezier(.2,.7,.2,1),background .2s,box-shadow .3s;will-change:transform}
+.btn.primary{background:var(--text);color:#0a0b0f}
+.btn.primary:hover{transform:translateY(-2px);box-shadow:0 14px 34px -12px rgba(255,255,255,.5)}
+.btn.ghost{border:1px solid var(--line2);color:var(--text)}
+.btn.ghost:hover{background:rgba(255,255,255,.06);transform:translateY(-2px)}
+.btn.sm{padding:10px 16px;font-size:14px}
+.nav .btn{padding:10px 16px;font-size:14px}
+@media(max-width:820px){.nav ul{display:none}}
 
-  /* ---------- numbers ---------- */
-  .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(168px,1fr));gap:2px;background:var(--line);border:1px solid var(--line);border-radius:12px;overflow:hidden}
-  .stat{background:var(--bg2);padding:26px 22px}
-  .stat .n{font-size:2.1rem;font-weight:800;letter-spacing:-.04em;line-height:1;color:var(--accent2);margin-bottom:8px}
-  .stat .l{font-size:.85rem;color:var(--mid);line-height:1.4}
+/* ---------- hero ---------- */
+.hero{height:100svh;min-height:640px;display:grid;align-items:end;overflow:hidden;isolation:isolate}
+#gl{position:absolute;inset:0;z-index:0}
+.hero .glow{position:absolute;inset:0;z-index:-1;background:
+  radial-gradient(60% 50% at 70% 35%,rgba(91,157,255,.16),transparent 60%),
+  radial-gradient(40% 40% at 25% 70%,rgba(138,91,255,.12),transparent 60%),
+  radial-gradient(50% 60% at 50% 100%,#08090c 30%,transparent 70%)}
+.hero .vig{position:absolute;inset:0;z-index:1;pointer-events:none;background:linear-gradient(to bottom,rgba(8,9,12,.55),transparent 28%,transparent 50%,rgba(8,9,12,.75) 72%,rgba(8,9,12,.97) 100%)}
+.hero-c{position:relative;z-index:2;width:100%;padding-bottom:clamp(40px,7vh,84px)}
+.hero h1{font-size:min(clamp(46px,8.6vw,132px),15vh);font-weight:600;letter-spacing:-.035em;line-height:.94;max-width:11ch}
+.hero h1 .w{display:inline-block;overflow:hidden;vertical-align:bottom}
+.hero h1 .w span{display:inline-block;transform:translateY(110%);will-change:transform}
+.hero h1 em{font-style:normal;background:linear-gradient(92deg,#5b9dff,#a78bfa 60%,#7bf1c1);-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero-row{display:flex;gap:40px;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;margin-top:34px}
+.hero-sub{max-width:52ch;color:var(--muted);font-size:clamp(16px,1.35vw,19px);margin:0}
+.hero-sub b{color:var(--text);font-weight:600}
+.hero-cta{display:flex;gap:12px;flex-wrap:wrap}
+.hero-top{position:absolute;left:var(--pad);right:var(--pad);top:calc(64px + 4vh);z-index:2;display:flex;justify-content:space-between;align-items:flex-start;pointer-events:none}
+.hero-top .mono{max-width:26ch;line-height:1.6}
+.scroll-hint{position:absolute;right:var(--pad);bottom:28px;z-index:3;display:flex;align-items:center;gap:10px;color:var(--dim);font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase}
+.scroll-hint i{width:1px;height:44px;background:linear-gradient(var(--accent),transparent);display:block;animation:hint 1.8s ease-in-out infinite}
+@keyframes hint{0%{transform:scaleY(0);transform-origin:top}50%{transform:scaleY(1);transform-origin:top}51%{transform-origin:bottom}100%{transform:scaleY(0);transform-origin:bottom}}
+@media(max-width:820px){.hero{align-items:end}.hero-top{display:none}.scroll-hint{display:none}}
+@media(max-height:800px){.hero-top{display:none}}
 
-  /* ---------- brands ---------- */
-  .brands{display:grid;gap:18px}
-  .brow{display:grid;grid-template-columns:132px 1fr;gap:20px;align-items:baseline}
-  .brow .via{font-size:.76rem;letter-spacing:.13em;text-transform:uppercase;color:var(--dim);font-weight:600;padding-top:4px}
-  .brow .names{display:flex;flex-wrap:wrap;gap:8px}
-  .brow .names span{
-    font-size:.92rem;padding:5px 12px;border:1px solid var(--line);border-radius:6px;
-    background:var(--bg2);color:var(--fg);white-space:nowrap;
-  }
+/* ---------- numbers ---------- */
+.numbers{padding:clamp(60px,10vh,120px) 0 0}
+.stats{display:grid;grid-template-columns:repeat(5,1fr);gap:14px}
+.stat{position:relative;padding:26px 24px 22px;border-radius:var(--r);background:linear-gradient(180deg,var(--surface2),var(--surface));border:1px solid var(--line);overflow:hidden;transform-style:preserve-3d;transition:border-color .3s}
+.stat:hover{border-color:var(--line2)}
+.stat::after{content:"";position:absolute;inset:0;background:radial-gradient(240px circle at var(--mx,50%) var(--my,50%),rgba(91,157,255,.18),transparent 60%);opacity:0;transition:opacity .4s;pointer-events:none}
+.stat:hover::after{opacity:1}
+.stat .n{font-family:var(--display);font-size:clamp(40px,4.2vw,64px);font-weight:600;letter-spacing:-.04em;line-height:1;color:var(--text)}
+.stat .n small{font-size:.55em;color:var(--accent);margin-left:2px;font-weight:600}
+.stat .l{color:var(--muted);font-size:14px;margin-top:12px;line-height:1.4}
+@media(max-width:1100px){.stats{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:640px){.stats{grid-template-columns:repeat(2,1fr)}.stat{padding:20px 18px}}
 
-  /* ---------- cases ---------- */
-  .case{border:1px solid var(--line);border-radius:12px;background:var(--bg2);margin-bottom:14px;overflow:hidden}
-  .case summary{
-    padding:22px 26px;cursor:pointer;list-style:none;display:flex;gap:18px;align-items:baseline;
-    transition:background .16s;
-  }
-  .case summary::-webkit-details-marker{display:none}
-  .case summary:hover{background:#12151a}
-  .case summary::after{
-    content:"+";margin-left:auto;color:var(--dim);font-size:1.3rem;font-weight:400;line-height:1;flex:none;
-    transition:transform .2s,color .2s;
-  }
-  .case[open] summary::after{transform:rotate(45deg);color:var(--accent)}
-  .case .yr{font-size:.82rem;color:var(--dim);font-variant-numeric:tabular-nums;flex:none;width:96px;padding-top:5px}
-  .case .ttl{font-size:1.12rem;font-weight:650;letter-spacing:-.015em;line-height:1.35}
-  .case .ttl em{display:block;font-style:normal;font-size:.86rem;color:var(--mid);font-weight:400;margin-top:4px}
-  .body{padding:0 26px 26px 140px;color:var(--mid);font-size:.96rem}
-  .body p{margin-bottom:14px}
-  .body p strong{color:var(--fg)}
-  .body ul{list-style:none;margin-bottom:16px}
-  .body li{padding-left:18px;position:relative;margin-bottom:8px}
-  .body li::before{content:"";position:absolute;left:2px;top:.7em;width:5px;height:5px;border-radius:50%;background:var(--accent)}
-  .body li b{color:var(--fg);font-weight:600}
-  .result{
-    border-left:2px solid var(--accent2);padding:2px 0 2px 16px;color:var(--fg);
-    font-size:1rem;margin-bottom:16px;
-  }
-  .shots{display:grid;gap:14px;margin:4px 0 18px}
-  .shots figure{margin:0;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:#0d1014}
-  .shots img{display:block;width:100%;height:auto}
-  .shots figcaption{font-size:.82rem;color:var(--dim);padding:9px 12px;border-top:1px solid var(--line)}
-  .decision{border-left:2px solid var(--accent);padding-left:14px;margin:0 0 14px}
-  .decision b{color:var(--fg)}
-  .tags{display:flex;flex-wrap:wrap;gap:7px;padding-top:4px}
-  .tags span{font-size:.76rem;color:var(--dim);border:1px solid var(--line);padding:3px 9px;border-radius:5px}
+/* ---------- devices ---------- */
+.devices{padding:clamp(80px,14vh,180px) 0 0}
+.devices .wrap{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center}
+.stage{height:min(70vh,700px);perspective:1800px;perspective-origin:50% 45%;position:relative}
+.stage .scene{position:absolute;inset:0;transform-style:preserve-3d}
+.laptop{position:absolute;left:0;top:50%;width:88%;margin-top:-26%;will-change:transform}
+.laptop .lid{position:relative;aspect-ratio:16/10.4;border-radius:16px 16px 4px 4px;background:#0b0c10;border:1px solid #2a2d36;box-shadow:0 60px 120px -40px rgba(0,0,0,.95),inset 0 0 0 2px #050608;padding:2.4% 2.4% 2.6%}
+.laptop .screen{position:relative;width:100%;height:100%;border-radius:8px;overflow:hidden;background:#000}
+.laptop .screen video,.laptop .screen img{width:100%;height:100%;object-fit:cover}
+.laptop .cam{position:absolute;top:1%;left:50%;width:5px;height:5px;border-radius:50%;background:#1b1d25;transform:translateX(-50%);box-shadow:0 0 0 2px #0e0f14}
+.laptop .base{position:relative;height:14px;margin:0 -3%;border-radius:0 0 14px 14px;background:linear-gradient(#3a3e4a,#1c1f27 45%,#0f1116);box-shadow:0 14px 30px -6px rgba(0,0,0,.7)}
+.laptop .base::after{content:"";position:absolute;left:42%;right:42%;top:0;height:5px;border-radius:0 0 6px 6px;background:#0a0b0f}
+.laptop .glare{position:absolute;inset:0;border-radius:16px;background:linear-gradient(115deg,rgba(255,255,255,.08),transparent 35%,transparent 70%,rgba(255,255,255,.03));pointer-events:none;mix-blend-mode:screen}
+.phone{position:absolute;width:24%;aspect-ratio:9/19.3;right:0;bottom:4%;border-radius:11% / 5.2%;background:#0a0b0f;border:1px solid #33363f;box-shadow:0 40px 100px -30px rgba(0,0,0,.95),inset 0 0 0 3px #101116,0 0 0 1px #000;padding:3.6%;will-change:transform}
+.phone .screen{position:relative;width:100%;height:100%;border-radius:9% / 4.2%;overflow:hidden;background:#000}
+.phone .screen video,.phone .screen img{width:100%;height:100%;object-fit:cover}
+.phone .island{position:absolute;top:3.2%;left:50%;width:32%;height:3%;background:#000;border-radius:999px;transform:translateX(-50%);z-index:2}
+.phone .glare{position:absolute;inset:0;border-radius:11% / 5.2%;background:linear-gradient(150deg,rgba(255,255,255,.1),transparent 40%);pointer-events:none}
+.devices-copy h2{font-size:clamp(34px,4.4vw,60px);max-width:14ch}
+.devices-copy p{color:var(--muted);max-width:46ch}
+.devices-copy .list{display:grid;gap:10px;margin-top:26px;padding:0;list-style:none}
+.devices-copy .list li{display:flex;gap:14px;align-items:baseline;color:var(--muted);font-size:15px}
+.devices-copy .list li b{color:var(--text);font-weight:600;white-space:nowrap}
+.devices-copy .list li::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--accent);flex:none;transform:translateY(-3px)}
+@media(max-width:980px){.devices .wrap{grid-template-columns:1fr;gap:20px}.stage{height:min(58vh,520px)}.laptop{width:84%}.phone{width:26%}}
 
-  /* ---------- toolkit ---------- */
-  .kit{display:grid;gap:2px;background:var(--line);border:1px solid var(--line);border-radius:12px;overflow:hidden}
-  .krow{display:grid;grid-template-columns:210px 1fr;gap:24px;background:var(--bg2);padding:20px 24px}
-  .krow dt{font-weight:650;font-size:.95rem;letter-spacing:-.01em}
-  .krow dd{color:var(--mid);font-size:.92rem;line-height:1.6}
+/* ---------- work ---------- */
+.work{padding:clamp(80px,14vh,180px) 0 0}
+.work-head{display:flex;align-items:flex-end;justify-content:space-between;gap:30px;flex-wrap:wrap;margin-bottom:40px}
+.work-head .h2{max-width:13ch}
+.filters{display:flex;gap:6px;flex-wrap:wrap}
+.filters button{padding:9px 14px;border-radius:999px;border:1px solid var(--line);color:var(--muted);font-size:13px;font-weight:500;transition:all .2s}
+.filters button:hover{color:var(--text);border-color:var(--line2)}
+.filters button.on{background:var(--text);color:#0a0b0f;border-color:var(--text)}
+.grid{display:grid;grid-template-columns:repeat(6,1fr);gap:14px;grid-auto-rows:clamp(150px,16.5vw,248px);grid-auto-flow:dense}
+.card{position:relative;grid-column:span 2;border-radius:var(--r);overflow:hidden;background:var(--surface);border:1px solid var(--line);cursor:pointer;transform-style:preserve-3d;will-change:transform;transition:border-color .3s,opacity .4s}
+.card.wide2{grid-column:span 4;grid-row:span 2}
+.card.tall{grid-row:span 2}
+.card.x3{grid-column:span 3}
+.card.hide{opacity:.12;pointer-events:none;transform:scale(.97)}
+.card .media{position:absolute;inset:0;overflow:hidden;background:#0c0d12}
+.card .media img,.card .media video{width:100%;height:100%;object-fit:cover;object-position:var(--pos,50% 50%);transform:scale(1.02);transition:transform .9s cubic-bezier(.2,.7,.2,1)}
+.card:hover .media img,.card:hover .media video{transform:scale(1.07)}
+.card .media::after{content:"";position:absolute;inset:0;background:linear-gradient(to top,rgba(6,7,10,.96) 0%,rgba(6,7,10,.78) 28%,rgba(6,7,10,.25) 58%,rgba(6,7,10,.05) 100%)}
+.card .meta h3,.card .sub,.card .kicker{text-shadow:0 1px 2px rgba(0,0,0,.6),0 6px 24px rgba(0,0,0,.5)}
+.card .shine{position:absolute;inset:0;background:radial-gradient(420px circle at var(--mx,50%) var(--my,50%),rgba(255,255,255,.14),transparent 55%);opacity:0;transition:opacity .35s;pointer-events:none;z-index:2}
+.card:hover .shine{opacity:1}
+.card .meta{position:absolute;left:0;right:0;bottom:0;padding:22px 22px 20px;z-index:3;transform:translateZ(30px)}
+.card .kicker{display:flex;gap:10px;align-items:center;font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.66);margin-bottom:8px}
+.card .kicker i{font-style:normal;color:var(--accent2)}
+.card h3{font-size:clamp(20px,1.7vw,26px);font-weight:600;letter-spacing:-.02em;line-height:1.1;max-width:22ch}
+.card .sub{margin-top:6px;color:rgba(255,255,255,.7);font-size:14px;max-width:44ch}
+.card .open{position:absolute;top:16px;right:16px;z-index:3;width:38px;height:38px;border-radius:50%;background:rgba(255,255,255,.1);backdrop-filter:blur(8px);display:grid;place-items:center;opacity:0;transform:translateY(-6px) translateZ(30px);transition:opacity .3s,transform .3s}
+.card:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+.card:hover .open{opacity:1;transform:translateY(0) translateZ(30px)}
+.card .open svg{width:16px;height:16px;stroke:#fff;fill:none;stroke-width:2}
+.card .tags{position:absolute;top:16px;left:16px;z-index:3;display:flex;gap:6px;transform:translateZ(30px)}
+.card .tags span{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;padding:6px 9px;border-radius:999px;background:rgba(8,9,12,.55);backdrop-filter:blur(8px);color:rgba(255,255,255,.8);border:1px solid rgba(255,255,255,.1)}
+.work-foot{margin-top:28px;color:var(--dim);font-size:14px;display:flex;gap:18px;flex-wrap:wrap}
+.work-foot a{color:var(--muted);border-bottom:1px solid var(--line2)}
+.work-foot a:hover{color:var(--text)}
+@media(max-width:1100px){.grid{grid-template-columns:repeat(4,1fr);grid-auto-rows:clamp(150px,22vw,260px)}.card.x3{grid-column:span 2}}
+@media(max-width:680px){.grid{grid-template-columns:1fr 1fr;gap:10px;grid-auto-rows:auto}.card,.card.wide2,.card.x3,.card.tall{grid-column:span 2;grid-row:auto;aspect-ratio:4/3}.card .meta{padding:16px}.card .sub{display:none}}
 
-  /* ---------- edu / footer ---------- */
-  .edu li{list-style:none;padding:14px 0;border-bottom:1px solid var(--line);color:var(--mid);font-size:.98rem}
-  .edu li:last-child{border-bottom:0}
-  .edu b{color:var(--fg);font-weight:650}
-  footer{padding:64px 0 90px}
-  footer .big{font-size:clamp(1.7rem,4.5vw,2.5rem);font-weight:800;letter-spacing:-.03em;margin-bottom:14px;line-height:1.15}
-  footer .meta{color:var(--mid);margin-bottom:26px}
+/* ---------- case sheet ---------- */
+.veil{position:fixed;inset:0;z-index:80;background:rgba(6,7,10,.7);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);opacity:0;pointer-events:none;transition:opacity .45s}
+.veil.on{opacity:1;pointer-events:auto}
+.sheet{position:fixed;inset:0;z-index:90;overflow:hidden auto;overscroll-behavior:contain;display:none;-webkit-overflow-scrolling:touch}
+.sheet.on{display:block}
+.sheet-in{max-width:1180px;margin:clamp(10px,3vh,40px) auto clamp(20px,6vh,80px);background:var(--bg2);border:1px solid var(--line);border-radius:28px;overflow:hidden;box-shadow:0 60px 140px -40px rgba(0,0,0,.9);opacity:0}
+.sheet-hero{position:relative;aspect-ratio:16/9;background:#0c0d12;overflow:hidden}
+.sheet-hero img,.sheet-hero video{width:100%;height:100%;object-fit:cover;object-position:var(--pos,50% 50%)}
+.sheet-hero::after{content:"";position:absolute;inset:0;background:linear-gradient(to top,rgba(13,15,20,1) 0%,rgba(13,15,20,.2) 40%,transparent 70%)}
+.sheet-title{position:absolute;left:clamp(22px,4vw,56px);right:clamp(22px,4vw,56px);bottom:clamp(22px,4vw,48px);z-index:2}
+.sheet-title .kicker{display:flex;gap:12px;flex-wrap:wrap;font-family:var(--mono);font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.7);margin-bottom:12px}
+.sheet-title .kicker i{font-style:normal;color:var(--accent2)}
+.sheet-title h2{font-size:clamp(30px,4.6vw,66px);max-width:18ch;letter-spacing:-.03em}
+.sheet-close{position:fixed;top:16px;right:16px;z-index:95;width:46px;height:46px;border-radius:50%;background:rgba(20,22,28,.75);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1px solid var(--line2);display:grid;place-items:center;transition:transform .2s,background .2s;opacity:0;pointer-events:none}
+body.sheet-open .sheet-close{opacity:1;pointer-events:auto}
+.sheet-close:hover{background:rgba(255,255,255,.14);transform:rotate(90deg)}
+.sheet-close svg{width:18px;height:18px;stroke:#fff;fill:none;stroke-width:2}
+.sheet-body{padding:clamp(24px,4vw,56px);display:grid;grid-template-columns:minmax(0,1.6fr) minmax(220px,.8fr);gap:clamp(28px,5vw,72px)}
+.sheet-body .aside{position:sticky;top:20px;align-self:start;display:grid;gap:22px}
+.aside dl{margin:0;display:grid;gap:14px}
+.aside dt{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--dim);margin-bottom:4px}
+.aside dd{margin:0;color:var(--text);font-size:15px}
+.aside .tags{display:flex;flex-wrap:wrap;gap:6px}
+.aside .tags span{font-size:12px;padding:6px 10px;border-radius:999px;border:1px solid var(--line2);color:var(--muted)}
+.aside .links{display:grid;gap:8px}
+.aside .links a{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-radius:14px;background:var(--surface2);border:1px solid var(--line);font-weight:600;font-size:14px;transition:border-color .2s,transform .2s}
+.aside .links a:hover{border-color:var(--accent);transform:translateX(3px)}
+.prose{font-size:clamp(16px,1.25vw,18px);color:var(--muted)}
+.prose p{margin:0 0 18px}
+.prose p b{color:var(--text);font-weight:600}
+.prose .challenge{font-size:clamp(20px,1.8vw,26px);line-height:1.35;color:var(--text);font-family:var(--display);font-weight:500;letter-spacing:-.01em;margin-bottom:28px}
+.prose ul{padding:0;margin:0 0 22px;list-style:none;display:grid;gap:10px}
+.prose li{position:relative;padding-left:22px}
+.prose li::before{content:"";position:absolute;left:0;top:.62em;width:10px;height:1px;background:var(--accent)}
+.prose .result{padding:18px 22px;border-radius:16px;background:linear-gradient(135deg,rgba(91,157,255,.12),rgba(123,241,193,.06));border:1px solid rgba(91,157,255,.25);color:var(--text);margin:8px 0 26px}
+.prose .result::before{content:"Outcome";display:block;font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);margin-bottom:6px}
+.gallery{grid-column:1/-1;display:grid;grid-template-columns:repeat(6,1fr);gap:12px;margin-top:8px}
+.gallery figure{margin:0;grid-column:span 3;border-radius:16px;overflow:hidden;background:#0c0d12;border:1px solid var(--line)}
+.gallery figure.w{grid-column:span 6}.gallery figure.s{grid-column:span 2}.gallery figure.p{grid-column:span 2}
+.gallery img,.gallery video{width:100%;height:auto;display:block}
+.gallery figcaption{padding:12px 14px;font-size:13px;color:var(--muted);border-top:1px solid var(--line)}
+.sheet-nav{grid-column:1/-1;display:flex;justify-content:space-between;gap:14px;margin-top:20px;padding-top:24px;border-top:1px solid var(--line)}
+.sheet-nav button{display:grid;gap:4px;text-align:left;padding:14px 18px;border-radius:16px;border:1px solid var(--line);flex:1;transition:border-color .2s,background .2s}
+.sheet-nav button:hover{border-color:var(--line2);background:var(--surface)}
+.sheet-nav button small{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--dim)}
+.sheet-nav button span{font-family:var(--display);font-weight:600;font-size:17px}
+.sheet-nav button.next{text-align:right}
+@media(max-width:860px){.sheet-in{margin:0;border-radius:0;border:0;min-height:100%}.sheet-body{grid-template-columns:1fr;gap:26px}.sheet-body .aside{position:static}.gallery{grid-template-columns:1fr 1fr}.gallery figure,.gallery figure.w,.gallery figure.s,.gallery figure.p{grid-column:span 2}.gallery figure.p{grid-column:span 1}.sheet-nav{flex-direction:column}.sheet-nav button.next{text-align:left}}
+.ghost-img{position:fixed;z-index:95;border-radius:var(--r);overflow:hidden;pointer-events:none;will-change:transform,width,height,top,left}
+.ghost-img img,.ghost-img video{width:100%;height:100%;object-fit:cover;object-position:var(--pos,50% 50%)}
 
-  @media(max-width:760px){
-    header{padding:64px 0 48px}
-    section{padding:52px 0}
-    .brow{grid-template-columns:1fr;gap:8px}
-    .case summary{flex-wrap:wrap;gap:6px;padding:18px 20px}
-    .case .yr{width:auto;padding-top:0;order:2;flex-basis:100%}
-    .case summary::after{order:1}
-    .body{padding:0 20px 22px}
-    .krow{grid-template-columns:1fr;gap:6px}
-  }
+/* ---------- approach (horizontal) ---------- */
+.approach{padding:clamp(80px,14vh,180px) 0 0;overflow:hidden}
+.approach .pin{height:100svh;display:flex;flex-direction:column;justify-content:center}
+.approach .track{display:flex;gap:18px;padding:0 var(--pad);width:max-content;margin-top:34px;will-change:transform}
+.acard{width:min(560px,78vw);flex:none;padding:32px 34px 34px;border-radius:var(--r);background:linear-gradient(180deg,var(--surface2),var(--surface));border:1px solid var(--line);min-height:320px;display:flex;flex-direction:column;justify-content:space-between;position:relative;overflow:hidden}
+.acard::before{content:attr(data-n);position:absolute;right:22px;top:14px;font-family:var(--display);font-size:120px;font-weight:700;letter-spacing:-.06em;color:rgba(255,255,255,.04);line-height:1}
+.acard h3{font-size:clamp(24px,2.2vw,32px);max-width:16ch;margin-bottom:16px}
+.acard p{margin:0;color:var(--muted);font-size:16px}
+.acard .foot{display:flex;gap:8px;flex-wrap:wrap;margin-top:22px}
+.acard .foot span{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;padding:6px 10px;border-radius:999px;border:1px solid var(--line2);color:var(--muted)}
+.approach .head{padding:0 var(--pad)}
+@media(max-width:860px){.approach .pin{height:auto}.approach .track{width:auto;flex-direction:column;padding:0 var(--pad)}.acard{width:auto;min-height:0}}
 
-    /* --- work gallery --- */
-    .gal{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:22px;margin-top:26px}
-    .gcard{background:var(--bg2);border:1px solid rgba(255,255,255,.07);border-radius:10px;overflow:hidden;
-           transition:border-color .18s ease, transform .18s ease}
-    .gcard:hover{border-color:rgba(91,157,255,.5);transform:translateY(-2px)}
-    .gcard img{display:block;width:100%;height:auto}
-    .gcap{padding:14px 16px 16px}
-    .gcap b{display:block;font-size:15px;font-weight:600;margin-bottom:4px}
-    .gcap span{display:block;font-size:13px;line-height:1.45;color:var(--muted)}
-    .galnote{margin-top:26px;font-size:14px;color:var(--muted)}
-    .galnote a{color:var(--accent);text-decoration:none;border-bottom:1px solid rgba(91,157,255,.35)}
-    @media(max-width:640px){.gal{grid-template-columns:1fr}}
+/* ---------- brands ---------- */
+.brands{padding:clamp(80px,12vh,160px) 0 0}
+.marquee{overflow:hidden;mask-image:linear-gradient(90deg,transparent,#000 12%,#000 88%,transparent);-webkit-mask-image:linear-gradient(90deg,transparent,#000 12%,#000 88%,transparent);padding:10px 0}
+.marquee .row{display:flex;gap:14px;width:max-content;animation:mq var(--d,50s) linear infinite}
+.marquee.rev .row{animation-direction:reverse}
+.marquee:hover .row{animation-play-state:paused}
+@keyframes mq{to{transform:translateX(-50%)}}
+.brand{display:flex;align-items:center;gap:12px;padding:14px 22px;border-radius:999px;border:1px solid var(--line);background:var(--surface);font-family:var(--display);font-weight:600;font-size:18px;white-space:nowrap}
+.brand small{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--dim);font-weight:500}
+
+/* ---------- toolkit ---------- */
+.toolkit{padding:clamp(80px,12vh,160px) 0 0}
+.tk{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:40px}
+.tk div{padding:22px 22px 24px;border-radius:18px;background:var(--surface);border:1px solid var(--line)}
+.tk h3{font-size:17px;margin-bottom:10px;display:flex;align-items:center;gap:10px}
+.tk h3::before{content:"";width:8px;height:8px;border-radius:2px;background:var(--accent);transform:rotate(45deg)}
+.tk p{margin:0;color:var(--muted);font-size:14px;line-height:1.6}
+@media(max-width:1000px){.tk{grid-template-columns:1fr 1fr}}
+@media(max-width:560px){.tk{grid-template-columns:1fr}}
+.edu{display:grid;grid-template-columns:1fr 1fr;gap:14px 40px;margin-top:30px;padding:0;list-style:none;color:var(--muted);font-size:15px}
+.edu li{padding:14px 0;border-top:1px solid var(--line)}
+.edu li b{color:var(--text);font-weight:600}
+@media(max-width:760px){.edu{grid-template-columns:1fr}}
+
+/* ---------- contact ---------- */
+.contact{padding:clamp(100px,16vh,200px) 0 60px;position:relative;overflow:hidden}
+.contact .big{font-size:clamp(44px,9vw,150px);letter-spacing:-.04em;line-height:.95;max-width:9ch}
+.contact .big a{background:linear-gradient(92deg,#fff,#9aa0ad);-webkit-background-clip:text;background-clip:text;color:transparent;transition:opacity .2s}
+.contact .big a:hover{opacity:.7}
+.contact .row{display:flex;justify-content:space-between;gap:30px;flex-wrap:wrap;align-items:flex-end;margin-top:40px}
+.contact .links{display:flex;gap:10px;flex-wrap:wrap}
+.contact .glow{position:absolute;left:0;right:0;bottom:-40%;height:80vh;background:radial-gradient(50% 50% at 50% 50%,rgba(91,157,255,.18),transparent 70%);pointer-events:none}
+footer{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;padding:40px var(--pad) 30px;color:var(--dim);font-size:13px;border-top:1px solid var(--line);margin-top:60px}
+
+/* reveal */
+.rv{opacity:0;transform:translateY(28px)}
+@media(prefers-reduced-motion:reduce){.rv{opacity:1;transform:none}.hero h1 .w span{transform:none}.marquee .row{animation:none}}
 </style>
 </head>
 <body>
+<div class="grain"></div>
 
-<header>
-  <div class="wrap">
-    <div class="role">Design Ops &amp; Creative Automation Lead</div>
-    <h1>Ruslan<br>Karymov</h1>
-    <p class="sub">Brand systems at scale · Presentation &amp; information design · Creative automation · Data-driven<br>Varna, Bulgaria — remote worldwide, open to contract</p>
-    <p class="lede"><b>Design that survives contact with scale.</b> For eleven years I owned the brand of a company that went from twenty people to five thousand. The artwork was never the hard part — the machine that produces it correctly, in 23 languages, every week, was.</p>
-    <div class="links">
-      <a href="mailto:karusrus@gmail.com">karusrus@gmail.com</a>
-      <a href="https://www.linkedin.com/in/ruslankarymov/" target="_blank" rel="noopener">LinkedIn</a>
-      <a href="https://www.behance.net/karusrus" target="_blank" rel="noopener">Behance</a>
-      <a href="https://dribbble.com/karusrus" target="_blank" rel="noopener">Dribbble</a>
-      <a href="https://github.com/karusrus" target="_blank" rel="noopener">GitHub</a>
-      <a href="https://karusrus.github.io/rc-scanner" target="_blank" rel="noopener">Live tool</a>
-      <a href="https://public.tableau.com/app/profile/ruslan.karymov" target="_blank" rel="noopener">Tableau</a>
+<nav class="nav" id="nav">
+  <a class="logo" href="#top"><i>RK</i>Ruslan Karymov</a>
+  <ul>
+    <li><a href="#work">Work</a></li>
+    <li><a href="#approach">Approach</a></li>
+    <li><a href="#toolkit">Toolkit</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <a class="btn primary" href="mailto:karusrus@gmail.com">Email me</a>
+</nav>
+
+<!-- ================= HERO ================= -->
+<header class="hero" id="top">
+  <div class="glow"></div>
+  <canvas id="gl"></canvas>
+  <div class="vig"></div>
+  <div class="hero-top">
+    <div class="mono">Design Ops &amp; Creative Automation Lead<br>Varna, Bulgaria — remote worldwide</div>
+  </div>
+  <div class="hero-c wrap">
+    <h1 id="h1">
+      <span class="w"><span>Design</span></span> <span class="w"><span>that</span></span> <span class="w"><span>survives</span></span><br>
+      <span class="w"><span>contact</span></span> <span class="w"><span>with</span></span> <span class="w"><span><em>scale.</em></span></span>
+    </h1>
+    <div class="hero-row">
+      <p class="hero-sub rv">For eleven years I owned the brand of a company that went from twenty people to five thousand. The artwork was never the hard part — <b>the machine that produces it correctly, in 23 languages, every week, was.</b></p>
+      <div class="hero-cta rv">
+        <a class="btn primary" href="#work">See the work</a>
+        <a class="btn ghost" href="https://www.linkedin.com/in/ruslankarymov/" target="_blank" rel="noopener">LinkedIn</a>
+      </div>
     </div>
   </div>
+  <div class="scroll-hint"><span>Scroll</span><i></i></div>
 </header>
 
-<section>
+<!-- ================= NUMBERS ================= -->
+<section class="numbers">
   <div class="wrap">
-    <h2>By the numbers</h2>
     <div class="stats">
-      <div class="stat"><div class="n">250×</div><div class="l">Headcount growth at Exness while I owned the brand</div></div>
-      <div class="stat"><div class="n">23</div><div class="l">Localised markets running in parallel</div></div>
-      <div class="stat"><div class="n">500+</div><div class="l">Creative assets shipped weekly</div></div>
-      <div class="stat"><div class="n">50%+</div><div class="l">Landing page conversion lift from A/B testing</div></div>
-      <div class="stat"><div class="n">20–25%</div><div class="l">CPA reduction from automated creative selection</div></div>
+      <div class="stat rv"><div class="n"><span data-count="250">0</span><small>×</small></div><div class="l">Headcount growth at Exness while I owned the brand</div></div>
+      <div class="stat rv"><div class="n"><span data-count="23">0</span></div><div class="l">Localised markets running in parallel</div></div>
+      <div class="stat rv"><div class="n"><span data-count="500">0</span><small>+</small></div><div class="l">Creative assets shipped weekly</div></div>
+      <div class="stat rv"><div class="n"><span data-count="50">0</span><small>%+</small></div><div class="l">Landing page conversion lift from A/B testing</div></div>
+      <div class="stat rv"><div class="n"><span data-count="25">0</span><small>%</small></div><div class="l">CPA reduction from automated creative selection</div></div>
     </div>
   </div>
 </section>
 
-<section>
+<!-- ================= DEVICES ================= -->
+<section class="devices" id="motion">
   <div class="wrap">
-    <h2>What makes this different</h2>
-    <div class="body" style="padding:0;color:var(--mid);font-size:1.02rem;max-width:70ch">
-      <p><strong>I build the production line, not just the poster.</strong> A Figma API and Airtable pipeline that removed the manual step from localised banner production across 23 language markets. Custom Midjourney style models so brand identity reproduces at scale instead of drifting. BambooHR REST API into personalised interactive PDF offers, then NFT certificates on Polygon — an industry-first use of blockchain for employer branding.</p>
-      <p><strong>Design decisions I can defend with numbers.</strong> Conversion lift from iterative A/B testing, not from taste. CPA reduction from an SQL-integrated creative management system. Frankfurt Airport selected for out-of-home by weighted scoring matrix on CPM, GRP, passenger volume and geo-profile.</p>
-      <p><strong>Brand governance under real pressure.</strong> Real Madrid, Cristiano Ronaldo, Red Bull Racing, Inter Milan, WWF — each with its own approval chain and no tolerance for a wrong shade. Gartner, Cisco and Dell through Curvature, where the slide goes to a CIO.</p>
-      <p><strong>Institutional register.</strong> European Commission and European Parliament deliverables through GDSI. A different discipline entirely: a tender is read by a committee scoring you against a rubric, not by someone who likes your work.</p>
-      <p><strong>Trained as an engineer.</strong> Licensed Chief Engineer of Projects before I was a designer. That is why every creative problem starts, for me, as a systems problem.</p>
-    </div>
-  </div>
-</section>
-
-<section>
-  <div class="wrap">
-    <h2>Brands &amp; clients</h2>
-    <div class="brands">
-      <div class="brow"><div class="via">via Exness</div><div class="names"><span>Real Madrid CF</span><span>Cristiano Ronaldo</span><span>Red Bull Racing</span><span>Inter Milan</span><span>WWF</span></div></div>
-      <div class="brow"><div class="via">via Curvature</div><div class="names"><span>Gartner</span><span>Cisco</span><span>Dell</span></div></div>
-      <div class="brow"><div class="via">via Twigeo</div><div class="names"><span>Uniswap</span><span>Duolingo</span><span>SoundCloud</span><span>AVID</span><span>Heatonist</span><span>Swimply</span></div></div>
-      <div class="brow"><div class="via">via GDSI</div><div class="names"><span>European Commission</span><span>European Parliament</span><span>Asian Development Bank</span><span>World Bank</span></div></div>
-      <div class="brow"><div class="via">Direct</div><div class="names"><span>DexTools</span><span>Government of Kazakhstan</span><span>LUKOIL</span><span>Gazprom</span></div></div>
-    </div>
-  </div>
-</section>
-
-<section>
-  <div class="wrap">
-    <h2>The work</h2>
-    <div class="gal">
-      <figure class="gcard"><img src="w-exness-system.jpg" alt="One design system, 23 languages" loading="lazy" width="1200"><figcaption class="gcap"><b>One design system, 23 languages</b><span>Weekly market content across Latin, Arabic RTL, Thai, Bengali and CJK</span></figcaption></figure>
-      <figure class="gcard"><img src="w-real-madrid.jpg" alt="Real Madrid CF × Exness" loading="lazy" width="1200"><figcaption class="gcap"><b>Real Madrid CF × Exness</b><span>Campaign creative that earned a 400,000-copy magazine spread</span></figcaption></figure>
-      <figure class="gcard"><img src="w-red-bull.jpg" alt="Red Bull Racing × Exness" loading="lazy" width="1200"><figcaption class="gcap"><b>Red Bull Racing × Exness</b><span>A season-long contest across 23 markets, two guideline sets</span></figcaption></figure>
-      <figure class="gcard"><img src="w-swimply.jpg" alt="Swimply — 300 creatives a day" loading="lazy" width="1200"><figcaption class="gcap"><b>Swimply — 300 creatives a day</b><span>Listings to five paid channels through the Bannerbear API</span></figcaption></figure>
-      <figure class="gcard"><img src="w-nft-offers.jpg" alt="Job offers as NFTs on Polygon" loading="lazy" width="1200"><figcaption class="gcap"><b>Job offers as NFTs on Polygon</b><span>Two to three days per offer became seconds. 100+ issued</span></figcaption></figure>
-      <figure class="gcard"><img src="w-curvature.jpg" alt="Enterprise co-branding, two legal teams" loading="lazy" width="1200"><figcaption class="gcap"><b>Enterprise co-branding, two legal teams</b><span>Cisco, Dell EMC and Gartner in one banner system</span></figcaption></figure>
-      <figure class="gcard"><img src="w-gdsi.jpg" alt="Making institutional data legible" loading="lazy" width="1200"><figcaption class="gcap"><b>Making institutional data legible</b><span>European Commission, Parliament, ADB — 100+ page tenders</span></figcaption></figure>
-      <figure class="gcard"><img src="w-uniswap.jpg" alt="Advertising a protocol, not a purchase" loading="lazy" width="1200"><figcaption class="gcap"><b>Advertising a protocol, not a purchase</b><span>Creative and UX strategy for the largest DEX</span></figcaption></figure>
-    </div>
-    <p class="galnote">Full case studies with process and credits on
-      <a href="https://www.behance.net/karusrus" target="_blank" rel="noopener">Behance</a> ·
-      shots on <a href="https://dribbble.com/karusrus" target="_blank" rel="noopener">Dribbble</a></p>
-  </div>
-</section>
-
-<section>
-  <div class="wrap">
-    <h2>Selected work</h2>
-
-    <details class="case" open>
-      <summary><span class="yr">2011–2022</span><span class="ttl">Brand system for a company that grew 250×<em>Exness — Design Lead</em></span></summary>
-      <div class="body">
-        <p><strong>Challenge.</strong> Own the visual identity of a fintech from twenty people to five thousand, across 23 language markets, without the brand fragmenting.</p>
-        <ul>
-          <li>Owned the brand book and corporate identity system through a decade of evolution — startup mark to globally recognised fintech</li>
-          <li>Ran an output of <b>500+ creative assets weekly</b> across all markets</li>
-          <li>Art directed elite co-branding: <b>Real Madrid CF</b> (2+ years, 20+ markets), <b>Cristiano Ronaldo</b> (motion design), <b>Red Bull Racing</b> (OOH, social, localised), <b>Inter Milan</b></li>
-          <li>Directed global environmental campaign design for <b>WWF</b> as an Exness co-branding initiative, under strict brand integrity requirements</li>
-          <li>Built the localisation machine: multilingual UTM tracking across 23+ languages, 23+ translators coordinated through CrowdIn</li>
-          <li>HTML5 interactive banner campaigns in Google Web Designer; large-scale digital ad libraries</li>
-          <li>Selected Frankfurt Airport as optimal OOH placement via a weighted scoring matrix on CPM, GRP, passenger volume and geo-profile</li>
-        </ul>
-        <p class="result">A brand system that held together through 250× headcount growth and 23 simultaneous markets — and a 50%+ landing page conversion increase from iterative A/B testing on Unbounce.</p>
-        <div class="tags"><span>Brand systems</span><span>Art direction</span><span>Localisation ops</span><span>A/B testing</span><span>OOH</span><span>CrowdIn</span></div>
-      </div>
-    </details>
-
-    <details class="case">
-      <summary><span class="yr">2011–2025</span><span class="ttl">Presentation &amp; information design — making a decision findable<em>Curvature · GDSI · Exness · DexTools</em></span></summary>
-      <div class="body">
-        <p><strong>Challenge.</strong> The hardest audience is not the one that dislikes your work. It is the one with ten minutes, no context, and a decision to make. Board members, CIOs, evaluation committees.</p>
-        <ul>
-          <li><b>Curvature</b> — turned dense <b>Gartner</b> analyst research into C-suite visual narratives; co-branding decks for <b>Cisco</b> and <b>Dell</b> where the slide ends up in front of a CIO</li>
-          <li><b>GDSI</b> — authored <b>100+ page strategic tender documents</b> for the European Parliament, read by an evaluation committee scoring against a rubric, not by someone admiring the layout</li>
-          <li><b>GDSI</b> — institutional-grade infographics aggregating heterogeneous multi-expert and financial inputs for the European Commission, ADB and World Bank; architected the <b>“Europa Experience”</b> spaces across European capitals</li>
-          <li><b>Exness</b> — a decade of executive dashboards and campaign performance reviews delivered to CEO, CTO and CMO</li>
-          <li><b>DexTools</b> — delivered an entire platform audit as an <b>authored video walkthrough</b> instead of a deck: the narrative itself was the deliverable</li>
-        </ul>
-        <p class="result">A separate discipline from brand design, and a rarer one. A committee does not ask whether it is beautiful — it asks whether the answer is findable in the time it has. I build for that, and for the boardroom, with the same hands.</p>
-        <div class="tags"><span>Executive decks</span><span>Tender documentation</span><span>Institutional infographics</span><span>Data storytelling</span><span>Video walkthroughs</span><span>Information hierarchy</span></div>
-      </div>
-    </details>
-
-    <details class="case">
-      <summary><span class="yr">2022–2023</span><span class="ttl">Creative automation on the Figma API<em>Twigeo — Creative Performance Lead</em></span></summary>
-      <div class="body">
-        <p><strong>Challenge.</strong> Localised banner production across 23+ markets was a manual bottleneck. Creative testing was slow enough that winners deployed after the campaign had moved on.</p>
-        <ul>
-          <li>Built an automated localised banner production pipeline on the <b>Figma API + Airtable</b> — no manual step from source design to market-ready asset</li>
-          <li>Built an SQL-integrated creative management system that selected A/B winners automatically and deployed them in evergreen mode</li>
-          <li>Developed custom <b>Midjourney</b> style models so brand visual identity reproduced consistently at scale; Jasper AI for multi-market copy</li>
-          <li>Directed creative and UX strategy for <b>Uniswap</b>, the largest decentralised exchange: audience analysis, performance metrics, competitive landscape mapping</li>
-        </ul>
-        <p class="result">20–25% CPA reduction with CTR improvement, across pools of 6–8 creative variants per campaign.</p>
-        <div class="tags"><span>Figma API</span><span>Airtable</span><span>Midjourney models</span><span>SQL</span><span>Tableau</span><span>Sigma</span></div>
-      </div>
-    </details>
-
-    <details class="case">
-      <summary><span class="yr">2018–2022</span><span class="ttl">HR offer automation and NFT certificates<em>Exness — an industry first</em></span></summary>
-      <div class="body">
-        <p><strong>Challenge.</strong> Manual offer generation for premium candidates, with no way to make an offer document verifiable.</p>
-        <ul>
-          <li>BambooHR REST API into personalised interactive PDF offers, each with a unique secured URL</li>
-          <li>Extended the system to <b>NFT tokens on Polygon</b> with embedded share count and vesting conditions — verifiable, non-transferable offer certificates</li>
-          <li>Polygon chosen over Ethereum mainnet on gas cost</li>
-        </ul>
-        <p class="result">Full automation of the HR offer process, plus an employer-branding artefact nobody else in the sector had.</p>
-        <div class="tags"><span>BambooHR API</span><span>Polygon</span><span>NFT smart contracts</span><span>PDF automation</span></div>
-      </div>
-    </details>
-
-    <details class="case">
-      <summary><span class="yr">2024–2025</span><span class="ttl">Institutional data narratives for the EU<em>GDSI Limited — Strategic Visualisation &amp; AI Expert</em></span></summary>
-      <div class="body">
-        <p><strong>Challenge.</strong> Aggregate heterogeneous multi-expert and financial inputs into proposals that score well with an EU evaluation committee.</p>
-        <ul>
-          <li>Final strategic link in tender proposals for the <b>European Commission</b>, <b>European Parliament</b> and <b>Asian Development Bank</b></li>
-          <li>Authored <b>100+ page strategic tender documents</b> for the European Parliament</li>
-          <li>Architected <b>“Europa Experience”</b> physical and digital spaces across European capitals</li>
-          <li>AI Expert on Horizon Europe projects: NLP-driven analysis of public discourse at scale</li>
-          <li>Applied NotebookLM and custom AI workflows to make complex data legible to non-technical committees</li>
-        </ul>
-        <div class="tags"><span>Institutional infographics</span><span>Tender documentation</span><span>NotebookLM</span><span>NLP</span><span>EU communication</span></div>
-      </div>
-    </details>
-
-    <details class="case">
-      <summary><span class="yr">2022</span><span class="ttl">Enterprise visual narrative<em>Curvature — Gartner, Cisco, Dell</em></span></summary>
-      <div class="body">
-        <p><strong>Challenge.</strong> Turn dense Gartner analyst research into material a C-suite audience will actually read and decide from.</p>
-        <ul>
-          <li>Built synthesised visual narratives for C-suite decision-making from <b>Gartner</b> research</li>
-          <li>Managed complex co-branding initiatives across <b>Cisco</b> and <b>Dell</b></li>
-          <li>Enterprise brand governance under multi-party approval chains</li>
-        </ul>
-        <div class="tags"><span>Executive communication</span><span>Co-branding governance</span><span>Information design</span></div>
-      </div>
-    </details>
-
-    <details class="case">
-      <summary><span class="yr">2024</span><span class="ttl">Dashboard audit for a top DEX analytics platform<em>DexTools — freelance</em></span></summary>
-      <div class="body">
-        <p><strong>Challenge.</strong> Identify where a leading DeFi analytics platform loses users to its own information density.</p>
-        <ul>
-          <li>Audited the platform's data presentation: signal-to-noise ratio, information hierarchy, first-view metrics, widget layout</li>
-          <li>Analysed user scenarios and navigation patterns</li>
-          <li>Chart-type recommendations for trading data — time series, volume, liquidity depth</li>
-          <li>Delivered findings as an authored video walkthrough, prioritised on an impact and effort matrix</li>
-        </ul>
-        <p class="result">Prioritised, actionable recommendations delivered as narrative video rather than a deck — data storytelling as the deliverable itself.</p>
-        <div class="tags"><span>Dashboard audit</span><span>Data visualisation</span><span>UX analytics</span><span>DeFi</span></div>
-      </div>
-    </details>
-
-    <details class="case">
-      <summary><span class="yr">2026</span><span class="ttl">Pipeline Map &mdash; pitching a system before it exists<em>Personal tool &mdash; one HTML file, built in an evening for a creative-producer test, released as open source</em></span></summary>
-      <div class="body">
-        <p><strong>The problem.</strong> A test assignment asked for three ad concepts. The concepts were the easy part; the harder question was how those concepts would be produced at volume, week after week. Describing a production pipeline in prose loses the one thing that matters &mdash; what flows where. Screenshots of n8n or ComfyUI show the wiring but not the movement, and a slide with boxes shows neither.</p>
-        <p><strong>What I built.</strong> A node-graph canvas in the visual language of ComfyUI: typed sockets, coloured wires, groups, widgets inside nodes. Then the two things a pitch needs that a workflow editor does not have: animated traffic along every wire, with three levels of intensity per wire, and a camera with five saved views that fly between each other while you talk. No build step, no backend, no dependencies &mdash; a single file that saves its own state in the browser.</p>
-        <div class="shots">
-          <figure><video src="w-pipeline-loop.mp4" poster="w-pipeline-overview.jpg" autoplay muted loop playsinline preload="auto" style="display:block;width:100%;height:auto" aria-label="Pipeline Map: the full map with flow on, the camera flying to a node, the node being dragged with its wires following"></video><figcaption>Live loop, not a still: the whole map with flow on, the camera flying to the selector node, the node dragged with its wires following, then the learning loop. Six groups: inputs, concept engine, three production branches, gates, launch, and the loop back into the inputs.</figcaption></figure>
-          <figure><img src="w-pipeline-selector.jpg" alt="Pipeline Map, camera on the selector agent"><figcaption>Camera slot 1. The opening frame of the walkthrough: the node that would pick the concepts, with its rubric and threshold as widgets.</figcaption></figure>
-          <figure><img src="w-pipeline-inbox.jpg" alt="Pipeline Map, escalation inbox"><figcaption>Camera slot 5. The one human node on the map, named by its real mechanism: an n8n send-and-wait-for-approval step with a four-hour timeout.</figcaption></figure>
+    <div class="stage" id="stage">
+      <div class="scene">
+        <div class="laptop" id="laptop">
+          <div class="lid"><div class="cam"></div><div class="screen"><video src="assets/ronaldo.mp4#t=4" poster="assets/ronaldo-poster.jpg" muted loop playsinline preload="metadata"></video></div><div class="glare"></div></div>
+          <div class="base"></div>
         </div>
-        <p class="decision"><b>Motion is the argument, not decoration.</b> The main spine runs at full intensity, feedback loops at the lowest. Without touching a label, a viewer sees which path is the business and which paths are learning.</p>
-        <p class="decision"><b>Humans by exception, drawn as such.</b> The first draft had five human gates. The second replaced them with agents that carry a confidence score, and routed everything below threshold to one inbox. Every node names the real tool behind it &mdash; Slack send-and-wait, Meta automated rules, a weekly Airtable job &mdash; so the map can be challenged line by line instead of admired.</p>
-        <p class="decision"><b>A camera, because a map is read in an order.</b> Saved views turn the canvas into a presentation without slides: open close, pull back, fly to where the point lands, move one node so the audience sees the wires follow.</p>
-        <p class="decision"><b>What I chose not to build.</b> No accounts, no cloud save, no export. Each would turn a tool into a service. The layout lives in the browser and travels as JSON; that is enough for the job it has.</p>
-        <p class="result">Open source under MIT, live on GitHub Pages. Built with an AI assistant as the production method; every design decision above is mine. <a href="https://karusrus.github.io/pipeline-map/" target="_blank" rel="noopener">Open the map &rarr;</a> &middot; <a href="https://github.com/karusrus/pipeline-map" target="_blank" rel="noopener">Source &rarr;</a></p>
-        <div class="tags"><span>Information design</span><span>Interaction design</span><span>Creative ops</span><span>Agentic workflows</span><span>n8n</span><span>ComfyUI</span><span>Front-end</span><span>Open source</span></div>
-      </div>
-    </details>
-
-    <details class="case">
-      <summary><span class="yr">2024&ndash;now</span><span class="ttl">Solana DEX Signal Scanner<em>Personal project &mdash; problem framing, interface, integration, release and validation, all mine</em></span></summary>
-      <div class="body">
-        <p><strong>The problem.</strong> Thousands of tokens appear on Solana every day. Screeners rank them by volume and price change &mdash; the two numbers easiest to fake. A trader is asking something else: is anyone who is usually right buying this, and is it happening now? I built a tool for that question rather than a shop window for data.</p>
-        <p><strong>Constraints I had to design around.</strong> Public APIs with rate limits &mdash; GeckoTerminal for market data, Helius and BitQuery on-chain. A 60-second refresh as the compromise between a fresh signal and those limits. No backend and no dependencies, so the tool lives on static hosting and needs no maintenance. Sniper bots corrupt the on-chain picture and had to be excluded before the score is computed, not after.</p>
-        <div class="shots">
-          <figure><img src="scanner-grid-dark.jpg" alt="Solana DEX Signal Scanner, grid view"><figcaption>Grid view. Four summary tiles, then one card per pool: score, signal, price, movement across three windows, volume, liquidity, FDV, and the buy/sell split as a bar.</figcaption></figure>
-          <figure><img src="scanner-table-dark.jpg" alt="Solana DEX Signal Scanner, table view"><figcaption>The same set as a table. A toggle, not a second section: comparison and browsing are two ways of reading one dataset.</figcaption></figure>
-          <figure><img src="scanner-grid-light.jpg" alt="Solana DEX Signal Scanner, light theme"><figcaption>Light theme. Dark is the default because the tool is opened on top of a trading terminal.</figcaption></figure>
+        <div class="phone" id="phone">
+          <div class="island"></div>
+          <div class="screen"><video src="assets/exness-gifs.mp4" poster="assets/exness-gifs-poster.jpg" muted loop playsinline preload="metadata"></video></div>
+          <div class="glare"></div>
         </div>
-        <p class="decision"><b>A score plus a verdict, not a score alone.</b> The number answers how strong, the label answers so what &mdash; STRONG BUY, BUY, NEUTRAL, AVOID. A trader decision is binary; a bare 0&ndash;100 scale makes them invent their own threshold every time. The buy threshold is stated on the page, so the label is auditable rather than magic.</p>
-        <p class="decision"><b>Four metrics on the card, the rest on demand.</b> The first version carried nine. A metric nobody acts on takes space from one they do.</p>
-        <p class="decision"><b>Filters that match how it is used.</b> Not a range slider but three states: all, above the buy threshold, below the discard line. That is how the tool is actually read &mdash; what is worth looking at, and what is worth ignoring.</p>
-        <p class="decision"><b>What I chose not to build.</b> No alerts, no portfolio, no trade history. Each of those turns a tool into a service that must be maintained and that becomes answerable for someone else money. The boundary was drawn deliberately and it holds.</p>
-        <p><strong>Validation.</strong> The signal was checked by bootstrapping in Python: 1,000 iterations on a 70/30 split. That does not prove profitability and was never meant to &mdash; it checks that the pattern does not fall apart on subsamples. Pre-filtering used the top 300 Early-Bird wallets via Helius and BitQuery, with sniper bots excluded.</p>
-        <p class="result">Live since 2024, running unattended. Zero dependencies, zero hosting cost, pure HTML, CSS and JavaScript against the GeckoTerminal API. <a href="https://karusrus.github.io/rc-scanner" target="_blank" rel="noopener">See it running &rarr;</a></p>
-        <div class="tags"><span>Product design</span><span>Design decisions</span><span>Data-heavy UI</span><span>Light &amp; dark</span><span>Third-party APIs</span><span>Python</span><span>Bootstrapping</span><span>Front-end</span></div>
       </div>
-    </details>
-
-    <details class="case">
-      <summary><span class="yr">2010</span><span class="ttl">National e-government data infrastructure<em>Loyalty Peak — Government of Kazakhstan (egov.kz)</em></span></summary>
-      <div class="body">
-        <p><strong>Challenge.</strong> Standardise data across 8,000+ government forms from incompatible ministries for a national platform.</p>
-        <ul>
-          <li>Built the complete Data Dictionary: field typing, validation rules, formats</li>
-          <li>Developed the Data Hierarchy and Taxonomy — citizen, document, agency, service</li>
-          <li>Created the Master Data Model with canonical identifiers and conflict resolution rules</li>
-          <li>Led <b>8 analysts across 4 countries</b></li>
-        </ul>
-        <p class="result">Unique data fields reduced by ~40%. egov.kz now ranks in the global top 10 of the UN E-Government Development Index 2024.</p>
-        <div class="tags"><span>Master data management</span><span>Data taxonomy</span><span>Data quality</span><span>Distributed teams</span></div>
-      </div>
-    </details>
-
-    <details class="case">
-      <summary><span class="yr">2007–2011</span><span class="ttl">Engineering analytics and industrial design systems<em>UECHM &amp; Teploproekt — Chief Engineer (ГИП)</em></span></summary>
-      <div class="body">
-        <p><strong>Where the systems thinking comes from.</strong> Licensed Chief Engineer of Projects for industrial infrastructure serving <b>LUKOIL</b> and <b>Gazprom</b>, working to ISO and GOST standards.</p>
-        <ul>
-          <li>Led a team of <b>50 engineers</b> at UECHM</li>
-          <li>ANSYS finite element analysis, MATLAB modelling, TRIZ methodology for systematic contradiction analysis</li>
-        </ul>
-        <p class="result">Production costs cut by 17%+ at Katur Invest, verified by the client.</p>
-        <div class="tags"><span>ANSYS</span><span>MATLAB</span><span>TRIZ</span><span>ISO / GOST</span></div>
-      </div>
-    </details>
+    </div>
+    <div class="devices-copy">
+      <div class="eyebrow mono rv">Motion &amp; broadcast</div>
+      <h2 class="rv">The same brand, at 25 frames a second.</h2>
+      <p class="lead rv">Cristiano Ronaldo for Exness on the laptop: a co-branding spot where the approval chain runs through a global athlete's team and a fintech's compliance desk at once. On the phone, the social feed from the same system: a series of looped animations for the weekly market posts — one yellow, one line weight, one template, so the illustration changes and nothing else does.</p>
+      <ul class="list rv">
+        <li><b>Motion design</b> Apple Motion, After Effects, Final Cut Pro</li>
+        <li><b>Broadcast</b> ProRes 4444 and WebM alpha workflows, stinger transitions, overlays</li>
+        <li><b>Social motion</b> looped icon animations for the feed, one template for the whole series</li>
+      </ul>
+    </div>
   </div>
 </section>
 
-<section>
+<!-- ================= WORK ================= -->
+<section class="work" id="work">
   <div class="wrap">
-    <h2>Toolkit</h2>
-    <dl class="kit">
-      <div class="krow"><dt>Design &amp; art direction</dt><dd>Adobe CC (Photoshop, Illustrator, InDesign, After Effects) · Figma · Affinity · brand systems and brand books · OOH and DOOH · print · HTML5 interactive banners</dd></div>
-      <div class="krow"><dt>Presentation &amp; narrative</dt><dd>Executive decks for C-suite and evaluation committees · institutional infographics · 100+ page tender documents · data storytelling · authored video walkthroughs · impact/effort prioritisation</dd></div>
-      <div class="krow"><dt>Video &amp; motion</dt><dd>Apple Motion · Final Cut Pro · After Effects · OBS · ProRes 4444 and WebM alpha workflows · stinger transitions · broadcast overlays</dd></div>
-      <div class="krow"><dt>Design ops &amp; automation</dt><dd>Figma API pipelines · Airtable · design systems and components · RTL/LTR localisation across 23+ markets · CrowdIn · PDF automation · BambooHR REST API</dd></div>
-      <div class="krow"><dt>AI &amp; automation</dt><dd>Midjourney custom style models · Stable Diffusion · NotebookLM · Jasper AI · MiroFish · OpenClaw · local LLAMA models · prompt engineering · AI agent configuration</dd></div>
-      <div class="krow"><dt>Data &amp; analytics</dt><dd>SQL · Python · Tableau · Power BI · Sigma · dashboard and infographic design · A/B testing · UTM tracking · funnel analysis · CRO · CPM/GRP media mix analysis · bootstrapping</dd></div>
-      <div class="krow"><dt>Web3</dt><dd>On-chain analytics (Helius, BitQuery) · Solana · NFT smart contracts · Polygon</dd></div>
-      <div class="krow"><dt>Leadership</dt><dd>Distributed and cross-functional teams · SCRUM · Jira · Monday.com · MS Project · executive reporting · budgeting · EU institutional communication</dd></div>
-    </dl>
+    <div class="work-head">
+      <div>
+        <div class="eyebrow mono rv">Work</div>
+        <h2 class="h2 rv">Thirteen cases. <span style="color:var(--muted)">One production line.</span></h2>
+      </div>
+      <div class="filters rv" id="filters"></div>
+    </div>
+    <div class="grid" id="grid"></div>
+    <div class="work-foot rv">
+      <span>Click any card — it opens in place.</span>
+      <a href="https://www.behance.net/karusrus" target="_blank" rel="noopener">Full process and credits on Behance</a>
+      <a href="https://dribbble.com/karusrus" target="_blank" rel="noopener">Shots on Dribbble</a>
+    </div>
   </div>
 </section>
 
-<section>
+<!-- ================= APPROACH ================= -->
+<section class="approach" id="approach">
+  <div class="pin" id="apin">
+    <div class="head">
+      <div class="eyebrow mono">What makes this different</div>
+      <h2 class="h2">I build the production line, not just the poster.</h2>
+    </div>
+    <div class="track" id="track">
+      <div class="acard" data-n="01"><div><h3>The machine, not the artwork</h3><p>A Figma API and Airtable pipeline that removed the manual step from localised banner production across 23 language markets. Custom Midjourney style models so brand identity reproduces at scale instead of drifting. BambooHR REST API into personalised interactive PDF offers, then NFT certificates on Polygon — an industry-first use of blockchain for employer branding.</p></div><div class="foot"><span>Figma API</span><span>Airtable</span><span>Polygon</span></div></div>
+      <div class="acard" data-n="02"><div><h3>Decisions I can defend with numbers</h3><p>Conversion lift from iterative A/B testing, not from taste. CPA reduction from an SQL-integrated creative management system. Frankfurt Airport selected for out-of-home by a weighted scoring matrix on CPM, GRP, passenger volume and geo-profile.</p></div><div class="foot"><span>A/B</span><span>SQL</span><span>CPM · GRP</span></div></div>
+      <div class="acard" data-n="03"><div><h3>Brand governance under real pressure</h3><p>Real Madrid, Cristiano Ronaldo, Red Bull Racing, Inter Milan, WWF — each with its own approval chain and no tolerance for a wrong shade. Gartner, Cisco and Dell through Curvature, where the slide goes to a CIO.</p></div><div class="foot"><span>Co-branding</span><span>Approval chains</span></div></div>
+      <div class="acard" data-n="04"><div><h3>Institutional register</h3><p>European Commission and European Parliament deliverables through GDSI. A different discipline entirely: a tender is read by a committee scoring you against a rubric, not by someone who likes your work.</p></div><div class="foot"><span>EU tenders</span><span>Infographics</span></div></div>
+      <div class="acard" data-n="05"><div><h3>Trained as an engineer</h3><p>Licensed Chief Engineer of Projects before I was a designer. That is why every creative problem starts, for me, as a systems problem.</p></div><div class="foot"><span>ГИП</span><span>ANSYS · MATLAB · TRIZ</span></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= BRANDS ================= -->
+<section class="brands">
+  <div class="wrap"><div class="eyebrow mono rv">Brands &amp; clients</div></div>
+  <div class="marquee" style="--d:60s"><div class="row" id="mq1"></div></div>
+  <div class="marquee rev" style="--d:70s"><div class="row" id="mq2"></div></div>
+</section>
+
+<!-- ================= TOOLKIT ================= -->
+<section class="toolkit" id="toolkit">
   <div class="wrap">
-    <h2>Education &amp; certification</h2>
+    <div class="eyebrow mono rv">Toolkit</div>
+    <h2 class="h2 rv">Eight stacks, one desk.</h2>
+    <div class="tk">
+      <div class="rv"><h3>Design &amp; art direction</h3><p>Adobe CC (Photoshop, Illustrator, InDesign, After Effects) · Figma · Affinity · brand systems and brand books · OOH and DOOH · print · HTML5 interactive banners</p></div>
+      <div class="rv"><h3>Presentation &amp; narrative</h3><p>Executive decks for C-suite and evaluation committees · institutional infographics · 100+ page tender documents · data storytelling · authored video walkthroughs · impact/effort prioritisation</p></div>
+      <div class="rv"><h3>Video &amp; motion</h3><p>Apple Motion · Final Cut Pro · After Effects · OBS · ProRes 4444 and WebM alpha workflows · stinger transitions · broadcast overlays</p></div>
+      <div class="rv"><h3>Design ops &amp; automation</h3><p>Figma API pipelines · Airtable · design systems and components · RTL/LTR localisation across 23+ markets · CrowdIn · PDF automation · BambooHR REST API</p></div>
+      <div class="rv"><h3>AI &amp; automation</h3><p>Midjourney custom style models · Stable Diffusion · NotebookLM · Jasper AI · MiroFish · OpenClaw · local LLAMA models · prompt engineering · AI agent configuration · n8n</p></div>
+      <div class="rv"><h3>Data &amp; analytics</h3><p>SQL · Python · Tableau · Power BI · Sigma · dashboard and infographic design · A/B testing · UTM tracking · funnel analysis · CRO · CPM/GRP media mix analysis · bootstrapping</p></div>
+      <div class="rv"><h3>Web3</h3><p>On-chain analytics (Helius, BitQuery) · Solana · NFT smart contracts · Polygon</p></div>
+      <div class="rv"><h3>Leadership</h3><p>Distributed and cross-functional teams · SCRUM · Jira · Monday.com · MS Project · executive reporting · budgeting · EU institutional communication</p></div>
+    </div>
     <ul class="edu">
-      <li><b>Engineer's degree — Applied Physics &amp; Information Technologies</b>, Ural State Technical University (UrFU)</li>
-      <li><b>Licensed Chief Engineer of Projects (ГИП)</b> — industrial infrastructure</li>
-      <li><b>Machine Learning</b> — Stanford University, Andrew Ng (2017)</li>
-      <li><b>Big Data, 5-course track</b> — UC San Diego · <b>Deep Learning</b> — DeepLearning.AI (Andrew Ng)</li>
-      <li><b>Languages</b> — Russian (native) · English (fluent) · Bulgarian (fluent)</li>
+      <li class="rv"><b>Engineer's degree</b> — Applied Physics &amp; Information Technologies, Ural State Technical University (UrFU)</li>
+      <li class="rv"><b>Licensed Chief Engineer of Projects (ГИП)</b> — industrial infrastructure</li>
+      <li class="rv"><b>Machine Learning</b> — Stanford University, Andrew Ng (2017)</li>
+      <li class="rv"><b>Big Data</b>, 5-course track — UC San Diego · <b>Deep Learning</b> — DeepLearning.AI</li>
+      <li class="rv"><b>Languages</b> — Russian (native) · English (fluent) · Bulgarian (fluent)</li>
     </ul>
   </div>
 </section>
 
-<footer>
+<!-- ================= CONTACT ================= -->
+<section class="contact" id="contact">
+  <div class="glow"></div>
   <div class="wrap">
-    <p class="big">Let's build design operations that don't break.</p>
-    <p class="meta">Varna, Bulgaria · Remote worldwide · open to contract and freelance</p>
-    <div class="links">
-      <a href="mailto:karusrus@gmail.com">karusrus@gmail.com</a>
-      <a href="https://www.linkedin.com/in/ruslankarymov/" target="_blank" rel="noopener">LinkedIn</a>
-      <a href="https://www.behance.net/karusrus" target="_blank" rel="noopener">Behance</a>
-      <a href="https://dribbble.com/karusrus" target="_blank" rel="noopener">Dribbble</a>
-      <a href="https://github.com/karusrus" target="_blank" rel="noopener">GitHub</a>
+    <div class="eyebrow mono rv">Contact</div>
+    <h2 class="big rv">Let's build design operations that <a href="mailto:karusrus@gmail.com">don't break.</a></h2>
+    <div class="row">
+      <p class="lead rv" style="margin:0">Varna, Bulgaria · Remote worldwide · open to contract and freelance<br><a href="mailto:karusrus@gmail.com" style="color:var(--text);border-bottom:1px solid var(--line2)">karusrus@gmail.com</a></p>
+      <div class="links rv">
+        <a class="btn ghost sm" href="https://www.linkedin.com/in/ruslankarymov/" target="_blank" rel="noopener">LinkedIn</a>
+        <a class="btn ghost sm" href="https://www.behance.net/karusrus" target="_blank" rel="noopener">Behance</a>
+        <a class="btn ghost sm" href="https://dribbble.com/karusrus" target="_blank" rel="noopener">Dribbble</a>
+        <a class="btn ghost sm" href="https://github.com/karusrus" target="_blank" rel="noopener">GitHub</a>
+        <a class="btn ghost sm" href="https://public.tableau.com/app/profile/ruslan.karymov" target="_blank" rel="noopener">Tableau</a>
+      </div>
     </div>
   </div>
+</section>
+<footer>
+  <span>© <span id="yr"></span> Ruslan Karymov</span>
+  <span>Built by hand — Three.js, GSAP, Lenis. No frameworks, no tracking.</span>
 </footer>
 
+<!-- sheet -->
+<div class="veil" id="veil"></div>
+<div class="sheet" id="sheet" role="dialog" aria-modal="true" data-lenis-prevent><div class="sheet-in" id="sheetIn"></div></div>
+<button class="sheet-close" id="sheetClose" aria-label="Close"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+
+<script src="vendor/gsap.min.js"></script>
+<script src="vendor/ScrollTrigger.min.js"></script>
+<script src="vendor/lenis.min.js"></script>
+<script src="vendor/three.min.js"></script>
 <script>
-document.querySelectorAll('details.case').forEach(function(d){d.addEventListener('toggle',function(){d.querySelectorAll('video').forEach(function(v){if(d.open){v.play().catch(function(){})}else{v.pause()}})})});
-if('IntersectionObserver' in window){var io=new IntersectionObserver(function(es){es.forEach(function(e){var v=e.target;if(e.isIntersecting){v.play().catch(function(){})}else{v.pause()}})},{threshold:.2});document.querySelectorAll('details.case video').forEach(function(v){io.observe(v)})}
+window.CASES = [
+{
+  id:'exness-brand', size:'wide2', cat:'brand',
+  title:'Brand system for a company that grew 250×',
+  client:'Exness', role:'Design Lead', years:'2011–2022',
+  cover:'assets/rm-1.jpg', pos:'50% 20%',
+  sub:'One identity, 23 languages, 500+ assets a week — Real Madrid, Ronaldo, Red Bull Racing, WWF inside it',
+  tags:['Brand systems','Art direction','Localisation ops','A/B testing','OOH','CrowdIn'],
+  challenge:'Own the visual identity of a fintech from twenty people to five thousand, across 23 language markets, without the brand fragmenting.',
+  bullets:[
+    'Owned the brand book and corporate identity system through a decade of evolution — startup mark to globally recognised fintech',
+    'Ran an output of 500+ creative assets weekly across all markets',
+    'Art directed elite co-branding: Real Madrid CF (2+ years, 20+ markets), Cristiano Ronaldo (motion design), Red Bull Racing (OOH, social, localised), Inter Milan',
+    'Directed global environmental campaign design for WWF as an Exness co-branding initiative, under strict brand integrity requirements',
+    'Built the localisation machine: multilingual UTM tracking across 23+ languages, 23+ translators coordinated through CrowdIn',
+    'HTML5 interactive banner campaigns in Google Web Designer; large-scale digital ad libraries',
+    'Selected Frankfurt Airport as optimal OOH placement via a weighted scoring matrix on CPM, GRP, passenger volume and geo-profile'
+  ],
+  result:'A brand system that held together through 250× headcount growth and 23 simultaneous markets — and a 50%+ landing page conversion increase from iterative A/B testing on Unbounce.',
+  gallery:[
+    {src:'assets/rb-mockup.jpg',cls:'w',cap:'Red Bull Racing × Exness. A season-long Grand Prix contest across 23 markets, two guideline sets, one approval chain.'},
+    {src:'assets/rm-1.jpg',cls:'p',cap:'Real Madrid CF × Exness, Spanish market. The creative that earned a 400,000-copy magazine spread.'},
+    {src:'assets/rm-2.jpg',cls:'p',cap:'Same system, second execution.'},
+    {src:'assets/rm-3.jpg',cls:'p',cap:'Team shot variant for the matchday slots.'},
+    {src:'assets/ex-wwf.jpg',cls:'',cap:'WWF × Exness. A global environmental campaign under WWF brand integrity requirements.'},
+    {src:'assets/w-exness-system.jpg',cls:'',cap:'One design system, 23 languages: Latin, Arabic RTL, Thai, Bengali and CJK on the same weekly grid.'},
+    {src:'assets/ex-news.jpg',cls:'p',cap:'Weekly market content, English.'},
+    {src:'assets/ex-usd-ar.jpg',cls:'p',cap:'Arabic, right-to-left, same template.'},
+    {src:'assets/ex-top-ko.jpg',cls:'p',cap:'Korean top-stock edition.'},
+    {src:'assets/ex-ath-es.jpg',cls:'p',cap:'Crypto all-time-high tracker, Spanish.'},
+    {src:'assets/ex-instr-vi.jpg',cls:'p',cap:'Instrument spotlight, Vietnamese.'},
+    {src:'assets/rb-frame.jpg',cls:'',cap:'Red Bull Racing OOH frame.'},
+    {src:'assets/rb-contest.jpg',cls:'p',cap:'Contest creative, French market.'},
+    {src:'assets/rb-carousel.jpg',cls:'w',cap:'Social carousel, Malaysian market.'}
+  ],
+  links:[{t:'Case on Behance',u:'https://www.behance.net/karusrus'}]
+},
+{
+  id:'exness-print', size:'', cat:'brand',
+  title:'Brand system in print: three brochures, four languages',
+  client:'Exness', role:'Design Lead', years:'2021–2022',
+  cover:'assets/br-crypto-1.jpg', pos:'50% 50%',
+  sub:'Client, partner and crypto brochures from one grid — English, Portuguese, French, Bengali',
+  tags:['Brand systems','Print','Editorial grid','Localisation','Information design'],
+  challenge:'Three audiences — retail clients, partners, crypto traders — each needed its own brochure, and each brochure had to survive translation into languages that run up to forty percent longer than English without a second layout.',
+  bullets:[
+    'One editorial grid, one type scale, one chart style across the client, partner and crypto brochures',
+    'Numbers as the argument: trading volume, client count, spreads and payouts laid out as infographics rather than paragraphs',
+    'Product screens rendered inside real devices, so the brochure sells the platform, not the brand alone',
+    'Every text frame built with room for Portuguese, French and Bengali expansion — translated editions dropped in without re-flowing the spread'
+  ],
+  result:'Four languages, three audiences, one system. The Bengali edition went to print on the same grid as the English original.',
+  gallery:[
+    {src:'assets/br-client-1.jpg',cls:'w',cap:'Client brochure, English — outer spread: numbers, advantages, fifteen years of trust.'},
+    {src:'assets/br-client-2.jpg',cls:'w',cap:'Client brochure, inner spread: why Exness, products, accounts, platforms.'},
+    {src:'assets/br-partner-1.jpg',cls:'',cap:'Partner brochure, Portuguese — outer spread.'},
+    {src:'assets/br-partner-2.jpg',cls:'',cap:'Partner brochure, Portuguese — numbers and the case for partnering.'},
+    {src:'assets/br-crypto-1.jpg',cls:'',cap:'Crypto brochure, French — A5 half-fold, dark edition of the same grid.'},
+    {src:'assets/br-crypto-2.jpg',cls:'',cap:'Crypto brochure, French — 30 CFDs, advantages.'},
+    {src:'assets/br-bn.jpg',cls:'p',cap:'Promo flyer, Bengali — same type scale, a script that runs a third longer.'}
+  ],
+  links:[{t:'Case on Behance',u:'https://www.behance.net/karusrus'}]
+},
+{
+  id:'presentation', size:'', cat:'info',
+  title:'Presentation & information design — making a decision findable',
+  client:'Curvature · GDSI · Exness · DexTools', role:'Information designer', years:'2011–2025',
+  cover:'assets/gdsi-plan.jpg', pos:'50% 50%',
+  sub:'Decks for CIOs, 100-page tenders for committees, a decade of executive dashboards',
+  tags:['Executive decks','Tender documentation','Institutional infographics','Data storytelling','Video walkthroughs','Information hierarchy'],
+  challenge:'The hardest audience is not the one that dislikes your work. It is the one with ten minutes, no context, and a decision to make. Board members, CIOs, evaluation committees.',
+  bullets:[
+    'Curvature — turned dense Gartner analyst research into C-suite visual narratives; co-branding decks for Cisco and Dell where the slide ends up in front of a CIO',
+    'GDSI — authored 100+ page strategic tender documents for the European Parliament, read by an evaluation committee scoring against a rubric, not by someone admiring the layout',
+    'GDSI — institutional-grade infographics aggregating heterogeneous multi-expert and financial inputs for the European Commission, ADB and World Bank; architected the “Europa Experience” spaces across European capitals',
+    'Exness — a decade of executive dashboards and campaign performance reviews delivered to CEO, CTO and CMO',
+    'DexTools — delivered an entire platform audit as an authored video walkthrough instead of a deck: the narrative itself was the deliverable'
+  ],
+  result:'A separate discipline from brand design, and a rarer one. A committee does not ask whether it is beautiful — it asks whether the answer is findable in the time it has. I build for that, and for the boardroom, with the same hands.',
+  gallery:[
+    {src:'assets/fibo-brochure.jpg',cls:'',cap:'Annual review brochure for a brokerage: a year of key events on a spread built to be skimmed.'},
+    {src:'assets/fibo-brochure2.jpg',cls:'',cap:'Cover system for the same series.'},
+    {src:'assets/ex-funnel.jpg',cls:'w',cap:'Marketing funnel analysis, 2022–2023: one screen a CMO can read without a walkthrough.'},
+    {src:'assets/tw-pivot.jpg',cls:'w',cap:'Creative performance pivot — the table behind the dashboards.'}
+  ],
+  links:[{t:'Tableau Public',u:'https://public.tableau.com/app/profile/ruslan.karymov'}]
+},
+{
+  id:'twigeo-automation', size:'', cat:'automation',
+  title:'Creative automation on the Figma API',
+  client:'Twigeo', role:'Creative Performance Lead', years:'2022–2023',
+  cover:'assets/w-swimply.jpg', pos:'50% 50%',
+  sub:'Swimply, Duolingo, SoundCloud — 300 creatives a day, winners deployed automatically',
+  tags:['Figma API','Airtable','Midjourney models','SQL','Tableau','Sigma'],
+  challenge:'Localised banner production across 23+ markets was a manual bottleneck. Creative testing was slow enough that winners deployed after the campaign had moved on.',
+  bullets:[
+    'Built an automated localised banner production pipeline on the Figma API + Airtable — no manual step from source design to market-ready asset',
+    'Built an SQL-integrated creative management system that selected A/B winners automatically and deployed them in evergreen mode',
+    'Developed custom Midjourney style models so brand visual identity reproduced consistently at scale; Jasper AI for multi-market copy',
+    'Swimply: listings rendered to five paid channels through the Bannerbear API, 300 creatives a day'
+  ],
+  result:'20–25% CPA reduction with CTR improvement, across pools of 6–8 creative variants per campaign.',
+  gallery:[
+    {src:'assets/sw-post.jpg',cls:'p',cap:'Swimply feed post — one of hundreds generated from listing data.'},
+    {src:'assets/sw-story.jpg',cls:'p',cap:'Swimply story format, same data, second template.'},
+    {src:'assets/duo-5.jpg',cls:'p',cap:'Duolingo, Korean course — in-app screen concept.'},
+    {src:'assets/duo-1.jpg',cls:'p',cap:'Duolingo, updated Korean course creative.'},
+    {src:'assets/duo-2.jpg',cls:'p',cap:'Duolingo, exercise-style creative.'},
+    {src:'assets/w-swimply.jpg',cls:'',cap:'Swimply pipeline overview.'}
+  ],
+  links:[{t:'Case on Behance',u:'https://www.behance.net/karusrus'}]
+},
+{
+  id:'uniswap', size:'', cat:'brand',
+  title:'Advertising a protocol, not a purchase',
+  client:'Uniswap · via Twigeo', role:'Creative & UX strategy', years:'2023',
+  cover:'assets/uni-1.jpg', pos:'50% 40%',
+  sub:'Creative and UX strategy for the largest decentralised exchange',
+  tags:['Creative strategy','UX strategy','Web3','Performance'],
+  challenge:'A DEX has no product to put in a cart. What it sells is a reason to route a swap through it rather than through anything else — and the audience already knows the alternatives.',
+  bullets:[
+    'Directed creative and UX strategy: audience analysis, performance metrics, competitive landscape mapping',
+    'Creative built on usage data — users swapping on more than one chain, v2 launch across Arbitrum, Polygon, Optimism, Base, BNB, Avalanche',
+    'Same pipeline as the rest of the Twigeo work: variants generated, tested, winners kept'
+  ],
+  result:'A creative language for a protocol that had to speak to people who already used it, without a discount to offer.',
+  gallery:[
+    {src:'assets/uni-1.jpg',cls:'p',cap:'“Users swapping on more than one chain” — a number as the headline.'},
+    {src:'assets/uni-2.jpg',cls:'',cap:'v2 is now live on six chains.'},
+    {src:'assets/w-uniswap.jpg',cls:'',cap:'Campaign set.'}
+  ],
+  links:[{t:'Case on Behance',u:'https://www.behance.net/karusrus'}]
+},
+{
+  id:'nft-offers', size:'', cat:'automation',
+  title:'HR offer automation and NFT certificates',
+  client:'Exness', role:'Design Lead — an industry first', years:'2018–2022',
+  cover:'assets/nft-cards.jpg', pos:'50% 50%',
+  sub:'BambooHR into personalised PDF offers, then NFT certificates on Polygon. Days per offer became seconds',
+  tags:['BambooHR API','Polygon','NFT smart contracts','PDF automation'],
+  challenge:'Manual offer generation for premium candidates, with no way to make an offer document verifiable.',
+  bullets:[
+    'BambooHR REST API into personalised interactive PDF offers, each with a unique secured URL',
+    'Extended the system to NFT tokens on Polygon with embedded share count and vesting conditions — verifiable, non-transferable offer certificates',
+    'Polygon chosen over Ethereum mainnet on gas cost'
+  ],
+  result:'Full automation of the HR offer process, plus an employer-branding artefact nobody else in the sector had. 100+ issued.',
+  gallery:[
+    {src:'assets/nft-cards.jpg',cls:'',cap:'Offer certificate as an NFT: the candidate’s name, the role, the answer.'},
+    {src:'assets/nft-phone.jpg',cls:'p',cap:'“I said yes” — the shareable moment on a phone.'},
+    {src:'assets/nft-offer.jpg',cls:'',cap:'The generated PDF offer, one secured URL per candidate.'},
+    {src:'assets/w-nft-offers.jpg',cls:'',cap:'System overview.'}
+  ],
+  links:[{t:'Case on Behance',u:'https://www.behance.net/karusrus'}]
+},
+{
+  id:'gdsi', size:'tall', cat:'info',
+  title:'Institutional data narratives for the EU',
+  client:'GDSI Limited', role:'Strategic Visualisation & AI Expert', years:'2024–2025',
+  cover:'assets/gdsi-mep.jpg', pos:'50% 50%',
+  sub:'European Commission, Parliament, ADB, World Bank — infographics and 100-page tenders read by committees',
+  tags:['Institutional infographics','Tender documentation','NotebookLM','NLP','EU communication'],
+  challenge:'Aggregate heterogeneous multi-expert and financial inputs into proposals that score well with an EU evaluation committee.',
+  bullets:[
+    'Final strategic link in tender proposals for the European Commission, European Parliament and Asian Development Bank',
+    'Authored 100+ page strategic tender documents for the European Parliament',
+    'Architected “Europa Experience” physical and digital spaces across European capitals',
+    'AI Expert on Horizon Europe projects: NLP-driven analysis of public discourse at scale',
+    'Applied NotebookLM and custom AI workflows to make complex data legible to non-technical committees'
+  ],
+  result:'Proposals that a committee can score without a walkthrough — the answer to each rubric line is findable on the page it expects.',
+  gallery:[
+    {src:'assets/gdsi-mep.jpg',cls:'w',cap:'Ireland’s MEPs 2024–2029: a poster built for a wall in the Europa Experience space.'},
+    {src:'assets/gdsi-gateway.jpg',cls:'',cap:'Global Gateway, climate and energy — bilingual overlay for a Mongolian audience.'},
+    {src:'assets/gdsi-youth.jpg',cls:'',cap:'#EU4YouthTZ — social for the EU delegation in Tanzania.'},
+    {src:'assets/gdsi-plan.jpg',cls:'w',cap:'Floor plan of a Europa Experience space with the visitor route and content zones.'},
+    {src:'assets/gdsi-tablet.jpg',cls:'',cap:'Delegation content hub on a tablet.'},
+    {src:'assets/gdsi-diagram.jpg',cls:'',cap:'Governance diagram — who decides what, on one page.'},
+    {src:'assets/gdsi-brochure.jpg',cls:'',cap:'Strategic communication brochure, EU delegations.'},
+    {src:'assets/gdsi-conf.jpg',cls:'p',cap:'Save the date — international trade conference, Europe House Dublin.'},
+    {src:'assets/w-gdsi.jpg',cls:'',cap:'Making institutional data legible.'}
+  ],
+  links:[{t:'Case on Behance',u:'https://www.behance.net/karusrus'}]
+},
+{
+  id:'curvature', size:'', cat:'brand',
+  title:'Enterprise visual narrative',
+  client:'Curvature — Gartner, Cisco, Dell', role:'Designer', years:'2022',
+  cover:'assets/w-curvature.jpg', pos:'50% 50%',
+  sub:'Co-branding with two legal teams: Cisco, Dell EMC and Gartner in one banner system',
+  tags:['Executive communication','Co-branding governance','Information design'],
+  challenge:'Turn dense Gartner analyst research into material a C-suite audience will actually read and decide from.',
+  bullets:[
+    'Built synthesised visual narratives for C-suite decision-making from Gartner research',
+    'Managed complex co-branding initiatives across Cisco and Dell',
+    'Enterprise brand governance under multi-party approval chains'
+  ],
+  result:'One banner system that passed two partners’ brand reviews and ran in English and Japanese without a second layout.',
+  gallery:[
+    {src:'assets/cv-cisco.jpg',cls:'w',cap:'Cisco end-of-life guide, 1200×627.'},
+    {src:'assets/cv-dell.jpg',cls:'',cap:'Dell EMC PowerEdge, Japanese market.'},
+    {src:'assets/cv-nexus.jpg',cls:'',cap:'Cisco Catalyst and Nexus, quote request.'}
+  ],
+  links:[{t:'Case on Behance',u:'https://www.behance.net/karusrus'}]
+},
+{
+  id:'dextools', size:'', cat:'product',
+  title:'Dashboard audit for a top DEX analytics platform',
+  client:'DexTools', role:'Freelance', years:'2024',
+  cover:'assets/dextools.jpg', pos:'50% 50%',
+  sub:'Where a DeFi platform loses users to its own information density — delivered as a narrated video',
+  tags:['Dashboard audit','Data visualisation','UX analytics','DeFi'],
+  challenge:'Identify where a leading DeFi analytics platform loses users to its own information density.',
+  bullets:[
+    "Audited the platform's data presentation: signal-to-noise ratio, information hierarchy, first-view metrics, widget layout",
+    'Analysed user scenarios and navigation patterns',
+    'Chart-type recommendations for trading data — time series, volume, liquidity depth',
+    'Delivered findings as an authored video walkthrough, prioritised on an impact and effort matrix'
+  ],
+  result:'Prioritised, actionable recommendations delivered as narrative video rather than a deck — data storytelling as the deliverable itself.',
+  gallery:[
+    {src:'assets/dextools.jpg',cls:'w',cap:'The trading view under audit: what the first screen carries, and what it should.'}
+  ],
+  links:[{t:'Case on Behance',u:'https://www.behance.net/karusrus'}]
+},
+{
+  id:'pipeline-map', size:'wide2', cat:'product',
+  title:'Pipeline Map — pitching a system before it exists',
+  client:'Personal tool, open source', role:'Design, front-end', years:'2026',
+  cover:'assets/w-pipeline-overview.jpg', video:'assets/pipeline-loop.mp4', pos:'50% 50%',
+  sub:'A node-graph canvas with animated flow and a camera you drive while you talk. One HTML file, MIT',
+  tags:['Information design','Interaction design','Creative ops','Agentic workflows','n8n','ComfyUI','Front-end','Open source'],
+  challenge:'A test assignment asked for three ad concepts. The concepts were the easy part; the harder question was how those concepts would be produced at volume, week after week. Describing a production pipeline in prose loses the one thing that matters — what flows where.',
+  bullets:[
+    'A node-graph canvas in the visual language of ComfyUI: typed sockets, coloured wires, groups, widgets inside nodes',
+    'Animated traffic along every wire with three levels of intensity, so a viewer sees which path is the business and which paths are learning',
+    'A camera with five saved views that fly between each other — a presentation without slides',
+    'Humans by exception: agents carry a confidence score, everything below threshold routes to one inbox; every node names the real tool behind it',
+    'No build step, no backend, no dependencies — a single file that saves its own state in the browser'
+  ],
+  result:'Built in an evening, released under MIT, live on GitHub Pages. Built with an AI assistant as the production method; every design decision is mine.',
+  gallery:[
+    {video:'assets/pipeline-loop.mp4',poster:'assets/w-pipeline-overview.jpg',cls:'w',cap:'Live loop: the whole map with flow on, the camera flying to the selector node, the node dragged with its wires following, then the learning loop.'},
+    {src:'assets/w-pipeline-selector.jpg',cls:'',cap:'Camera slot 1. The node that would pick the concepts, with its rubric and threshold as widgets.'},
+    {src:'assets/w-pipeline-inbox.jpg',cls:'',cap:'Camera slot 5. The one human node on the map: an n8n send-and-wait-for-approval step with a four-hour timeout.'}
+  ],
+  links:[{t:'Open the map',u:'https://karusrus.github.io/pipeline-map/'},{t:'Source on GitHub',u:'https://github.com/karusrus/pipeline-map'}]
+},
+{
+  id:'scanner', size:'tall', cat:'product',
+  title:'Solana DEX Signal Scanner',
+  client:'Personal project', role:'Problem framing, interface, integration, release, validation', years:'2024–now',
+  cover:'assets/scanner-grid-dark.jpg', pos:'50% 0%',
+  sub:'Is anyone who is usually right buying this, and is it happening now? A tool for that question',
+  tags:['Product design','Data-heavy UI','Light & dark','Third-party APIs','Python','Bootstrapping','Front-end'],
+  challenge:'Thousands of tokens appear on Solana every day. Screeners rank them by volume and price change — the two numbers easiest to fake. A trader is asking something else.',
+  bullets:[
+    'Constraints designed around: public APIs with rate limits (GeckoTerminal, Helius, BitQuery), a 60-second refresh, no backend, static hosting, sniper bots excluded before the score is computed',
+    'A score plus a verdict, not a score alone — STRONG BUY, BUY, NEUTRAL, AVOID, with the buy threshold stated on the page',
+    'Four metrics on the card, the rest on demand; three-state filters instead of a range slider',
+    'What I chose not to build: no alerts, no portfolio, no trade history — each turns a tool into a service answerable for someone else’s money',
+    'Validation by bootstrapping in Python: 1,000 iterations on a 70/30 split; pre-filtering on the top 300 Early-Bird wallets'
+  ],
+  result:'Live since 2024, running unattended. Zero dependencies, zero hosting cost, pure HTML, CSS and JavaScript against the GeckoTerminal API.',
+  gallery:[
+    {src:'assets/scanner-grid-dark.jpg',cls:'w',cap:'Grid view. Four summary tiles, then one card per pool: score, signal, price, movement across three windows, volume, liquidity, FDV, and the buy/sell split.'},
+    {src:'assets/scanner-table-dark.jpg',cls:'',cap:'The same set as a table. A toggle, not a second section.'},
+    {src:'assets/scanner-grid-light.jpg',cls:'',cap:'Light theme. Dark is the default because the tool is opened on top of a trading terminal.'}
+  ],
+  links:[{t:'See it running',u:'https://karusrus.github.io/rc-scanner'}]
+},
+{
+  id:'egov', size:'', cat:'info',
+  title:'National e-government data infrastructure',
+  client:'Loyalty Peak — Government of Kazakhstan (egov.kz)', role:'Lead analyst', years:'2010',
+  cover:'assets/egov.jpg', pos:'50% 50%',
+  sub:'8,000+ government forms, one data dictionary. egov.kz is now in the UN top 10',
+  tags:['Master data management','Data taxonomy','Data quality','Distributed teams'],
+  challenge:'Standardise data across 8,000+ government forms from incompatible ministries for a national platform.',
+  bullets:[
+    'Built the complete Data Dictionary: field typing, validation rules, formats',
+    'Developed the Data Hierarchy and Taxonomy — citizen, document, agency, service',
+    'Created the Master Data Model with canonical identifiers and conflict resolution rules',
+    'Led 8 analysts across 4 countries'
+  ],
+  result:'Unique data fields reduced by ~40%. egov.kz now ranks in the global top 10 of the UN E-Government Development Index 2024.',
+  gallery:[
+    {src:'assets/egov.jpg',cls:'w',cap:'Data landscape of the national platform: regions, services, and the fields that had to agree.'}
+  ],
+  links:[]
+},
+{
+  id:'engineering', size:'', cat:'info',
+  title:'Engineering analytics and industrial design systems',
+  client:'UECHM & Teploproekt', role:'Chief Engineer of Projects (ГИП)', years:'2007–2011',
+  cover:'assets/engineering.jpg', pos:'50% 50%',
+  sub:'Where the systems thinking comes from: LUKOIL and Gazprom infrastructure to ISO and GOST',
+  tags:['ANSYS','MATLAB','TRIZ','ISO / GOST'],
+  challenge:'Licensed Chief Engineer of Projects for industrial infrastructure serving LUKOIL and Gazprom, working to ISO and GOST standards.',
+  bullets:[
+    'Led a team of 50 engineers at UECHM',
+    'ANSYS finite element analysis, MATLAB modelling, TRIZ methodology for systematic contradiction analysis'
+  ],
+  result:'Production costs cut by 17%+ at Katur Invest, verified by the client.',
+  gallery:[
+    {src:'assets/engineering.jpg',cls:'w',cap:'Finite-element thermal model and the drawings it fed.'}
+  ],
+  links:[]
+}
+];
+window.BRANDS = [
+  ['Real Madrid CF','via Exness'],['Cristiano Ronaldo','via Exness'],['Red Bull Racing','via Exness'],['Inter Milan','via Exness'],['WWF','via Exness'],
+  ['Gartner','via Curvature'],['Cisco','via Curvature'],['Dell','via Curvature'],
+  ['Uniswap','via Twigeo'],['Duolingo','via Twigeo'],['SoundCloud','via Twigeo'],['AVID','via Twigeo'],['Heatonist','via Twigeo'],['Swimply','via Twigeo'],
+  ['European Commission','via GDSI'],['European Parliament','via GDSI'],['Asian Development Bank','via GDSI'],['World Bank','via GDSI'],
+  ['DexTools','direct'],['Government of Kazakhstan','direct'],['LUKOIL','direct'],['Gazprom','direct']
+];
+window.HERO_IMGS = ['rm-1','br-crypto-1','rb-frame','ex-ath-es','sw-post','uni-1','gdsi-mep','nft-cards','dextools','egov','w-pipeline-overview','scanner-grid-dark','cv-cisco','ex-news','gdsi-youth','fibo-brochure','ex-wwf','ex-top-ko','w-curvature'];
 </script>
+
+<script>
+'use strict';
+
+const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
+const RM=matchMedia('(prefers-reduced-motion: reduce)').matches;
+const DESK=matchMedia('(min-width: 861px)').matches;
+gsap.registerPlugin(ScrollTrigger);
+$('#yr').textContent=new Date().getFullYear();
+
+/* ---------- smooth scroll ---------- */
+const lenis=new Lenis({lerp:.09,wheelMultiplier:1,smoothWheel:!RM});
+lenis.on('scroll',ScrollTrigger.update);
+gsap.ticker.add(t=>lenis.raf(t*1000));
+gsap.ticker.lagSmoothing(0);
+const nav=$('#nav');
+lenis.on('scroll',({scroll})=>nav.classList.toggle('solid',scroll>40));
+document.addEventListener('click',e=>{
+  const a=e.target.closest('a[href^="#"]'); if(!a) return;
+  const id=a.getAttribute('href'); if(id.length<2) return;
+  const el=document.querySelector(id); if(!el) return;
+  e.preventDefault(); lenis.scrollTo(el,{offset:id==='#top'?0:-20,duration:1.2});
+});
+
+/* ---------- hero: three.js ring ---------- */
+(function hero(){
+  const canvas=$('#gl'), heroEl=$('.hero');
+  let W=heroEl.clientWidth, H=heroEl.clientHeight;
+  const renderer=new THREE.WebGLRenderer({canvas,antialias:true,alpha:true,powerPreference:'high-performance'});
+  renderer.setPixelRatio(Math.min(devicePixelRatio,1.75));
+  renderer.setSize(W,H,false);
+  renderer.outputColorSpace=THREE.SRGBColorSpace;
+  const scene=new THREE.Scene();
+  scene.fog=new THREE.FogExp2(0x08090c,0.046);
+  const camera=new THREE.PerspectiveCamera(40,W/H,.1,100);
+  const camZ=()=>17.5+(W/H<1?(1-W/H)*9:0);
+  camera.position.set(0,.4,camZ());
+  const ring=new THREE.Group(); ring.position.set(0,DESK?1.7:3.2,DESK?-5:-3); scene.add(ring);
+  const names=DESK?HERO_IMGS:HERO_IMGS.slice(0,12);
+  const N=names.length, R=DESK?10.5:6.5, CH=DESK?1.7:1.6;
+  const loader=new THREE.TextureLoader();
+  const backMat=new THREE.MeshBasicMaterial({color:0x1b1e27,side:THREE.BackSide});
+  const frameMat=new THREE.MeshBasicMaterial({color:0x262a35});
+  names.forEach((n,i)=>{
+    loader.load('assets/h/'+n+'.jpg',tex=>{
+      tex.colorSpace=THREE.SRGBColorSpace; tex.anisotropy=Math.min(8,renderer.capabilities.getMaxAnisotropy());
+      const ar=tex.image.width/tex.image.height, w=CH*ar, h=CH;
+      const holder=new THREE.Group();
+      const mat=new THREE.MeshBasicMaterial({map:tex,transparent:true,opacity:0});
+      const m=new THREE.Mesh(new THREE.PlaneGeometry(w,h),mat);
+      const frame=new THREE.Mesh(new THREE.PlaneGeometry(w+.06,h+.06),frameMat); frame.position.z=-.005;
+      const back=new THREE.Mesh(new THREE.PlaneGeometry(w+.06,h+.06),backMat); back.position.z=-.006;
+      holder.add(back,frame,m);
+      const a=i/N*Math.PI*2;
+      holder.position.set(Math.sin(a)*R,Math.sin(i*2.1)*.95,Math.cos(a)*R);
+      holder.rotation.y=a; // faces outward
+      holder.userData={a,y:holder.position.y,ph:i*1.3};
+      ring.add(holder);
+      gsap.to(mat,{opacity:1,duration:1.4,delay:.2+i*.06,ease:'power2.out'});
+    });
+  });
+  // dust
+  const dust=(()=>{const g=new THREE.BufferGeometry(),n=DESK?260:120,p=new Float32Array(n*3);for(let i=0;i<n;i++){p[i*3]=(Math.random()-.5)*30;p[i*3+1]=(Math.random()-.5)*14;p[i*3+2]=(Math.random()-.5)*30}g.setAttribute('position',new THREE.BufferAttribute(p,3));const m=new THREE.PointsMaterial({color:0x9bbcff,size:.05,transparent:true,opacity:.55,sizeAttenuation:true});const pts=new THREE.Points(g,m);scene.add(pts);return pts})();
+  const mouse={x:0,y:0,tx:0,ty:0};
+  addEventListener('pointermove',e=>{mouse.tx=(e.clientX/innerWidth-.5)*2;mouse.ty=(e.clientY/innerHeight-.5)*2},{passive:true});
+  const prog={v:0}; // scroll progress through hero
+  let visible=true, rot=0, last=performance.now();
+  ScrollTrigger.create({trigger:heroEl,start:'top top',end:'bottom top',scrub:true,
+    onUpdate:s=>{prog.v=s.progress},onToggle:s=>{visible=s.isActive||s.progress===0}});
+  function frame(now){
+    requestAnimationFrame(frame);
+    if(!visible&&prog.v>=1) return;
+    const dt=Math.min(.05,(now-last)/1000); last=now;
+    mouse.x+=(mouse.tx-mouse.x)*.06; mouse.y+=(mouse.ty-mouse.y)*.06;
+    rot+=dt*(RM?0:.07);
+    ring.rotation.y=rot+mouse.x*.35+prog.v*1.2;
+    ring.rotation.x=prog.v*.35+mouse.y*.04;
+    ring.position.y=(DESK?1.7:3.2)+prog.v*5;
+    const t=now/1000;
+    ring.children.forEach(h=>{h.position.y=h.userData.y+Math.sin(t*.6+h.userData.ph)*.12});
+    camera.position.x+=(mouse.x*.9-camera.position.x)*.05;
+    camera.position.y+=(.4-mouse.y*.5-camera.position.y)*.05;
+    camera.lookAt(0,.8+prog.v*2,-5);
+    dust.rotation.y=t*.02;
+    renderer.render(scene,camera);
+  }
+  requestAnimationFrame(frame);
+  addEventListener('resize',()=>{W=heroEl.clientWidth;H=heroEl.clientHeight;camera.aspect=W/H;camera.position.z=camZ();camera.updateProjectionMatrix();renderer.setSize(W,H,false)});
+})();
+
+/* ---------- hero intro ---------- */
+{
+  const words=$$('#h1 .w span'), heroRv=$$('.hero .rv');
+  if(RM){gsap.set(words,{y:0});gsap.set(heroRv,{opacity:1,y:0})}
+  else{
+    gsap.timeline({delay:.15})
+      .to(words,{y:0,duration:1.1,ease:'expo.out',stagger:.07})
+      .to(heroRv,{opacity:1,y:0,duration:.9,ease:'power3.out',stagger:.1},'-=.7');
+  }
+  gsap.to('.hero-c',{opacity:0,y:-60,ease:'none',scrollTrigger:{trigger:'.hero',start:'40% top',end:'bottom top',scrub:true}});
+}
+
+/* ---------- reveals & counters ---------- */
+{
+  const els=$$('.rv').filter(e=>!e.closest('.hero'));
+  if(RM) gsap.set(els,{opacity:1,y:0});
+  else ScrollTrigger.batch(els,{start:'top 92%',once:true,onEnter:b=>gsap.to(b,{opacity:1,y:0,duration:.9,ease:'power3.out',stagger:.07,overwrite:true})});
+  $$('[data-count]').forEach(el=>{
+    const target=+el.dataset.count;
+    ScrollTrigger.create({trigger:el,start:'top 90%',once:true,onEnter:()=>{
+      if(RM){el.textContent=target;return}
+      const o={v:0}; gsap.to(o,{v:target,duration:1.8,ease:'power3.out',onUpdate:()=>el.textContent=Math.round(o.v)});
+    }});
+  });
+}
+
+/* ---------- pointer-driven 3D tilt + shine ---------- */
+function tilt(el,max=7,scale=1.015){
+  if(!DESK||RM) return;
+  let raf=null;
+  el.addEventListener('pointermove',e=>{
+    const r=el.getBoundingClientRect(), px=(e.clientX-r.left)/r.width, py=(e.clientY-r.top)/r.height;
+    el.style.setProperty('--mx',(px*100)+'%'); el.style.setProperty('--my',(py*100)+'%');
+    if(raf) return; raf=requestAnimationFrame(()=>{raf=null;
+      gsap.to(el,{rotateY:(px-.5)*max*2,rotateX:(.5-py)*max*2,scale,transformPerspective:1100,duration:.6,ease:'power2.out',overwrite:'auto'});
+    });
+  });
+  el.addEventListener('pointerleave',()=>gsap.to(el,{rotateY:0,rotateX:0,scale:1,duration:.9,ease:'elastic.out(1,.6)',overwrite:'auto'}));
+}
+$$('.stat').forEach(s=>tilt(s,5,1.02));
+
+/* ---------- devices ---------- */
+{
+  const lap=$('#laptop'), ph=$('#phone');
+  gsap.set(lap,{transformPerspective:1600,rotateY:-30,rotateX:14,x:'-6%',y:30});
+  gsap.set(ph,{transformPerspective:1600,rotateY:40,rotateX:-6,z:90,rotate:6,y:70});
+  if(!RM){
+    const st={trigger:'.devices',start:'top 85%',end:'center 35%',scrub:1.2};
+    gsap.to(lap,{rotateY:-14,rotateX:6,x:'-2%',y:0,ease:'none',scrollTrigger:st});
+    gsap.to(ph,{rotateY:14,rotateX:-2,z:110,rotate:3,y:0,ease:'none',scrollTrigger:st});
+    // idle float after
+    gsap.to(ph,{y:'-=10',duration:2.6,yoyo:true,repeat:-1,ease:'sine.inOut',delay:1});
+  }else gsap.set([lap,ph],{rotateY:-12,rotateX:5});
+  // mouse parallax on the stage
+  const stage=$('#stage');
+  if(DESK&&!RM) stage.addEventListener('pointermove',e=>{
+    const r=stage.getBoundingClientRect(),px=(e.clientX-r.left)/r.width-.5,py=(e.clientY-r.top)/r.height-.5;
+    gsap.to(lap,{rotateY:-14+px*10,rotateX:6-py*8,duration:.8,ease:'power2.out',overwrite:'auto'});
+    gsap.to(ph,{rotateY:14+px*14,rotateX:-2-py*10,duration:.8,ease:'power2.out',overwrite:'auto'});
+  });
+  const vids=$$('.devices video');
+  const io=new IntersectionObserver(en=>en.forEach(x=>{const v=x.target;if(x.isIntersecting){v.play().catch(()=>{})}else v.pause()}),{threshold:.2});
+  vids.forEach(v=>io.observe(v));
+}
+
+/* ---------- work grid ---------- */
+const grid=$('#grid'), filters=$('#filters');
+const CATS=[['all','All'],['brand','Brand & campaigns'],['automation','Automation'],['info','Information design'],['product','Product & tools']];
+filters.innerHTML=CATS.map(([k,l],i)=>`<button data-cat="${k}" class="${i?'':'on'}">${l}</button>`).join('');
+filters.addEventListener('click',e=>{
+  const b=e.target.closest('button'); if(!b) return;
+  $$('button',filters).forEach(x=>x.classList.toggle('on',x===b));
+  const k=b.dataset.cat;
+  $$('.card',grid).forEach(c=>c.classList.toggle('hide',k!=='all'&&c.dataset.cat!==k));
+  setTimeout(()=>ScrollTrigger.refresh(),450);
+});
+const svgArrow='<svg viewBox="0 0 24 24"><path d="M7 17L17 7M9 7h8v8"/></svg>';
+grid.innerHTML=CASES.map(c=>`
+<article class="card ${c.size}" data-id="${c.id}" data-cat="${c.cat}" style="--pos:${c.pos||'50% 50%'}" tabindex="0" role="button" aria-label="${c.title}">
+  <div class="media">${c.video?`<video src="${c.video}" poster="${c.cover}" muted loop playsinline preload="none"></video>`:`<img src="${c.cover}" alt="${c.title}" loading="lazy" decoding="async">`}</div>
+  <div class="shine"></div>
+  <div class="tags"><span>${c.years}</span></div>
+  <div class="open">${svgArrow}</div>
+  <div class="meta"><div class="kicker"><i>${c.client}</i></div><h3>${c.title}</h3><div class="sub">${c.sub}</div></div>
+</article>`).join('');
+$$('.card',grid).forEach(c=>{tilt(c,6,1.012);
+  c.addEventListener('click',()=>openCase(c.dataset.id,c));
+  c.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();openCase(c.dataset.id,c)}});
+});
+{ // autoplay card videos when visible
+  const io=new IntersectionObserver(en=>en.forEach(x=>{const v=x.target;if(x.isIntersecting){v.play().catch(()=>{})}else v.pause()}),{threshold:.3});
+  $$('.card video').forEach(v=>io.observe(v));
+}
+if(!RM) ScrollTrigger.batch('.card',{start:'top 94%',once:true,onEnter:b=>gsap.fromTo(b,{opacity:0,y:40},{opacity:1,y:0,duration:.9,ease:'power3.out',stagger:.06,clearProps:'opacity'})});
+
+/* ---------- case sheet ---------- */
+const sheet=$('#sheet'), sheetIn=$('#sheetIn'), veil=$('#veil');
+let current=null, opening=false;
+function renderSheet(c){
+  const i=CASES.indexOf(c), prev=CASES[(i-1+CASES.length)%CASES.length], next=CASES[(i+1)%CASES.length];
+  const hero=c.video?`<video src="${c.video}" poster="${c.cover}" muted loop playsinline autoplay></video>`:`<img src="${c.cover}" alt="">`;
+  const gal=c.gallery.map(g=>`<figure class="${g.cls||''}">${g.video?`<video src="${g.video}" poster="${g.poster||''}" muted loop playsinline autoplay preload="metadata"></video>`:`<img src="${g.src}" alt="" loading="lazy" decoding="async">`}${g.cap?`<figcaption>${g.cap}</figcaption>`:''}</figure>`).join('');
+  sheetIn.innerHTML=`
+  <div class="sheet-hero" style="--pos:${c.pos||'50% 50%'}">${hero}
+    <div class="sheet-title"><div class="kicker"><i>${c.client}</i><span>${c.years}</span><span>${c.role}</span></div><h2>${c.title}</h2></div>
+  </div>
+  <div class="sheet-body">
+    <div class="prose">
+      <p class="challenge">${c.challenge}</p>
+      <ul>${c.bullets.map(b=>`<li>${b}</li>`).join('')}</ul>
+      <div class="result">${c.result}</div>
+    </div>
+    <aside class="aside">
+      <dl><div><dt>Client</dt><dd>${c.client}</dd></div><div><dt>Role</dt><dd>${c.role}</dd></div><div><dt>Years</dt><dd>${c.years}</dd></div></dl>
+      <div class="tags">${c.tags.map(t=>`<span>${t}</span>`).join('')}</div>
+      ${c.links.length?`<div class="links">${c.links.map(l=>`<a href="${l.u}" target="_blank" rel="noopener">${l.t}<span>↗</span></a>`).join('')}</div>`:''}
+    </aside>
+    <div class="gallery">${gal}</div>
+    <div class="sheet-nav">
+      <button class="prev" data-id="${prev.id}"><small>Previous</small><span>${prev.title}</span></button>
+      <button class="next" data-id="${next.id}"><small>Next</small><span>${next.title}</span></button>
+    </div>
+  </div>`;
+  $$('.sheet-nav button',sheetIn).forEach(b=>b.addEventListener('click',()=>{swapCase(b.dataset.id)}));
+}
+function mediaClone(c){
+  const g=document.createElement('div'); g.className='ghost-img'; g.style.setProperty('--pos',c.pos||'50% 50%');
+  g.innerHTML=`<img src="${c.cover}" alt="">`; document.body.appendChild(g); return g;
+}
+function rectOf(el){const r=el.getBoundingClientRect();return {top:r.top,left:r.left,width:r.width,height:r.height}}
+function openCase(id,cardEl){
+  const c=CASES.find(x=>x.id===id); if(!c||opening) return; opening=true; current=c;
+  renderSheet(c);
+  sheet.classList.add('on'); document.body.classList.add('sheet-open'); sheet.scrollTop=0; veil.classList.add('on'); lenis.stop();
+  history.replaceState(null,'','#case-'+id);
+  document.body.style.overflow='hidden';
+  const heroEl=$('.sheet-hero',sheetIn);
+  const from=cardEl?rectOf($('.media',cardEl)):null, to=rectOf(heroEl);
+  if(from&&!RM){
+    const g=mediaClone(c); gsap.set(g,{...from,borderRadius:22});
+    gsap.set(sheetIn,{opacity:0,y:24});
+    gsap.timeline({onComplete:()=>{g.remove();opening=false}})
+      .to(g,{...to,borderRadius:28,duration:.7,ease:'expo.inOut'})
+      .to(sheetIn,{opacity:1,y:0,duration:.5,ease:'power3.out'},'-=.25');
+  }else{
+    gsap.fromTo(sheetIn,{opacity:0,y:24},{opacity:1,y:0,duration:.5,ease:'power3.out',onComplete:()=>opening=false});
+  }
+}
+function swapCase(id){
+  const c=CASES.find(x=>x.id===id); if(!c) return; current=c;
+  gsap.to(sheetIn,{opacity:0,y:16,duration:.25,ease:'power2.in',onComplete:()=>{
+    renderSheet(c); sheet.scrollTop=0; history.replaceState(null,'','#case-'+id);
+    gsap.fromTo(sheetIn,{opacity:0,y:24},{opacity:1,y:0,duration:.5,ease:'power3.out'});
+  }});
+}
+function closeCase(){
+  if(!current||opening) return;
+  const c=current; current=null;
+  const card=$(`.card[data-id="${c.id}"]`);
+  const heroEl=$('.sheet-hero',sheetIn);
+  const cr=card?rectOf($('.media',card)):null;
+  const inView=cr&&cr.top<innerHeight&&cr.top+cr.height>0;
+  history.replaceState(null,'',location.pathname+location.search);
+  const finish=()=>{sheet.classList.remove('on');document.body.classList.remove('sheet-open');sheetIn.innerHTML='';veil.classList.remove('on');lenis.start();document.body.style.overflow=''};
+  if(inView&&!RM){
+    const from=rectOf(heroEl), g=mediaClone(c); gsap.set(g,{...from,borderRadius:28});
+    gsap.to(sheetIn,{opacity:0,y:16,duration:.3,ease:'power2.in',onComplete:()=>{sheet.classList.remove('on');document.body.classList.remove('sheet-open')}});
+    gsap.to(g,{...cr,borderRadius:22,duration:.6,ease:'expo.inOut',delay:.05,onComplete:()=>{g.remove();finish()}});
+  }else gsap.to(sheetIn,{opacity:0,y:16,duration:.3,ease:'power2.in',onComplete:finish});
+}
+veil.addEventListener('click',closeCase);
+$('#sheetClose').addEventListener('click',closeCase);
+sheet.addEventListener('click',e=>{if(e.target===sheet) closeCase()});
+addEventListener('keydown',e=>{
+  if(!current) return;
+  if(e.key==='Escape') closeCase();
+  if(e.key==='ArrowRight') $('.sheet-nav .next',sheetIn)?.click();
+  if(e.key==='ArrowLeft') $('.sheet-nav .prev',sheetIn)?.click();
+});
+// deep link
+{
+  const m=location.hash.match(/^#case-([\w-]+)$/);
+  if(m&&CASES.some(c=>c.id===m[1])) setTimeout(()=>{const card=$(`.card[data-id="${m[1]}"]`);card&&lenis.scrollTo(card,{immediate:true,offset:-120});openCase(m[1],null)},300);
+}
+
+/* ---------- approach: horizontal scroll ---------- */
+if(DESK&&!RM){
+  const track=$('#track');
+  const dist=()=>track.scrollWidth-innerWidth+parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--pad'))*1||track.scrollWidth-innerWidth+40;
+  gsap.to(track,{x:()=>-dist(),ease:'none',scrollTrigger:{trigger:'#apin',start:'top top',end:()=>'+='+dist(),pin:true,scrub:1,invalidateOnRefresh:true,anticipatePin:1}});
+}
+
+/* ---------- brand marquee ---------- */
+{
+  const mk=list=>list.map(([n,v])=>`<div class="brand">${n}<small>${v}</small></div>`).join('');
+  const a=BRANDS.slice(0,11), b=BRANDS.slice(11);
+  $('#mq1').innerHTML=mk(a)+mk(a); $('#mq2').innerHTML=mk(b)+mk(b);
+}
+
+addEventListener('load',()=>ScrollTrigger.refresh());
+</script>
+
 </body>
 </html>
