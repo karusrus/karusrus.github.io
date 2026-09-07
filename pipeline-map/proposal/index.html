@@ -1,0 +1,379 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Proposal Pipeline — a draft</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+:root{--canvas:#1e1e1e;--grid:#2a2a2a;--node:#353535;--node-edge:#161616;--text:#d9d9d9;--muted:#9a9a9a;--widget:#222;--accent:#FFD166;--panel:#2a2a2a;--panel-edge:#0f0f0f;
+  --t-data:#6BCB77;--t-draft:#FFD166;--t-doc:#FF9F43;--t-visual:#F368E0;--t-expert:#B8B5FF;--t-gate:#54A0FF;--t-fb:#A29BFE}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0;overflow:hidden;background:var(--canvas);color:var(--text);font-family:"IBM Plex Sans","DejaVu Sans",Arial,sans-serif;font-size:14px;-webkit-font-smoothing:antialiased}
+#app{position:fixed;inset:0;background:var(--canvas)}
+#viewport{position:absolute;inset:0;overflow:hidden;cursor:grab;touch-action:none;
+  background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:20px 20px}
+#viewport.panning{cursor:grabbing}
+#world{position:absolute;left:0;top:0;transform-origin:0 0;width:0;height:0}
+#world.anim{transition:transform .9s cubic-bezier(.4,0,.2,1)}
+#app.pres #bar,#app.pres #hint,#app.pres #legend,#app.pres #slots{display:none}
+#slots{position:absolute;right:16px;top:14px;z-index:20;display:flex;gap:6px}
+#slots .btn{min-width:34px;text-align:center;padding:8px 9px}
+#slots .btn.has{color:var(--accent)}
+@media (prefers-reduced-motion:reduce){#world.anim{transition:none}}
+#wires{position:absolute;left:0;top:0;width:1px;height:1px;overflow:visible;pointer-events:none;z-index:2}
+#wires path.hit{stroke:transparent;stroke-width:16;pointer-events:stroke;cursor:pointer}
+#wires path.wire{pointer-events:none}
+#wires path.wire.sel{filter:drop-shadow(0 0 4px #fff)}
+#wires path.flowdash{pointer-events:none;animation:flow linear infinite;opacity:.95}
+@keyframes flow{to{stroke-dashoffset:-22}}
+#wires circle.p{pointer-events:none}
+#wires.paused path.flowdash{animation-play-state:paused}
+.btn.on{background:#3a3520;border-color:var(--accent);color:var(--accent)}
+@media (prefers-reduced-motion:reduce){#wires path.flowdash{animation:none}}
+#temp{position:absolute;left:0;top:0;width:1px;height:1px;overflow:visible;pointer-events:none;z-index:9}
+.group{position:absolute;border-radius:10px;z-index:0;border:1px solid rgba(255,255,255,.06)}
+.group .gt{position:absolute;left:0;top:0;right:0;padding:8px 14px;font-size:22px;font-weight:700;letter-spacing:.5px;opacity:.85;cursor:move;user-select:none;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.group.sel{outline:2px solid var(--accent)}
+.node{position:absolute;background:var(--node);border:1px solid var(--node-edge);border-radius:9px;box-shadow:0 8px 20px rgba(0,0,0,.45);z-index:3;user-select:none}
+.node.sel{outline:2px solid var(--accent);outline-offset:2px}
+.node.human{outline:2px dashed var(--accent);outline-offset:3px}
+.node.human.sel{outline-style:solid}
+.node .title{height:32px;line-height:32px;padding:0 10px 0 12px;border-radius:9px 9px 0 0;font-weight:700;font-size:15px;color:#fff;display:flex;justify-content:space-between;align-items:center;gap:8px;cursor:move}
+.node .title .tt{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex:1;min-width:0}
+.node .title .badge{font-size:10px;font-weight:700;background:rgba(0,0,0,.35);padding:2px 7px;border-radius:999px;letter-spacing:.5px;white-space:nowrap;max-width:55%;overflow:hidden;text-overflow:ellipsis}
+.node .title .x{display:none;width:18px;height:18px;border-radius:50%;background:rgba(0,0,0,.35);color:#fff;font-size:12px;line-height:18px;text-align:center;cursor:pointer;flex:none}
+.node:hover .title .x{display:block}
+.node .body{padding:6px 0 8px}
+.row{height:24px;display:flex;align-items:center;justify-content:space-between;padding:0 10px;color:#cfcfcf;font-family:"IBM Plex Mono","DejaVu Sans Mono",monospace;font-size:12.5px}
+.row .in,.row .out{display:flex;align-items:center;gap:7px;min-width:0}
+.row .out{margin-left:auto;flex-direction:row-reverse}
+.row .lbl{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:150px}
+.dot{width:11px;height:11px;border-radius:50%;border:2px solid #1a1a1a;flex:none;cursor:crosshair}
+.dot:hover{transform:scale(1.35)}
+.widget{margin:4px 10px;min-height:24px;background:var(--widget);border-radius:12px;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:3px 12px;font-size:12.5px;line-height:1.25;color:#bbb}
+.widget b{color:#eee;font-weight:600;text-align:right;max-width:74%}
+[contenteditable="true"]{outline:1px solid var(--accent);background:rgba(255,209,102,.08);border-radius:4px;padding:0 4px;cursor:text;user-select:text}
+.note{position:absolute;background:#2b2b22;border:1px solid #4a4a30;color:#d8d3a0;border-radius:8px;padding:10px 14px;font-size:13px;line-height:1.45;z-index:3;cursor:move}
+.note.sel{outline:2px solid var(--accent)}
+.note code{font-family:"IBM Plex Mono",monospace;font-size:12px}
+#bar{position:absolute;left:16px;top:14px;z-index:20;display:flex;gap:8px;align-items:center;flex-wrap:wrap;max-width:calc(100% - 32px)}
+#bar .brand{background:var(--panel);border:1px solid var(--panel-edge);border-radius:10px;padding:8px 14px;display:flex;flex-direction:column;gap:2px;margin-right:6px}
+#bar .brand b{font-size:15px;color:#fff}
+#bar .brand span{font-size:11.5px;color:var(--muted)}
+.btn{background:var(--panel);border:1px solid var(--panel-edge);color:#e6e6e6;border-radius:8px;padding:8px 12px;font:inherit;font-size:13px;cursor:pointer;line-height:1}
+.btn:hover{background:#333}
+.btn:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+.btn.warn{color:#ffb4a2}
+.seg{display:flex;background:var(--panel);border:1px solid var(--panel-edge);border-radius:8px;overflow:hidden}
+.seg .btn{border:0;border-radius:0;border-right:1px solid var(--panel-edge)}
+.seg .btn:last-child{border-right:0}
+#zoomlbl{min-width:52px;text-align:center;color:var(--muted);font-variant-numeric:tabular-nums}
+#hint{position:absolute;left:16px;bottom:14px;z-index:20;background:var(--panel);border:1px solid var(--panel-edge);border-radius:10px;padding:9px 14px;font-size:12.5px;color:var(--muted);max-width:calc(100% - 32px);line-height:1.5}
+#hint b{color:#ddd;font-weight:600}
+#legend{position:absolute;right:16px;bottom:14px;z-index:20;background:var(--panel);border:1px solid var(--panel-edge);border-radius:10px;padding:10px 14px;font-size:12.5px;display:flex;gap:16px;align-items:center;flex-wrap:wrap}
+#legend span{display:inline-flex;align-items:center;gap:6px;color:#ccc}
+#legend i{width:22px;height:4px;border-radius:2px;display:inline-block}
+#toast{position:absolute;left:50%;top:14px;transform:translateX(-50%);z-index:30;background:#111;color:#fff;border:1px solid #333;border-radius:8px;padding:8px 14px;font-size:13px;opacity:0;transition:opacity .2s;pointer-events:none}
+#toast.on{opacity:1}
+#modal{position:absolute;inset:0;z-index:40;background:rgba(0,0,0,.6);display:none;align-items:center;justify-content:center}
+#modal.on{display:flex}
+#modal .box{background:var(--panel);border:1px solid var(--panel-edge);border-radius:12px;padding:16px;width:min(720px,92vw);display:flex;flex-direction:column;gap:10px}
+#modal textarea{width:100%;height:50vh;background:#151515;color:#ddd;border:1px solid #333;border-radius:8px;padding:10px;font-family:"IBM Plex Mono",monospace;font-size:12px;resize:vertical}
+#modal .actions{display:flex;gap:8px;justify-content:flex-end}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+@media (max-width:720px){#legend{display:none}#bar .brand span{display:none}}
+</style></head><body>
+<div id="app">
+  <div id="viewport">
+    <div id="world">
+      <svg id="wires"></svg>
+      <svg id="temp"></svg>
+    </div>
+  </div>
+  <div id="bar">
+    <div class="brand"><b>Proposal Pipeline</b><span>a draft — from tender notice to signed bid, with the archive and the expert pool wired in · drag, rename, rewire, animate</span></div>
+    <div class="seg"><button class="btn" id="zout" title="Zoom out">−</button><div class="btn" id="zoomlbl">100%</div><button class="btn" id="zin" title="Zoom in">+</button><button class="btn" id="fit" title="Fit everything on screen">Fit</button></div>
+    <button class="btn" id="flow" title="Animate what flows where (1 / 2 / 3 on a selected wire sets its intensity)">Flow</button>
+    <button class="btn" id="addnode">+ Node</button>
+    <button class="btn" id="addnote">+ Note</button>
+    <button class="btn" id="undo" title="Ctrl+Z">Undo</button>
+    <button class="btn" id="json">JSON</button>
+    <button class="btn warn" id="reset" title="Discard your edits and reload the original draft">Reset draft</button>
+  </div>
+  <div id="slots" title="Camera slots: click to fly there, Shift+click (or Shift+1–5) to save the current view"></div>
+  <div id="hint"><b>Pan</b> drag the canvas · <b>Zoom</b> wheel or pinch · <b>Move</b> drag a node title or group title (a group carries its nodes) · <b>Rename</b> double-click any text · <b>Connect</b> drag from an output dot to an input dot · <b>Delete</b> select a node, note or wire, press Delete · <b>Undo</b> Ctrl+Z · <b>Flow</b> animates the traffic; select a wire and press 1, 2 or 3 to set how much runs through it · <b>Camera</b> keys 1–5 fly to a saved view, Shift+1–5 save the current one · <b>H</b> hides this chrome for recording · sample: a proposal production pipeline for a development consultancy — intake, go/no-go, expert search with HR approval, writing, gates, submission, learning · by <a href="https://karusrus.github.io" style="color:#ddd">Ruslan Karymov</a></div>
+  <div id="legend"><span><i style="background:var(--t-data)"></i>data</span><span><i style="background:var(--t-draft)"></i>text / draft</span><span><i style="background:var(--t-doc)"></i>document</span><span><i style="background:var(--t-visual)"></i>visual</span><span><i style="background:var(--t-expert)"></i>people</span><span><i style="background:var(--t-gate)"></i>gate</span><span><i style="background:var(--t-fb);height:0;border-top:2px dashed var(--t-fb)"></i>feedback</span></div>
+  <div id="toast"></div>
+  <div id="modal"><div class="box"><div><b>Layout as JSON</b> — copy it to keep a version, or paste one here and import.</div><textarea id="jsontext" spellcheck="false"></textarea><div class="actions"><button class="btn" id="copyjson">Copy</button><button class="btn" id="importjson">Import</button><button class="btn" id="closejson">Close</button></div></div></div>
+</div>
+<script>
+const C0={intake:'#2d6a4f',qualify:'#7a4f01',team:'#8c3b0a',write:'#6a1f5c',design:'#8a2f62',gate:'#1f4e79',submit:'#3b3b8c',learn:'#5b2c83',agent:'#0f6e6e'};
+const C=C0;
+const DEFAULT_GROUPS=[
+ {x:40,y:110,w:380,h:1180,t:'1 · INTAKE — radar',c:'rgba(45,106,79,.16)'},
+ {x:450,y:110,w:420,h:1180,t:'2 · QUALIFY — go / no-go',c:'rgba(122,79,1,.16)'},
+ {x:900,y:110,w:440,h:1700,t:'3 · TEAM — experts + HR',c:'rgba(140,59,10,.14)'},
+ {x:1370,y:110,w:900,h:1180,t:'4 · WRITE — technical & financial offer',c:'rgba(106,31,92,.14)'},
+ {x:2300,y:110,w:400,h:1700,t:'5 · GATES — agents, then humans',c:'rgba(31,78,121,.18)'},
+ {x:2730,y:110,w:560,h:660,t:'6 · SUBMIT',c:'rgba(59,59,140,.18)'},
+ {x:2730,y:800,w:560,h:1010,t:'7 · LEARN → archive, agents, pool',c:'rgba(91,44,131,.2)'},
+];
+const DEFAULT_NODES=[
+ // INTAKE
+ {id:'feeds',x:70,y:160,w:320,t:'Tender Feeds',c:C.intake,badge:'TED API · F&T portal · ADB · WB · UNGM',ins:[['watch_terms','fb']],outs:[['notices[]','data'],['deadline','data'],['budget · ceiling','data']],w_:[['filter','communication · visibility · data · digital · evaluation'],['cadence','daily 06:00 · dedup by reference'],['window','deadline ≥ 10 working days']]},
+ {id:'tor',x:70,y:420,w:320,t:'ToR Parser',c:C.intake,badge:'LLM · PRAG-aware schema',ins:[['notices[]','data']],outs:[['requirements[]','draft'],['key_expert_profiles[]','expert'],['evaluation_grid','gate'],['limits · language','gate']],w_:[['extracts','objective · lots · KE1…n · minimum requirements'],['grid','criteria weights · technical/financial split'],['also','page limits · annexes · clarification deadline']]},
+ {id:'rules',x:70,y:700,w:320,t:'Compliance Rules',c:C.intake,badge:'PRAG 2024 · ADB · WB · EU visibility',ins:[['update','fb']],outs:[['checklist[]','gate'],['templates','doc']],w_:[['scope','declarations · exclusivity · signatures · formats'],['branding','donor visibility rules per client']]},
+ {id:'refs',x:70,y:930,w:320,t:'Past Projects Archive',c:C.intake,badge:'vector index · pgvector',ins:[['outcome + scores','fb']],outs:[['references[]','doc'],['methodology_library','draft'],['evaluator_comments[]','data'],['win_loss','data']],w_:[['corpus','past proposals · evaluation letters · final reports'],['chunking','per criterion · tagged sector · region · client'],['access','read-only · confidential · no external LLM']]},
+ // QUALIFY
+ {id:'fit',x:480,y:160,w:360,t:'Fit Scorer Agent',c:C.agent,badge:'AGENT · rubric + history',ins:[['requirements[]','draft'],['references[]','doc'],['win_loss','data'],['pool_stats','expert'],['weights','fb']],outs:[['fit_score · gaps','data'],['go_candidates','gate'],['low_confidence','gate']],w_:[['scores','sector · region · KE coverage · past wins with client'],['auto','≥ 0.75 → Go/No-Go · < 0.40 → drop · between → inbox'],['output','one page: why bid, what is missing, who to partner']]},
+ {id:'comp',x:480,y:470,w:360,t:'Competition & Partners',c:C.qualify,badge:'TED award notices · partner roster',ins:[['notices[]','data'],['fit_score · gaps','data']],outs:[['likely_bidders','data'],['partner_shortlist','expert']],w_:[['source','who won similar lots · past consortia'],['rule','lead if fit ≥ 0.75 · partner if 0.40–0.75']]},
+ {id:'gonogo',x:480,y:720,w:360,t:'Go / No-Go',c:C.qualify,badge:'HUMAN · Managing Director · n8n Send & Wait',human:1,ins:[['go_candidates','gate'],['fit_score · gaps','data'],['partner_shortlist','expert']],outs:[['bid_go','gate'],['decision_log','fb']],w_:[['shows','fit · budget · deadline · team gaps · win rate with client'],['node','email or Slack: bid · no bid · bid as partner'],['timeout','24h · silence = no bid']]},
+ {id:'clar',x:480,y:990,w:360,t:'Clarification Requests',c:C.qualify,badge:'LLM draft · human sends',ins:[['open_questions','data'],['limits · language','gate']],outs:[['answers','data']],w_:[['window','before the clarification deadline'],['rule','ask only what changes the offer']]},
+ // TEAM
+ {id:'pool',x:930,y:160,w:380,t:'Expert Pool',c:C.team,badge:'Airtable · EuropeAid CVs',ins:[['ratings','fb']],outs:[['experts[]','expert'],['pool_stats','expert'],['rates','data']],w_:[['fields','degree · years · regions · languages · day rate · past evals'],['hygiene','CV refreshed ≤ 12 months · consent on file']]},
+ {id:'matcher',x:930,y:400,w:380,t:'Expert Matcher Agent',c:C.agent,badge:'AGENT · criterion scoring',ins:[['key_expert_profiles[]','expert'],['experts[]','expert'],['bid_go','gate'],['calibration','fb']],outs:[['ranked_candidates[]','expert'],['gaps → external','expert'],['low_confidence','gate']],w_:[['scoring','each ToR criterion = one evidence line from the CV'],['threshold','top 3 per KE · score ≥ 0.80 else external search'],['flags','regional experience · language · years rule']]},
+ {id:'ext',x:930,y:680,w:380,t:'External Search',c:C.team,badge:'DevelopmentAid · LinkedIn · partner rosters',ins:[['gaps → external','expert']],outs:[['new_candidates[]','expert']],w_:[['query','built from the KE profile · outreach auto-drafted'],['limit','max 10 per KE · GDPR consent logged']]},
+ {id:'avail',x:930,y:900,w:380,t:'Availability & Rate Check',c:C.team,badge:'n8n · email Send & Wait',ins:[['ranked_candidates[]','expert'],['new_candidates[]','expert'],['budget · ceiling','data']],outs:[['confirmed[]','expert'],['declined → next','fb']],w_:[['asks','availability window · day rate · exclusivity'],['cap','rate ≤ budget line · 48h reply window']]},
+ {id:'hr',x:930,y:1150,w:380,t:'HR Approval',c:C.team,badge:'HUMAN · HR · n8n Send & Wait',human:1,ins:[['confirmed[]','expert'],['low_confidence','gate']],outs:[['approved_team[]','expert'],['exclusivity statements','doc'],['override','fb']],w_:[['checks','reference calls · conflict of interest · contract terms'],['signs','Statement of Exclusivity & Availability per KE'],['timeout','48h · no approval = no CV in the bid']]},
+ {id:'cv',x:930,y:1430,w:380,t:'CV Formatter',c:C.team,badge:'EuropeAid template · LLM',ins:[['approved_team[]','expert'],['requirements[]','draft']],outs:[['KE_CVs[]','doc']],w_:[['rule','one evidence line per ToR criterion · numbered projects'],['output','DOCX + PDF · language of the tender · dates match']]},
+ // WRITE
+ {id:'skel',x:1400,y:160,w:400,t:'Proposal Skeleton',c:C.write,badge:'from the evaluation grid',ins:[['evaluation_grid','gate'],['limits · language','gate'],['templates','doc']],outs:[['outline','draft'],['page_budget','data']],w_:[['rule','sections mirror the grid · pages ∝ criterion weight'],['example','Organisation & Methodology 60% → 18 of 30 pages']]},
+ {id:'method',x:1400,y:400,w:400,t:'Methodology Writer',c:C.write,badge:'LLM · RAG on winning sections',ins:[['outline','draft'],['requirements[]','draft'],['methodology_library','draft'],['lessons[]','fb'],['answers','data']],outs:[['draft_sections[]','draft'],['open_questions','data']],w_:[['style','client-specific · verbs from the ToR · no boilerplate'],['guard','every claim tied to a reference or a named KE']]},
+ {id:'refsel',x:1400,y:690,w:400,t:'References Selector',c:C.agent,badge:'AGENT',ins:[['references[]','doc'],['requirements[]','draft']],outs:[['reference_sheets ×3','doc'],['low_confidence','gate']],w_:[['picks','3 most relevant · same client > same region > same sector'],['format','reference sheet · value · dates · role · contact']]},
+ {id:'plan',x:1400,y:920,w:400,t:'Activity Plan & Timeline',c:C.write,badge:'Excel model → chart',ins:[['draft_sections[]','draft'],['approved_team[]','expert']],outs:[['gantt · deliverables','visual'],['fee_days','data']],w_:[['check','KE days = timeline days = budget days'],['output','one chart the committee can read in ten seconds']]},
+ {id:'viz',x:1840,y:160,w:400,t:'Infographics & Data Viz',c:C.design,badge:'DESIGN LEAD · Figma · Datawrapper',ins:[['draft_sections[]','draft'],['context_data','data']],outs:[['figures[]','visual']],w_:[['set','context map · team chart · logic diagram · risk matrix'],['rule','one figure per criterion the committee scores'],['style','donor visibility rules · colour-blind safe']]},
+ {id:'dtp',x:1840,y:440,w:400,t:'Layout & DTP',c:C.design,badge:'DESIGN LEAD · InDesign',ins:[['draft_sections[]','draft'],['figures[]','visual'],['KE_CVs[]','doc'],['reference_sheets ×3','doc'],['gantt · deliverables','visual']],outs:[['technical_offer.pdf','doc']],w_:[['template','house grid · donor branding · accessible PDF'],['limits','page count · font size · margins from the ToR'],['pass','committee finds each criterion by the running head']]},
+ {id:'fin',x:1840,y:760,w:400,t:'Financial Offer Builder',c:C.write,badge:'Excel · budget template',ins:[['fee_days','data'],['rates','data'],['budget · ceiling','data']],outs:[['financial_offer.xlsx','doc'],['margin_check','data']],w_:[['lines','fees · per diems (EU rates) · incidentals · provision'],['guard','ceiling · margin ≥ target · currency of the tender']]},
+ // GATES
+ {id:'comply',x:2330,y:160,w:340,t:'Compliance Checker',c:C.agent,badge:'AGENT · checklist + OCR',ins:[['technical_offer.pdf','doc'],['financial_offer.xlsx','doc'],['checklist[]','gate']],outs:[['pass','doc'],['fail → fix','fb'],['low_confidence','gate']],w_:[['checks','annexes · signatures · language · page limits · file names'],['rule','any hard fail blocks the package']]},
+ {id:'sim',x:2330,y:430,w:340,t:'Evaluator Simulator',c:C.agent,badge:'AGENT · mock committee',ins:[['pass','doc'],['evaluation_grid','gate'],['evaluator_comments[]','data']],outs:[['scores per criterion','data'],['weak → rewrite','fb'],['low_confidence','gate']],w_:[['method','three personas score 1–5 per criterion, with reasons'],['threshold','any criterion < 3.5 → rewrite loop'],['truth','calibrated on real committee scores']]},
+ {id:'consist',x:2330,y:720,w:340,t:'Consistency Check',c:C.agent,badge:'AGENT',ins:[['pass','doc'],['KE_CVs[]','doc'],['financial_offer.xlsx','doc']],outs:[['pass','doc'],['mismatch → fix','fb']],w_:[['checks','KE days: CV ↔ plan ↔ budget · names · dates · currency']]},
+ {id:'inbox',x:2330,y:960,w:340,t:'Bid Manager Inbox',c:C.gate,badge:'HUMAN · n8n Send & Wait',human:1,ins:[['low_confidence','gate'],['low_confidence','gate'],['low_confidence','gate'],['low_confidence','gate'],['low_confidence','gate']],outs:[['decision','gate'],['overrides','fb']],w_:[['node','Slack: send and wait for approval'],['timeout','4h · unanswered = hold, not submit'],['gets','anything an agent scored below its threshold']]},
+ {id:'sign',x:2330,y:1300,w:340,t:'Sign-off & Declarations',c:C.gate,badge:'HUMAN · Managing Director',human:1,ins:[['pass','doc'],['scores per criterion','data'],['decision','gate'],['margin_check','data']],outs:[['signed_bid','doc']],w_:[['signs','declaration on honour · financial identification · consortium agreement'],['rule','no signature, no submission']]},
+ // SUBMIT
+ {id:'pack',x:2760,y:160,w:500,t:'Package Assembler',c:C.submit,badge:'n8n · PDF/A',ins:[['signed_bid','doc'],['financial_offer.xlsx','doc'],['exclusivity statements','doc']],outs:[['submission_package','doc']],w_:[['order','as in the tender instructions'],['naming','ref_lot_doc_v · checksum logged']]},
+ {id:'submit',x:2760,y:400,w:500,t:'Submission',c:C.submit,badge:'eSubmission · portal · email',ins:[['submission_package','doc'],['deadline','data']],outs:[['receipt','data']],w_:[['rule','submit ≥ 24h before the deadline'],['log','timestamp · receipt PDF → archive']]},
+ // LEARN
+ {id:'outcome',x:2760,y:850,w:500,t:'Outcome Tracker',c:C.learn,badge:'award letters · evaluation report',ins:[['receipt','data'],['award / rejection','data']],outs:[['result','fb'],['committee_scores','fb']],w_:[['captures','awarded · score per criterion · winner · price'],['link','every bid → one record, nothing lost']]},
+ {id:'fbparse',x:2760,y:1080,w:500,t:'Feedback Parser',c:C.learn,badge:'LLM',ins:[['committee_scores','fb']],outs:[['lessons[]','fb'],['evaluator_comments','fb']],w_:[['extracts','criticism → tagged lesson · criterion · sector · client'],['use','the next bid on that client starts from these']]},
+ {id:'win',x:2760,y:1290,w:500,t:'Win-rate Analytics',c:C.learn,badge:'Sigma · Airtable',ins:[['result','fb'],['decision_log','fb']],outs:[['weights','fb'],['watch_terms','fb'],['ratings','fb']],w_:[['cuts','client · lot type · partner · KE · fit-score band'],['output','recalibrates Fit Scorer · refines feed filters · rates experts']]},
+ {id:'evals',x:2760,y:1540,w:500,t:'Agent Evals',c:C.learn,badge:'weekly job',ins:[['overrides','fb'],['committee_scores','fb'],['override','fb']],outs:[['calibration','fb']],w_:[['metric','simulator vs committee gap · matcher vs HR agreement'],['promote','gap ≤ 0.5 → raise auto-approve share'],['demote','two bad rounds → back to human review']]},
+];
+const DEFAULT_WIRES=[
+ // intake → qualify
+ ['feeds',0,'tor',0],['tor',0,'fit',0],['refs',0,'fit',1],['refs',3,'fit',2],['pool',1,'fit',3],['win',0,'fit',4,'fb'],
+ ['feeds',0,'comp',0],['fit',0,'comp',1],
+ ['fit',1,'gonogo',0],['fit',0,'gonogo',1],['comp',1,'gonogo',2],
+ ['method',1,'clar',0],['tor',3,'clar',1],['clar',0,'method',4],
+ // team
+ ['tor',1,'matcher',0],['pool',0,'matcher',1],['gonogo',0,'matcher',2],['evals',0,'matcher',3,'fb'],
+ ['matcher',1,'ext',0],
+ ['matcher',0,'avail',0],['ext',0,'avail',1],['feeds',2,'avail',2],['avail',1,'matcher',1,'fb'],
+ ['avail',0,'hr',0],['matcher',2,'hr',1],
+ ['hr',0,'cv',0],['tor',0,'cv',1],
+ // write
+ ['tor',2,'skel',0],['tor',3,'skel',1],['rules',1,'skel',2],
+ ['skel',0,'method',0],['tor',0,'method',1],['refs',1,'method',2],['fbparse',0,'method',3,'fb'],
+ ['refs',0,'refsel',0],['tor',0,'refsel',1],
+ ['method',0,'plan',0],['hr',0,'plan',1],
+ ['method',0,'viz',0],['refs',3,'viz',1],
+ ['method',0,'dtp',0],['viz',0,'dtp',1],['cv',0,'dtp',2],['refsel',0,'dtp',3],['plan',0,'dtp',4],
+ ['plan',1,'fin',0],['pool',2,'fin',1],['feeds',2,'fin',2],
+ // gates
+ ['dtp',0,'comply',0],['fin',0,'comply',1],['rules',0,'comply',2],['comply',1,'dtp',0,'fb'],
+ ['comply',0,'sim',0],['tor',2,'sim',1],['refs',2,'sim',2],['sim',1,'method',0,'fb'],
+ ['sim',0,'consist',0],['cv',0,'consist',1],['fin',0,'consist',2],['consist',1,'plan',0,'fb'],
+ ['fit',2,'inbox',0],['matcher',2,'inbox',1],['refsel',1,'inbox',2],['comply',2,'inbox',3],['sim',2,'inbox',4],
+ ['consist',0,'sign',0],['sim',0,'sign',1],['inbox',0,'sign',2],['fin',1,'sign',3],
+ // submit
+ ['sign',0,'pack',0],['fin',0,'pack',1],['hr',1,'pack',2],
+ ['pack',0,'submit',0],['feeds',1,'submit',1],
+ // learn
+ ['submit',0,'outcome',0],
+ ['outcome',1,'fbparse',0,'fb'],['outcome',0,'win',0,'fb'],['gonogo',1,'win',1,'fb'],
+ ['inbox',1,'evals',0,'fb'],['outcome',1,'evals',1,'fb'],['hr',2,'evals',2,'fb'],
+ ['outcome',1,'refs',0,'fb'],['fbparse',1,'rules',0,'fb'],['win',1,'feeds',0,'fb'],['win',2,'pool',0,'fb'],
+];
+const DEFAULT_NOTES=[
+ {"x":1400,"y":1090,"w":840,"html":"<b>Where the design lead sits.</b> A committee scores against a grid, so the document is built from the grid backwards: the skeleton gives each criterion its page budget, the writer fills it, and the two design nodes make every scored criterion findable — one figure per criterion, a running head that names it, a layout the reader can navigate in the ten minutes they actually have. Design here is not decoration; it is the interface between the answer and the score."},
+ {"x":2330,"y":1560,"w":340,"html":"<b>Three humans by design, one by exception.</b> Go/No-Go commits money. HR approval commits people — the exclusivity statement is a legal document. The signature commits the firm. Everything else is an agent with a confidence score, and anything under threshold lands in one inbox with a four-hour SLA. Unanswered means hold, not submit."},
+ {"x":40,"y":1330,"w":830,"html":"<b>What the archive is for.</b> Not copy-paste. Every evaluation letter is parsed into tagged lessons per criterion, every committee score becomes ground truth for the simulator, every win or loss recalibrates the fit score. The next bid on the same client starts from what that client’s evaluators criticised last time. The archive stays inside the firm: read-only, no external model sees a client document."}
+];
+const T={data:'#6BCB77',draft:'#FFD166',doc:'#FF9F43',visual:'#F368E0',expert:'#B8B5FF',gate:'#54A0FF',fb:'#A29BFE'};
+C.generic='#444';
+const ROW=24,TITLE=32,PAD=6;
+const LS='pipeline-map-gdsi-v1';
+const SPINE=new Set(['feeds>tor','tor>fit','fit>gonogo','gonogo>matcher','matcher>avail','avail>hr','hr>cv','cv>dtp','method>dtp','dtp>comply','comply>sim','sim>consist','consist>sign','sign>pack','pack>submit','submit>outcome','outcome>refs','skel>method']);
+function defaultState(){
+  return {
+    groups:DEFAULT_GROUPS.map((g,i)=>({id:'g'+i,x:g.x,y:g.y,w:g.w,h:g.h,title:g.t,color:g.c})),
+    nodes:DEFAULT_NODES.map(n=>({id:n.id,x:n.x,y:n.y,w:n.w,title:n.t,badge:n.badge||'',color:n.c,human:!!n.human,ins:n.ins.map(a=>({name:a[0],type:a[1]})),outs:n.outs.map(a=>({name:a[0],type:a[1]})),widgets:(n.w_||[]).map(w=>({k:w[0],v:w[1]}))})),
+    wires:DEFAULT_WIRES.map((w,i)=>({id:'w'+i,from:[w[0],w[1]],to:[w[2],w[3]],kind:w[4]==='fb'?'fb':'',flow:SPINE.has(w[0]+'>'+w[2])?3:(w[4]==='fb'?1:2)})),
+    notes:DEFAULT_NOTES.map((n,i)=>({id:'n'+i,x:n.x,y:n.y,w:n.w,html:n.html})),
+    view:{x:40,y:80,k:0.5,flow:true}
+  };
+}
+let S; try{const raw=localStorage.getItem(LS); S=raw?JSON.parse(raw):null;}catch(e){S=null}
+if(!S||!S.nodes) S=defaultState();
+const hist=[]; function snap(){hist.push(JSON.stringify({groups:S.groups,nodes:S.nodes,wires:S.wires,notes:S.notes})); if(hist.length>60)hist.shift();}
+function save(){try{localStorage.setItem(LS,JSON.stringify(S))}catch(e){}}
+const vp=document.getElementById('viewport'),world=document.getElementById('world'),svg=document.getElementById('wires'),tmp=document.getElementById('temp');
+const els={};
+function applyView(){world.style.transform=`translate(${S.view.x}px,${S.view.y}px) scale(${S.view.k})`;document.getElementById('zoomlbl').textContent=Math.round(S.view.k*100)+'%';}
+function toWorld(sx,sy){const r=vp.getBoundingClientRect();return [(sx-r.left-S.view.x)/S.view.k,(sy-r.top-S.view.y)/S.view.k]}
+function node(id){return S.nodes.find(n=>n.id===id)}
+function sockIn(n,i){return [n.x+11,n.y+TITLE+PAD+12+i*ROW]}
+function sockOut(n,i){return [n.x+n.w-11,n.y+TITLE+PAD+12+i*ROW]}
+function editable(el,onDone){
+  el.addEventListener('dblclick',e=>{e.stopPropagation();el.contentEditable='true';el.focus();document.execCommand&&document.execCommand('selectAll',false,null);});
+  const done=()=>{if(el.contentEditable!=='true')return;el.contentEditable='false';snap();onDone(el.textContent.trim());save();draw();};
+  el.addEventListener('blur',done);
+  el.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();el.blur()}if(e.key==='Escape'){el.blur()}e.stopPropagation();});
+}
+function build(){
+  world.querySelectorAll('.group,.node,.note').forEach(e=>e.remove()); for(const k in els)delete els[k];
+  for(const g of S.groups){
+    const d=document.createElement('div');d.className='group';d.dataset.id=g.id;d.style.cssText=`left:${g.x}px;top:${g.y}px;width:${g.w}px;height:${g.h}px;background:${g.color}`;
+    const t=document.createElement('div');t.className='gt';t.textContent=g.title;d.appendChild(t);editable(t,v=>g.title=v);
+    t.addEventListener('pointerdown',e=>startDrag(e,'group',g,d));
+    world.appendChild(d);els[g.id]=d;
+  }
+  for(const n of S.nodes){
+    const d=document.createElement('div');d.className='node'+(n.human?' human':'');d.dataset.id=n.id;d.style.cssText=`left:${n.x}px;top:${n.y}px;width:${n.w}px`;
+    const title=document.createElement('div');title.className='title';title.style.background=n.color;
+    const tt=document.createElement('span');tt.className='tt';tt.textContent=n.title;editable(tt,v=>n.title=v);
+    const bd=document.createElement('span');bd.className='badge';bd.textContent=n.badge||'';bd.style.display=n.badge?'':'none';editable(bd,v=>{n.badge=v;bd.style.display=v?'':'none'});
+    const x=document.createElement('span');x.className='x';x.textContent='×';x.title='Delete node';x.addEventListener('pointerdown',e=>e.stopPropagation());x.addEventListener('click',e=>{e.stopPropagation();deleteNode(n.id)});
+    title.append(tt,bd,x);title.addEventListener('pointerdown',e=>{if(e.target.isContentEditable)return;startDrag(e,'node',n,d)});
+    title.addEventListener('dblclick',e=>{if(e.target===title){n.badge=n.badge||'label';bd.style.display='';bd.dispatchEvent(new Event('dblclick'))}});
+    const body=document.createElement('div');body.className='body';
+    const rows=Math.max(n.ins.length,n.outs.length);
+    for(let i=0;i<rows;i++){
+      const r=document.createElement('div');r.className='row';
+      const a=n.ins[i],b=n.outs[i];
+      if(a){const s=document.createElement('span');s.className='in';const dot=document.createElement('span');dot.className='dot';dot.style.background=T[a.type]||'#888';dot.dataset.node=n.id;dot.dataset.in=i;const l=document.createElement('span');l.className='lbl';l.textContent=a.name;editable(l,v=>a.name=v);s.append(dot,l);r.appendChild(s);}else r.appendChild(document.createElement('span'));
+      if(b){const s=document.createElement('span');s.className='out';const dot=document.createElement('span');dot.className='dot';dot.style.background=T[b.type]||'#888';dot.dataset.node=n.id;dot.dataset.out=i;dot.addEventListener('pointerdown',e=>startWire(e,n,i));const l=document.createElement('span');l.className='lbl';l.textContent=b.name;editable(l,v=>b.name=v);s.append(dot,l);r.appendChild(s);}
+      body.appendChild(r);
+    }
+    for(const w of n.widgets){const wd=document.createElement('div');wd.className='widget';const k=document.createElement('span');k.textContent=w.k;const v=document.createElement('b');v.textContent=w.v;editable(k,x=>w.k=x);editable(v,x=>w.v=x);wd.append(k,v);body.appendChild(wd);}
+    d.append(title,body);d.addEventListener('pointerdown',e=>{select('node',n.id);e.stopPropagation()});
+    world.appendChild(d);els[n.id]=d;
+  }
+  for(const nt of S.notes){
+    const d=document.createElement('div');d.className='note';d.dataset.id=nt.id;d.style.cssText=`left:${nt.x}px;top:${nt.y}px;width:${nt.w}px`;d.innerHTML=nt.html;
+    d.addEventListener('pointerdown',e=>{if(d.isContentEditable)return;select('note',nt.id);startDrag(e,'note',nt,d);e.stopPropagation()});
+    d.addEventListener('dblclick',e=>{e.stopPropagation();d.contentEditable='true';d.focus()});
+    d.addEventListener('blur',()=>{if(d.contentEditable==='true'){d.contentEditable='false';snap();nt.html=d.innerHTML;save()}});
+    d.addEventListener('keydown',e=>{if(e.key==='Escape')d.blur();e.stopPropagation()});
+    world.appendChild(d);els[nt.id]=d;
+  }
+  draw();
+}
+function wirePath(p1,p2,kind){
+  if(p2[0]<p1[0]){const yv=Math.max(p1[1],p2[1])+(kind==='fb'?120:60);return `M${p1[0]},${p1[1]} C${p1[0]+120},${p1[1]} ${p1[0]+120},${yv} ${p1[0]-60},${yv} L${p2[0]+60},${yv} C${p2[0]-120},${yv} ${p2[0]-120},${p2[1]} ${p2[0]},${p2[1]}`}
+  const dx=Math.max(80,Math.abs(p2[0]-p1[0])*0.5);return `M${p1[0]},${p1[1]} C${p1[0]+dx},${p1[1]} ${p2[0]-dx},${p2[1]} ${p2[0]},${p2[1]}`;
+}
+function draw(){
+  let s='';
+  for(const w of S.wires){
+    const a=node(w.from[0]),b=node(w.to[0]);if(!a||!b||!a.outs[w.from[1]]||!b.ins[w.to[1]])continue;
+    const p1=sockOut(a,w.from[1]),p2=sockIn(b,w.to[1]);const col=w.kind==='fb'?T.fb:(T[a.outs[w.from[1]].type]||'#888');
+    const d=wirePath(p1,p2,w.kind);const sel=sel_.type==='wire'&&sel_.id===w.id;
+    s+=`<path class="hit" data-id="${w.id}" d="${d}" fill="none"/><path id="p_${w.id}" class="wire${sel?' sel':''}" d="${d}" fill="none" stroke="${col}" stroke-width="${sel?4.5:(w.kind==='fb'?2.5:3)}" ${w.kind==='fb'?'stroke-dasharray="10 7"':''} opacity="${flowOn?.45:.85}"/>`;
+    if(flowOn){const f=w.flow||(w.kind==='fb'?1:2);const len=Math.abs(p2[0]-p1[0])+Math.abs(p2[1]-p1[1])+(p2[0]<p1[0]?400:0);const dur=Math.max(1.2,len/(90*f));
+      s+=`<path class="flowdash" d="${d}" fill="none" stroke="${col}" stroke-width="${1.5+f}" stroke-linecap="round" stroke-dasharray="${4+f*2} ${22-4-f*2}" style="animation-duration:${(dur/ (len/22)).toFixed(3)}s"/>`;
+      for(let i=0;i<f;i++)s+=`<circle class="p" r="${3+f*0.7}" fill="#fff" stroke="${col}" stroke-width="2"><animateMotion dur="${dur.toFixed(2)}s" begin="${(-i*dur/f).toFixed(2)}s" repeatCount="indefinite" rotate="auto"><mpath href="#p_${w.id}"/></animateMotion></circle>`;}
+  }
+  svg.innerHTML=s;
+  svg.querySelectorAll('.hit').forEach(p=>p.addEventListener('pointerdown',e=>{e.stopPropagation();select('wire',p.dataset.id)}));
+}
+let sel_={type:null,id:null};
+let flowOn=!(S.view&&S.view.flow===false);
+function setFlow(v){flowOn=v;S.view.flow=v;document.getElementById('flow').classList.toggle('on',v);save();draw();}
+function select(type,id){sel_={type,id};document.querySelectorAll('.sel').forEach(e=>e.classList.remove('sel'));document.querySelectorAll('.node').forEach(e=>e.style.zIndex=3);if(type&&els[id]){els[id].classList.add('sel');if(type==='node')els[id].style.zIndex=5}if(type==='wire'||type===null)draw();}
+function deleteNode(id){snap();S.nodes=S.nodes.filter(n=>n.id!==id);S.wires=S.wires.filter(w=>w.from[0]!==id&&w.to[0]!==id);sel_={type:null};save();build();toast('Node deleted');}
+// dragging
+let drag=null;
+function startDrag(e,type,obj,el){
+  if(e.button!==0&&e.pointerType==='mouse')return;e.stopPropagation();
+  const [wx,wy]=toWorld(e.clientX,e.clientY);
+  drag={type,obj,el,ox:wx-obj.x,oy:wy-obj.y,moved:false,members:[]};
+  if(type==='group'){drag.members=S.nodes.filter(n=>n.x+n.w/2>obj.x&&n.x+n.w/2<obj.x+obj.w&&n.y+20>obj.y&&n.y+20<obj.y+obj.h).map(n=>({n,dx:n.x-obj.x,dy:n.y-obj.y}));
+    drag.notes=S.notes.filter(n=>n.x+n.w/2>obj.x&&n.x+n.w/2<obj.x+obj.w&&n.y+20>obj.y&&n.y+20<obj.y+obj.h).map(n=>({n,dx:n.x-obj.x,dy:n.y-obj.y}));}
+  if(type==='node')select('node',obj.id); if(type==='group')select('group',obj.id);
+  el.setPointerCapture&&el.setPointerCapture(e.pointerId);
+  const mv=ev=>{const [x,y]=toWorld(ev.clientX,ev.clientY);if(!drag.moved){snap();drag.moved=true}
+    obj.x=Math.round((x-drag.ox)/10)*10;obj.y=Math.round((y-drag.oy)/10)*10;el.style.left=obj.x+'px';el.style.top=obj.y+'px';
+    for(const m of drag.members){m.n.x=obj.x+m.dx;m.n.y=obj.y+m.dy;els[m.n.id].style.left=m.n.x+'px';els[m.n.id].style.top=m.n.y+'px'}
+    for(const m of (drag.notes||[])){m.n.x=obj.x+m.dx;m.n.y=obj.y+m.dy;els[m.n.id].style.left=m.n.x+'px';els[m.n.id].style.top=m.n.y+'px'}
+    draw();};
+  const up=()=>{el.removeEventListener('pointermove',mv);el.removeEventListener('pointerup',up);el.removeEventListener('pointercancel',up);if(drag.moved)save();drag=null;};
+  el.addEventListener('pointermove',mv);el.addEventListener('pointerup',up);el.addEventListener('pointercancel',up);
+}
+// new wire
+function startWire(e,n,i){
+  e.stopPropagation();e.preventDefault();const p1=sockOut(n,i);const col=T[n.outs[i].type]||'#888';
+  const mv=ev=>{const p2=toWorld(ev.clientX,ev.clientY);tmp.innerHTML=`<path d="${wirePath(p1,p2,'')}" fill="none" stroke="${col}" stroke-width="3" stroke-dasharray="6 5" opacity=".9"/>`};
+  const up=ev=>{window.removeEventListener('pointermove',mv);window.removeEventListener('pointerup',up);tmp.innerHTML='';
+    const t=document.elementFromPoint(ev.clientX,ev.clientY);const dot=t&&t.closest?t.closest('.dot[data-in]'):null;
+    if(dot){snap();const id='w'+Date.now();S.wires.push({id,from:[n.id,i],to:[dot.dataset.node,+dot.dataset.in],kind:n.outs[i].type==='fb'?'fb':''});save();draw();toast('Connected')}};
+  window.addEventListener('pointermove',mv);window.addEventListener('pointerup',up);
+}
+// pan & zoom
+let pan=null;
+vp.addEventListener('pointerdown',e=>{if(e.target!==vp&&e.target!==world&&e.target!==svg)return;select(null,null);pan={x:e.clientX,y:e.clientY,vx:S.view.x,vy:S.view.y};vp.classList.add('panning');vp.setPointerCapture(e.pointerId)});
+vp.addEventListener('pointermove',e=>{if(!pan)return;S.view.x=pan.vx+(e.clientX-pan.x);S.view.y=pan.vy+(e.clientY-pan.y);applyView()});
+const endPan=()=>{if(pan){pan=null;vp.classList.remove('panning');save()}};
+vp.addEventListener('pointerup',endPan);vp.addEventListener('pointercancel',endPan);
+function zoomAt(f,cx,cy){const r=vp.getBoundingClientRect();const sx=cx-r.left,sy=cy-r.top;const k=Math.min(3,Math.max(0.12,S.view.k*f));const ratio=k/S.view.k;S.view.x=sx-(sx-S.view.x)*ratio;S.view.y=sy-(sy-S.view.y)*ratio;S.view.k=k;applyView();save();}
+vp.addEventListener('wheel',e=>{e.preventDefault();const f=e.ctrlKey?Math.exp(-e.deltaY*0.01):(e.deltaY<0?1.12:1/1.12);zoomAt(f,e.clientX,e.clientY)},{passive:false});
+// pinch
+const pts=new Map();let pinch=null;
+vp.addEventListener('pointerdown',e=>{pts.set(e.pointerId,[e.clientX,e.clientY]);if(pts.size===2){const a=[...pts.values()];pinch={d:Math.hypot(a[0][0]-a[1][0],a[0][1]-a[1][1])};pan=null}},true);
+vp.addEventListener('pointermove',e=>{if(!pts.has(e.pointerId))return;pts.set(e.pointerId,[e.clientX,e.clientY]);if(pinch&&pts.size===2){const a=[...pts.values()];const d=Math.hypot(a[0][0]-a[1][0],a[0][1]-a[1][1]);zoomAt(d/pinch.d,(a[0][0]+a[1][0])/2,(a[0][1]+a[1][1])/2);pinch.d=d}},true);
+const clearPt=e=>{pts.delete(e.pointerId);if(pts.size<2)pinch=null};
+vp.addEventListener('pointerup',clearPt,true);vp.addEventListener('pointercancel',clearPt,true);
+const DEFAULT_SLOTS={1:{cx:250,cy:560,k:1.25},2:'fit',3:{cx:1120,cy:1000,k:0.8},4:{cx:1820,cy:640,k:0.72},5:{cx:1120,cy:1290,k:1.2}};
+if(!S.slots)S.slots=JSON.parse(JSON.stringify(DEFAULT_SLOTS));
+function animateTo(fn){world.classList.add('anim');fn();setTimeout(()=>world.classList.remove('anim'),950);}
+function centerOn(cx,cy,k){const r=vp.getBoundingClientRect();S.view.k=k;S.view.x=r.width/2-cx*k;S.view.y=r.height/2-cy*k;applyView();save();}
+function gotoSlot(n){const v=S.slots[n];if(!v){toast('Slot '+n+' is empty — Shift+'+n+' saves the current view');return}animateTo(()=>{if(v==='fit')fit();else centerOn(v.cx,v.cy,v.k)});}
+function saveSlot(n){const r=vp.getBoundingClientRect();S.slots[n]={cx:(r.width/2-S.view.x)/S.view.k,cy:(r.height/2-S.view.y)/S.view.k,k:S.view.k};save();renderSlots();toast('View saved to '+n);}
+function renderSlots(){const el=document.getElementById('slots');el.innerHTML='';for(let i=1;i<=5;i++){const b=document.createElement('button');b.className='btn'+(S.slots[i]?' has':'');b.textContent=i;b.title=S.slots[i]===undefined?'Empty — Shift+click to save':'Fly here · Shift+click to overwrite';b.onclick=e=>{if(e.shiftKey)saveSlot(i);else gotoSlot(i)};el.appendChild(b)}}
+function fit(){const xs=[],ys=[];for(const g of S.groups){xs.push(g.x,g.x+g.w);ys.push(g.y,g.y+g.h)}for(const n of S.nodes){xs.push(n.x,n.x+n.w);ys.push(n.y,n.y+240)}for(const n of S.notes){xs.push(n.x,n.x+n.w);ys.push(n.y,n.y+120)}
+  if(!xs.length)return;const minx=Math.min(...xs)-40,maxx=Math.max(...xs)+40,miny=Math.min(...ys)-100,maxy=Math.max(...ys)+80;const r=vp.getBoundingClientRect();
+  const k=Math.min(3,Math.max(0.12,Math.min(r.width/(maxx-minx),r.height/(maxy-miny))));S.view.k=k;S.view.x=(r.width-(maxx-minx)*k)/2-minx*k;S.view.y=(r.height-(maxy-miny)*k)/2-miny*k;applyView();save();}
+document.getElementById('fit').onclick=fit;
+document.getElementById('flow').onclick=()=>setFlow(!flowOn);
+document.getElementById('zin').onclick=()=>{const r=vp.getBoundingClientRect();zoomAt(1.25,r.left+r.width/2,r.top+r.height/2)};
+document.getElementById('zout').onclick=()=>{const r=vp.getBoundingClientRect();zoomAt(0.8,r.left+r.width/2,r.top+r.height/2)};
+document.getElementById('addnode').onclick=()=>{snap();const r=vp.getBoundingClientRect();const [x,y]=toWorld(r.left+r.width/2,r.top+r.height/2);const id='n'+Date.now();S.nodes.push({id,x:Math.round(x/10)*10-150,y:Math.round(y/10)*10-60,w:300,title:'New node',badge:'',color:C.generic,human:false,ins:[{name:'input',type:'data'}],outs:[{name:'output',type:'data'}],widgets:[{k:'param',v:'value'}]});save();build();select('node',id);toast('Node added — double-click its title to rename')};
+document.getElementById('addnote').onclick=()=>{snap();const r=vp.getBoundingClientRect();const [x,y]=toWorld(r.left+r.width/2,r.top+r.height/2);const id='note'+Date.now();S.notes.push({id,x:Math.round(x/10)*10-160,y:Math.round(y/10)*10-40,w:320,html:'<b>Note.</b> Double-click to edit.'});save();build();select('note',id)};
+document.getElementById('undo').onclick=undo;
+function undo(){const h=hist.pop();if(!h){toast('Nothing to undo');return}const o=JSON.parse(h);Object.assign(S,o);sel_={type:null};save();build();toast('Undone')}
+document.getElementById('reset').onclick=()=>{if(!confirm('Discard your edits and reload the original draft?'))return;S=defaultState();hist.length=0;save();build();fit();toast('Original draft restored')};
+const modal=document.getElementById('modal'),ta=document.getElementById('jsontext');
+document.getElementById('json').onclick=()=>{ta.value=JSON.stringify({groups:S.groups,nodes:S.nodes,wires:S.wires,notes:S.notes},null,1);modal.classList.add('on');ta.focus();ta.select()};
+document.getElementById('closejson').onclick=()=>modal.classList.remove('on');
+document.getElementById('copyjson').onclick=async()=>{try{await navigator.clipboard.writeText(ta.value);toast('Copied')}catch(e){ta.select();toast('Select all and copy manually')}};
+document.getElementById('importjson').onclick=()=>{try{const o=JSON.parse(ta.value);if(!o.nodes||!o.wires)throw 0;snap();S.groups=o.groups||[];S.nodes=o.nodes;S.wires=o.wires;S.notes=o.notes||[];save();build();fit();modal.classList.remove('on');toast('Imported')}catch(e){toast('That is not a valid layout JSON')}};
+window.addEventListener('keydown',e=>{
+  if(e.target.isContentEditable||e.target.tagName==='TEXTAREA')return;
+  if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='z'){e.preventDefault();undo();return}
+  if(e.key==='Escape'){select(null,null);modal.classList.remove('on')}
+  if((e.key==='Delete'||e.key==='Backspace')&&sel_.type){e.preventDefault();
+    if(sel_.type==='node')deleteNode(sel_.id);
+    else if(sel_.type==='wire'){snap();S.wires=S.wires.filter(w=>w.id!==sel_.id);sel_={type:null};save();draw();toast('Wire deleted')}
+    else if(sel_.type==='note'){snap();S.notes=S.notes.filter(n=>n.id!==sel_.id);sel_={type:null};save();build()}
+    else if(sel_.type==='group'){snap();S.groups=S.groups.filter(g=>g.id!==sel_.id);sel_={type:null};save();build()}}
+  if(e.key==='f'||e.key==='F')fit();
+  if(e.key==='a'||e.key==='A')setFlow(!flowOn);
+  if(e.key==='h'||e.key==='H'){document.getElementById('app').classList.toggle('pres');toast(document.getElementById('app').classList.contains('pres')?'Presentation mode — H to bring the controls back':'Controls back')}
+  if(!e.shiftKey&&!e.ctrlKey&&!e.metaKey&&sel_.type!=='wire'&&['1','2','3','4','5'].includes(e.key))gotoSlot(+e.key);
+  if(e.shiftKey&&['!','@','#','$','%','1','2','3','4','5'].includes(e.key)){const m={'!':1,'@':2,'#':3,'$':4,'%':5};saveSlot(m[e.key]||+e.key)}
+  if(sel_.type==='wire'&&['1','2','3'].includes(e.key)){snap();const w=S.wires.find(x=>x.id===sel_.id);if(w){w.flow=+e.key;save();draw();toast('Flow intensity '+e.key)}}
+});
+let toastT;function toast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('on');clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('on'),1800)}
+build();applyView();document.getElementById('flow').classList.toggle('on',flowOn);renderSlots();
+if(!localStorage.getItem||!(()=>{try{return localStorage.getItem(LS)}catch(e){return null}})())fit();
+window.addEventListener('resize',()=>{});
+</script>
+</body></html>
