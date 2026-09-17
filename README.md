@@ -1,5 +1,5 @@
 # karusrus.github.io
 
-Portfolio - Ruslan Karymov, Design Ops and Creative Automation Lead.
+Portfolio - Ruslan Karymov, AI Enablement and Automation Lead, creative, marketing and business operations.
 
 Live at https://karusrus.github.io
