@@ -737,7 +737,30 @@ window.CASES = [
     {src:'assets/w-pipeline-selector.jpg',cls:'',cap:'Camera slot 1. The node that would pick the concepts, with its rubric and threshold as widgets.'},
     {src:'assets/w-pipeline-inbox.jpg',cls:'',cap:'Camera slot 5. The one human node on the map: an n8n send-and-wait-for-approval step with a four-hour timeout.'}
   ],
-  links:[{t:'Open the map',u:'https://karusrus.github.io/pipeline-map/'},{t:'Source on GitHub',u:'https://github.com/karusrus/pipeline-map'}]
+  links:[{t:'Open the map',u:'https://karusrus.github.io/pipeline-map/'},{t:'Source on GitHub',u:'https://github.com/karusrus/pipeline-map'},{t:'Line 2: the same gate producing evidence',u:'https://karusrus.github.io/transparency-kit/'}]
+},
+{
+  id:'ai-act-kit', size:'wide2', cat:'automation',
+  title:'AI Act Transparency Kit — the same gate, now producing evidence',
+  client:'Personal project, open source', role:'System design, n8n, governance, front-end', years:'2026',
+  cover:'assets/w-aiact-audit.png', pos:'50% 0%',
+  sub:'Every AI asset stops at a named human, and the auditor’s page fills itself. An n8n module dropped in front of any publishing step',
+  tags:['AI operations','Human approval gate','EU AI Act','n8n','Governance','Provenance','Path analysis','Open source'],
+  challenge:'From 2 August 2026 a company that publishes AI-generated media or text has to disclose it, and a real person has to be able to show who approved what. Most teams answer with a policy document. A policy is not a property of the line — it is a report written before the audit.',
+  bullets:[
+    'A module any n8n line calls before publishing: classification under Article 50, a disclosure sentence in the asset’s language, a burnt-in label, a provenance manifest, then a stop until a named person decides — approve, editorial exception, return',
+    'A registry of every AI system on the whole instance, read through the n8n API, with path analysis: from each model to each node that reaches people, and what stood in between — disclosed, editorial, verify, uncovered, likeness',
+    'The auditor’s page renders itself from the files the line writes: awaiting a human, the registry, synthetic media and deep fakes, generated text, the approval log',
+    'A real line with the module inside: text → three local synthetic voices → the gate → publish only what was approved; and a typical marketing line without a gate, flagged red with the exact path',
+    'The map that pitched the first pipeline now draws this one from the live workflow export — the picture is generated, not drawn'
+  ],
+  result:'Six AI systems found on the demo instance, two of them reaching people uncovered; four decisions logged with reasons. Three independent reviews (an AI Act auditor, an n8n architect, a hiring manager) are published with the fixes they led to. Not legal advice; the deployer side of Article 50 only.',
+  gallery:[
+    {src:'assets/w-aiact-audit.png',cls:'w',cap:'The auditor’s page. Counters, then five blocks tied to the articles they answer, every row written by the line.'},
+    {src:'assets/w-aiact-map.png',cls:'',cap:'The line on the map: Kokoro voices → Loop → AI Act gate → human approved? → publish. The dashed wire is the decision coming back from the module.'},
+    {src:'assets/w-aiact-gate.png',cls:'',cap:'The gate. One asset, its category and obligations, the disclosure sentence, three decisions.'}
+  ],
+  links:[{t:'Open the case',u:'https://karusrus.github.io/transparency-kit/'},{t:'Live map',u:'https://karusrus.github.io/pipeline-map/?import=docs/transparency-kit.bundle.json&slot=2'},{t:'Source on GitHub',u:'https://github.com/karusrus/transparency-kit'}]
 },
 {
   id:'scanner', size:'tall', cat:'product',
@@ -808,7 +831,7 @@ window.BRANDS = [
   ['European Commission','via GDSI'],['European Parliament','via GDSI'],['Asian Development Bank','via GDSI'],['World Bank','via GDSI'],
   ['DexTools','direct'],['Government of Kazakhstan','direct'],['LUKOIL','direct'],['Gazprom','direct']
 ];
-window.HERO_IMGS = ['rm-1','rm-magazine','br-crypto-1','rb-frame','ex-ath-es','sw-post','uni-1','gdsi-mep','nft-cards','dextools','egov','w-pipeline-overview','scanner-grid-dark','cv-cisco','ex-news','gdsi-youth','fibo-brochure','ex-wwf','ex-top-ko','w-curvature'];
+window.HERO_IMGS = ['w-aiact-audit','rm-1','rm-magazine','br-crypto-1','rb-frame','ex-ath-es','sw-post','uni-1','gdsi-mep','nft-cards','dextools','egov','w-pipeline-overview','scanner-grid-dark','cv-cisco','ex-news','gdsi-youth','fibo-brochure','ex-wwf','ex-top-ko','w-curvature'];
 </script>
 
 <script>
