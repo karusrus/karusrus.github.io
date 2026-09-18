@@ -133,6 +133,9 @@ section.band{padding:clamp(80px,12vh,150px) 0}
 .spec dd{color:var(--muted)}
 .spec dd b{color:var(--text);font-weight:600}
 .spec .out{margin-top:18px;padding-top:16px;border-top:1px solid var(--line);font-family:var(--mono);font-size:12px;color:var(--ok)}
+.specs.four{grid-template-columns:repeat(4,1fr)}
+@media(max-width:1200px){.specs.four{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:700px){.specs.four{grid-template-columns:1fr}}
 .spec.lean{padding:20px 22px 22px}
 .spec.lean h3{font-size:18px;margin:8px 0 12px}
 .spec.lean dl{font-size:13.5px}
@@ -284,11 +287,11 @@ footer{padding:60px 0 80px;color:var(--dim);font-size:13px;border-top:1px solid 
       <article class="pcard rv">
         <div class="metric">1,202 CVs · 77 ms · offline</div>
         <div class="win">
-          <div class="bar"><i></i><i></i><i></i><span>resume-lab — islands of an archive</span></div>
+          <div class="bar"><i></i><i></i><i></i><span>resume-lab — 1,202 CVs, nothing leaves the machine</span></div>
           <div class="shot"><img src="../assets/w-resumelab-islands.jpg" alt="CV archive as islands"></div>
         </div>
         <div class="pbody">
-          <h3>Offline search across a CV archive</h3>
+          <h3>Privacy-first local-LLM CV evaluation</h3>
           <p>A consultancy staffs tenders from an archive nobody can read. This turns it into islands you can see, then answers a requirement list in plain language or straight from the terms of reference — every requirement backed by a quote from the CV, re-read by a second model. Vectors on the machine, no data leaving the building.</p>
           <div class="tags"><span class="tag">bge-m3</span><span class="tag">llama.cpp</span><span class="tag">cosmos.gl</span><span class="tag">Offline</span></div>
           <div class="plinks"><a href="#">Walkthrough →</a></div>
@@ -336,7 +339,7 @@ footer{padding:60px 0 80px;color:var(--dim);font-size:13px;border-top:1px solid 
       <p>The same work, older tools. A process nobody wanted to do by hand, turned into something that runs.</p>
     </div>
     <div class="rule rv"></div>
-    <div class="specs">
+    <div class="specs four">
 
       <article class="spec lean rv">
         <div class="who">Government of Kazakhstan · 2010</div>
@@ -356,6 +359,16 @@ footer{padding:60px 0 80px;color:var(--dim);font-size:13px;border-top:1px solid 
           <dt>Built</dt><dd>The simulation model decisions were argued from (ANSYS, MATLAB, TRIZ), then reconstruction proposals, scale settings and supervisory control through <b>SCADA</b> — the operator reads and steers the process from one screen.</dd>
         </dl>
         <div class="out">−17%+ production cost, verified by the client</div>
+      </article>
+
+      <article class="spec lean rv">
+        <div class="who">Curvature · GDSI · Exness · DexTools</div>
+        <h3>Decision material for committees</h3>
+        <dl>
+          <dt>Scope</dt><dd>Boards, CIOs and EU evaluation committees: ten minutes, no context, a decision to make.</dd>
+          <dt>Built</dt><dd>A repeatable way to turn <b>20–30 experts of input</b> into one document that answers in the order it is asked: 100+ page tenders, executive dashboards, authored video walkthroughs ordered by impact against effort.</dd>
+        </dl>
+        <div class="out">~1 month per cycle · 4 institutions served</div>
       </article>
 
       <article class="spec lean rv">
