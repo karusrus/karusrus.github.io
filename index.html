@@ -776,7 +776,7 @@ window.CASES = [
   links:[{t:'Open the map',u:'https://karusrus.github.io/pipeline-map/'},{t:'Source on GitHub',u:'https://github.com/karusrus/pipeline-map'},{t:'AI Act Transparency Kit: the same gate, with a ledger',u:'https://karusrus.github.io/transparency-kit/'}]
 },
 {
-  id:'ai-act-kit', size:'wide2', cat:'automation',
+  id:'ai-act-kit', size:'wide2', cat:'product',
   title:'AI Act Transparency Kit — the human is the gate, the ledger cannot be edited',
   client:'Personal project, open source', role:'System design, n8n, governance, front-end', years:'2026',
   cover:'assets/w-aiact-audit.png', pos:'50% 0%',
@@ -1026,7 +1026,7 @@ $$('.stat').forEach(s=>tilt(s,5,1.02));
 
 /* ---------- work grid ---------- */
 const grid=$('#grid'), filters=$('#filters');
-const CATS=[['all','All'],['brand','Brand & campaigns'],['automation','Automation'],['info','Information design'],['product','Product & tools']];
+const CATS=[['all','All'],['product','Product & tools'],['automation','Automation deployed at clients'],['info','Information design'],['brand','Brand & campaigns']];
 filters.innerHTML=CATS.map(([k,l],i)=>`<button data-cat="${k}" class="${i?'':'on'}">${l}</button>`).join('');
 filters.addEventListener('click',e=>{
   const b=e.target.closest('button'); if(!b) return;

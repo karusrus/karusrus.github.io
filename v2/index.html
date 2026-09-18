@@ -960,7 +960,7 @@ $$('.stat').forEach(s=>tilt(s,5,1.02));
 
 /* ---------- work grid ---------- */
 const grid=$('#grid'), filters=$('#filters');
-const CATS=[['all','All'],['brand','Brand & campaigns'],['automation','Automation'],['info','Information design'],['product','Product & tools']];
+const CATS=[['all','All'],['product','Product & tools'],['automation','Automation deployed at clients'],['info','Information design'],['brand','Brand & campaigns']];
 filters.innerHTML=CATS.map(([k,l],i)=>`<button data-cat="${k}" class="${i?'':'on'}">${l}</button>`).join('');
 filters.addEventListener('click',e=>{
   const b=e.target.closest('button'); if(!b) return;
