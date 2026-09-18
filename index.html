@@ -400,7 +400,7 @@ footer{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;paddin
 <!-- ================= MARKETING OPS ================= -->
 <section class="brands" id="campaigns">
   <div class="wrap">
-    <div class="eyebrow mono rv">Marketing &amp; campaign operations</div>
+    <div class="eyebrow mono rv">Campaign optimisation &amp; creative automation</div>
     <h2 class="h2 rv">The names are the easy part.</h2>
     <p class="lead rv" style="max-width:76ch;margin-top:18px">Real Madrid, Red Bull Racing, Cristiano Ronaldo, Uniswap, Gartner, Cisco, Dell — every one of them arrived with an approval chain, a rights holder and a deadline. What made the work repeatable was not taste: it was the line behind it. Brief to variants to localisation to upload, 500+ assets a week across 23 markets, the manual step removed through the Figma API, the winner picked by SQL rather than by opinion, and the result measured in CPA and conversion, not in applause.</p>
   </div>
@@ -850,17 +850,18 @@ window.CASES = [
 },
 {
   id:'engineering', size:'', cat:'automation',
-  title:'Engineering analytics and industrial design systems',
+  title:'Engineering optimisation and SCADA supervisory control',
   client:'UECHM & Teploproekt', role:'Chief Engineer of Projects (ГИП)', years:'2007–2011',
   cover:'assets/engineering.jpg', pos:'50% 50%',
-  sub:'A simulation system and the reconstruction and scale settings it produced — production cost cut by 17%+ at the client',
-  tags:['ANSYS','MATLAB','TRIZ','ISO / GOST'],
+  sub:'Simulation, engineering optimisation and control through SCADA — reconstruction and scale settings that cut production cost by 17%+ at the client',
+  tags:['SCADA','ANSYS','MATLAB','TRIZ','ISO / GOST'],
   challenge:'Licensed Chief Engineer of Projects for industrial infrastructure serving LUKOIL and Gazprom, working to ISO and GOST standards.',
   bullets:[
     'Led a team of 50 engineers at UECHM',
-    'ANSYS finite element analysis, MATLAB modelling, TRIZ methodology for systematic contradiction analysis'
+    'Built the simulation model the decisions were argued from: ANSYS finite element analysis, MATLAB modelling, TRIZ for systematic contradiction analysis',
+    'Turned the model into reconstruction proposals and scale settings for the plant, then into supervisory control through SCADA — the operator reads the process and steers it from one screen instead of walking the floor'
   ],
-  result:'Production costs cut by 17%+ at Katur Invest, verified by the client.',
+  result:'Production costs cut by 17%+ at Katur Invest, verified by the client — from a model, a set of scale settings and a control screen, not from a report.',
   gallery:[
     {src:'assets/engineering.jpg',cls:'w',cap:'Finite-element thermal model and the drawings it fed.'}
   ],
@@ -1033,7 +1034,7 @@ $$('.stat').forEach(s=>tilt(s,5,1.02));
 
 /* ---------- work grid ---------- */
 const grid=$('#grid'), filters=$('#filters');
-const CATS=[['all','All'],['product','Product & tools'],['automation','Process automation'],['brand','Marketing & campaign operations']];
+const CATS=[['all','All'],['product','Product & tools'],['automation','Process automation'],['brand','Campaign optimisation & automation']];
 filters.innerHTML=CATS.map(([k,l],i)=>`<button data-cat="${k}" class="${i?'':'on'}">${l}</button>`).join('');
 filters.addEventListener('click',e=>{
   const b=e.target.closest('button'); if(!b) return;
