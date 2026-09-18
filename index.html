@@ -285,6 +285,7 @@ footer{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;paddin
 <nav class="nav" id="nav">
   <a class="logo" href="#top"><i>RK</i>Ruslan Karymov</a>
   <ul>
+    <li><a href="#campaigns">Campaigns</a></li>
     <li><a href="#work">Work</a></li>
     <li><a href="#approach">Approach</a></li>
     <li><a href="#toolkit">Toolkit</a></li>
@@ -396,13 +397,24 @@ footer{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;paddin
   </div>
 </section>
 
+<!-- ================= MARKETING OPS ================= -->
+<section class="brands" id="campaigns">
+  <div class="wrap">
+    <div class="eyebrow mono rv">Marketing &amp; campaign operations</div>
+    <h2 class="h2 rv">The names are the easy part.</h2>
+    <p class="lead rv" style="max-width:76ch;margin-top:18px">Real Madrid, Red Bull Racing, Cristiano Ronaldo, Uniswap, Gartner, Cisco, Dell — every one of them arrived with an approval chain, a rights holder and a deadline. What made the work repeatable was not taste: it was the line behind it. Brief to variants to localisation to upload, 500+ assets a week across 23 markets, the manual step removed through the Figma API, the winner picked by SQL rather than by opinion, and the result measured in CPA and conversion, not in applause.</p>
+  </div>
+  <div class="marquee" style="--d:60s"><div class="row" id="mq1"></div></div>
+  <div class="marquee rev" style="--d:70s"><div class="row" id="mq2"></div></div>
+</section>
+
 <!-- ================= WORK ================= -->
 <section class="work" id="work">
   <div class="wrap">
     <div class="work-head">
       <div>
         <div class="eyebrow mono rv">Work</div>
-        <h2 class="h2 rv">Thirteen cases. <span style="color:var(--muted)">One production line.</span></h2>
+        <h2 class="h2 rv">Fourteen cases. <span style="color:var(--muted)">Tools, automation, campaigns.</span></h2>
       </div>
       <div class="filters rv" id="filters"></div>
     </div>
@@ -432,12 +444,7 @@ footer{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;paddin
   </div>
 </section>
 
-<!-- ================= BRANDS ================= -->
-<section class="brands">
-  <div class="wrap"><div class="eyebrow mono rv">Brands &amp; clients</div></div>
-  <div class="marquee" style="--d:60s"><div class="row" id="mq1"></div></div>
-  <div class="marquee rev" style="--d:70s"><div class="row" id="mq2"></div></div>
-</section>
+
 
 <!-- ================= TOOLKIT ================= -->
 <section class="toolkit" id="toolkit">
@@ -591,11 +598,11 @@ window.CASES = [
   links:[{t:'Case on Behance',u:'https://www.behance.net/karusrus'}]
 },
 {
-  id:'presentation', size:'', cat:'info',
+  id:'presentation', size:'', cat:'automation',
   title:'Presentation & information design — making a decision findable',
   client:'Curvature · GDSI · Exness · DexTools', role:'Information designer', years:'2011–2025',
   cover:'assets/gdsi-plan.jpg', pos:'50% 50%',
-  sub:'Decks for CIOs, 100-page tenders for committees, a decade of executive dashboards',
+  sub:'Turning heterogeneous expert and financial inputs into material a committee can decide on, the same way every time',
   tags:['Executive decks','Tender documentation','Institutional infographics','Data storytelling','Video walkthroughs','Information hierarchy'],
   challenge:'The hardest audience is not the one that dislikes your work. It is the one with ten minutes, no context, and a decision to make. Board members, CIOs, evaluation committees.',
   bullets:[
@@ -683,11 +690,11 @@ window.CASES = [
   links:[{t:'Case on Behance',u:'https://www.behance.net/karusrus'}]
 },
 {
-  id:'gdsi', size:'tall', cat:'info',
+  id:'gdsi', size:'tall', cat:'automation',
   title:'Institutional data narratives for the EU',
   client:'GDSI Limited', role:'Strategic Visualisation & AI Expert', years:'2024–2025',
   cover:'assets/gdsi-mep.jpg', pos:'50% 50%',
-  sub:'European Commission, Parliament, ADB, World Bank — infographics and 100-page tenders read by committees',
+  sub:'The organisational and technical pipeline behind EU programme deliverables, where governance is a condition of funding',
   tags:['Institutional infographics','Tender documentation','NotebookLM','NLP','EU communication'],
   challenge:'Aggregate heterogeneous multi-expert and financial inputs into proposals that score well with an EU evaluation committee.',
   bullets:[
@@ -822,11 +829,11 @@ window.CASES = [
   links:[{t:'See it running',u:'https://karusrus.github.io/rc-scanner'}]
 },
 {
-  id:'egov', size:'', cat:'info',
+  id:'egov', size:'', cat:'automation',
   title:'National e-government data infrastructure',
   client:'Loyalty Peak — Government of Kazakhstan (egov.kz)', role:'Lead analyst', years:'2010',
   cover:'assets/egov.jpg', pos:'50% 50%',
-  sub:'8,000+ government forms, one data dictionary. egov.kz is now in the UN top 10',
+  sub:'Process automation for a whole state, 2010: 8,000+ government forms reduced to one data model. egov.kz is now in the UN top 10',
   tags:['Master data management','Data taxonomy','Data quality','Distributed teams'],
   challenge:'Standardise data across 8,000+ government forms from incompatible ministries for a national platform.',
   bullets:[
@@ -842,11 +849,11 @@ window.CASES = [
   links:[]
 },
 {
-  id:'engineering', size:'', cat:'info',
+  id:'engineering', size:'', cat:'automation',
   title:'Engineering analytics and industrial design systems',
   client:'UECHM & Teploproekt', role:'Chief Engineer of Projects (ГИП)', years:'2007–2011',
   cover:'assets/engineering.jpg', pos:'50% 50%',
-  sub:'Where the systems thinking comes from: LUKOIL and Gazprom infrastructure to ISO and GOST',
+  sub:'A simulation system and the reconstruction and scale settings it produced — production cost cut by 17%+ at the client',
   tags:['ANSYS','MATLAB','TRIZ','ISO / GOST'],
   challenge:'Licensed Chief Engineer of Projects for industrial infrastructure serving LUKOIL and Gazprom, working to ISO and GOST standards.',
   bullets:[
@@ -1026,7 +1033,7 @@ $$('.stat').forEach(s=>tilt(s,5,1.02));
 
 /* ---------- work grid ---------- */
 const grid=$('#grid'), filters=$('#filters');
-const CATS=[['all','All'],['product','Product & tools'],['automation','Automation deployed at clients'],['info','Information design'],['brand','Brand & campaigns']];
+const CATS=[['all','All'],['product','Product & tools'],['automation','Process automation'],['brand','Marketing & campaign operations']];
 filters.innerHTML=CATS.map(([k,l],i)=>`<button data-cat="${k}" class="${i?'':'on'}">${l}</button>`).join('');
 filters.addEventListener('click',e=>{
   const b=e.target.closest('button'); if(!b) return;
