@@ -221,6 +221,15 @@ section.band{padding:clamp(80px,12vh,150px) 0}
 @keyframes draw{to{stroke-dashoffset:0}}
 footer{padding:60px 0 80px;color:var(--dim);font-size:13px;border-top:1px solid var(--line);margin-top:40px}
 </style>
+
+<style id="isolate">
+body > *:not(nav) { display:none !important; }
+#deployed { display:block !important; }
+nav { display:none !important; }
+main, body > main { display:block !important; }
+main > *:not(#deployed) { display:none !important; }
+.rv { opacity:1 !important; transform:none !important; }
+</style>
 </head>
 <body>
 
@@ -241,17 +250,16 @@ footer{padding:60px 0 80px;color:var(--dim);font-size:13px;border-top:1px solid 
   <div class="glow"></div>
   <canvas id="dust"></canvas>
   <svg class="canvas" id="cv" preserveAspectRatio="xMidYMid slice"></svg>
-  <div class="arc" id="arc"><div class="st"><span class="lbl">Chief engineer<b>2007 — 2011</b></span></div><div class="seg"></div><div class="st"><span class="lbl">Creative automation<b>2011 — 2024</b></span></div><div class="seg s2"></div><div class="st"><span class="lbl on">AI implementation<b>2025 — now</b></span></div></div>
+  <div class="arc" id="arc"><div class="st"><span class="lbl">Chief engineer<b>2007 — 2011</b></span></div><div class="seg"></div><div class="st"><span class="lbl">Creative automation<b>2011 — 2024</b></span></div><div class="seg s2"></div><div class="st"><span class="lbl on">AI implementation<b>2024 — now</b></span></div></div>
   <div class="wrap">
     <div class="mono rv">AI Implementation &amp; Automation Lead</div>
     <h1 class="rv" style="margin-top:18px">Production lines with a <em>human gate</em>, handed over working.</h1>
     <p class="sub rv">I take an operation that already runs — creative, marketing, business — and put AI inside it where it pays: a pipeline, an approval gate a named person signs, a ledger an auditor can read. Eleven years inside a regulated fintech, then delivery for EU institutions.</p>
     <div class="cta rv">
       <a class="btn primary" href="#products">See what it looks like</a>
-      <a class="btn" href="#deployed">See three systems in production</a>
+      <a class="btn" href="#deployed">Deployed at clients</a>
     </div>
     <div class="term rv" id="term"><span class="p">$</span> <span id="tt"></span><span class="cur"></span></div>
-    <div class="mono rv" style="margin-top:10px;font-size:9.5px;color:#7d8799">demo instance · client deployments stay under NDA</div>
   </div>
 </header>
 
@@ -296,7 +304,7 @@ footer{padding:60px 0 80px;color:var(--dim);font-size:13px;border-top:1px solid 
         <div class="gnode now" id="g5">
           <div class="ntitle"><span>Independent — AI implementation</span><em>2025 — now</em></div>
           <div class="nrow" id="o5a"><b>Transparency Kit</b> — gate, ledger, registry</div>
-          <div class="nrow" id="o5b"><b>Two production pipelines on client stacks</b> in 2025 — names under NDA</div>
+          <div class="nrow" id="o5b"><b>Pipelines on the client's stack</b>, handed over working</div>
         </div>
 
       </div>
@@ -335,10 +343,10 @@ footer{padding:60px 0 80px;color:var(--dim);font-size:13px;border-top:1px solid 
         <h3>Hiring offers issued on-chain</h3>
         <dl>
           <dt>Was</dt><dd>Every offer assembled and sent by hand, design in the loop each time.</dd>
-          <dt>Built</dt><dd><b>BambooHR REST API</b> into generated personalised interactive PDF offers, extended to non-transferable <b>NFT certificates on Polygon</b> the candidate verifies for themselves.</dd>
+          <dt>Built</dt><dd><b>BambooHR REST API</b> into generated personalised interactive PDF offers, extended to non-transferable <b>NFT certificates on Polygon</b> the candidate verifies.</dd>
           <dt>Runs</dt><dd>The HR team, end to end, without design.</dd>
         </dl>
-        <div class="out">100+ offers issued · each one verifiable on-chain</div>
+        <div class="out">100+ offers issued · an industry first</div>
       </article>
 
       <article class="spec rv">
@@ -348,7 +356,7 @@ footer{padding:60px 0 80px;color:var(--dim);font-size:13px;border-top:1px solid 
         <dl>
           <dt>Was</dt><dd>Twenty to thirty experts of input per document, and a committee with an afternoon to decide.</dd>
           <dt>Built</dt><dd>The <b>organisational and technical pipeline</b> behind the analysis: how material moves, who decides and on what, delivered under the programme's ethics and data-governance rules.</dd>
-          <dt>Runs</dt><dd>The GDSI project team, under Horizon Europe rules. My role: AI Expert, subcontracted.</dd>
+          <dt>Runs</dt><dd>The project team and its evaluation committee.</dd>
         </dl>
         <div class="out">Ethics-by-Design as part of the deliverable</div>
       </article>
@@ -407,7 +415,7 @@ footer{padding:60px 0 80px;color:var(--dim);font-size:13px;border-top:1px solid 
           <h3>Privacy-first local-LLM CV evaluation</h3>
           <p>A consultancy staffs tenders from an archive nobody can read. This turns it into islands you can see, then answers a requirement list in plain language or straight from the terms of reference — every requirement backed by a quote from the CV, re-read by a second model. Vectors on the machine, no data leaving the building.</p>
           <div class="tags"><span class="tag">bge-m3</span><span class="tag">llama.cpp</span><span class="tag">cosmos.gl</span><span class="tag">Offline</span></div>
-          <div class="plinks"><span style="color:#7d8799;font-size:12.5px">Walkthrough on request · demo data is an open dataset, not client data</span></div>
+          <div class="plinks"><a href="#">Walkthrough →</a></div>
         </div>
       </article>
 
@@ -435,7 +443,7 @@ footer{padding:60px 0 80px;color:var(--dim);font-size:13px;border-top:1px solid 
           <h3>DexTools dashboard audit</h3>
           <p>An independent read of how a DeFi analytics platform presents data: signal-to-noise, information hierarchy, what the first view has to answer. Delivered as an authored walkthrough ordered by impact against effort, not as a list of opinions.</p>
           <div class="tags"><span class="tag">Audit</span><span class="tag">Information hierarchy</span><span class="tag">Web3</span></div>
-          <div class="plinks"><span style="color:#7d8799;font-size:12.5px">Delivered as an authored video walkthrough</span></div>
+          <div class="plinks"><a href="#">Case →</a></div>
         </div>
       </article>
     </div>
@@ -455,14 +463,14 @@ footer{padding:60px 0 80px;color:var(--dim);font-size:13px;border-top:1px solid 
     <div class="specs four">
 
       <article class="spec lean rv">
-        <div class="who">Government of Kazakhstan · 2010 · parallel to the engineering practice</div>
+        <div class="who">Government of Kazakhstan · 2010</div>
         <h3>egov.kz — a state on one data model</h3>
         <div class="flowpanel" data-flow="8000 forms,dictionary,taxonomy,platform" data-gate="" data-thumb=""></div>
         <dl>
           <dt>Scope</dt><dd><b>8,000+ government forms</b> from incompatible ministries, a team of eight analysts across four countries.</dd>
           <dt>Built</dt><dd>The data dictionary, taxonomy, master data model and quality rules the national platform runs on.</dd>
         </dl>
-        <div class="out">−40% unique fields across 8,000+ forms (2010) · the platform is still live</div>
+        <div class="out">−40% unique fields · egov.kz now UN top 10</div>
       </article>
 
       <article class="spec lean rv">
@@ -541,7 +549,7 @@ footer{padding:60px 0 80px;color:var(--dim);font-size:13px;border-top:1px solid 
   <div class="wrap">
     <div class="shead rv">
       <div><div class="mono">Work with me</div><h2 style="margin-top:12px">Three ways to start.</h2></div>
-      <p>Bulgarian residence, EU work rights, no sponsorship needed. Remote from the EU, contract or employment, English or Russian.</p>
+      <p>Remote from the EU. Contract or employment, English or Russian.</p>
     </div>
     <div class="rule rv"></div>
     <div class="specs">
@@ -557,7 +565,7 @@ footer{padding:60px 0 80px;color:var(--dim);font-size:13px;border-top:1px solid 
         <h3>Implementation lead</h3>
         <dl><dt>You get</dt><dd>Fractional or full-time. I run the rollout: use cases, pilots, adoption, governance, and the handover documentation that survives my absence.</dd>
         <dt>Proof</dt><dd>Adoption measured, not assumed.</dd></dl>
-        <div class="out">monthly rate on request</div>
+        <div class="out">from €5,500 / month</div>
       </article>
       <article class="spec rv">
         <div class="who">03 · 48 hours</div>
@@ -580,7 +588,6 @@ footer{padding:60px 0 80px;color:var(--dim);font-size:13px;border-top:1px solid 
       </div>
       <p style="align-self:center">
         <a class="btn primary" href="mailto:karusrus@gmail.com">karusrus@gmail.com</a>
-        <a class="btn" href="CV_Ruslan_Karymov.pdf" style="margin-left:8px">CV, PDF</a>
         <a class="btn" href="https://www.linkedin.com/in/ruslankarymov/" style="margin-left:8px">LinkedIn</a>
         <a class="btn" href="https://github.com/karusrus" style="margin-left:8px">GitHub</a>
       </p>
@@ -682,7 +689,7 @@ document.querySelectorAll('.pcard').forEach(c=>c.addEventListener('pointermove',
     ['o2b','g3','craft',''],
     ['o3b','g4','craft',''],
     ['o4a','g5','gov',''],
-    ['o1b','g5','craft','contradiction analysis → where the gate goes'],
+    ['o1b','g5','craft','TRIZ → decompose an AI use case'],
     ['o2b','g5','craft','pipelines → agent chains'],
     ['o3a','g5','craft','throughput → cost per unit']
   ];

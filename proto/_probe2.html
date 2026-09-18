@@ -541,7 +541,7 @@ footer{padding:60px 0 80px;color:var(--dim);font-size:13px;border-top:1px solid 
   <div class="wrap">
     <div class="shead rv">
       <div><div class="mono">Work with me</div><h2 style="margin-top:12px">Three ways to start.</h2></div>
-      <p>Bulgarian residence, EU work rights, no sponsorship needed. Remote from the EU, contract or employment, English or Russian.</p>
+      <p>Remote from the EU. Contract or employment, English or Russian.</p>
     </div>
     <div class="rule rv"></div>
     <div class="specs">
@@ -580,7 +580,6 @@ footer{padding:60px 0 80px;color:var(--dim);font-size:13px;border-top:1px solid 
       </div>
       <p style="align-self:center">
         <a class="btn primary" href="mailto:karusrus@gmail.com">karusrus@gmail.com</a>
-        <a class="btn" href="CV_Ruslan_Karymov.pdf" style="margin-left:8px">CV, PDF</a>
         <a class="btn" href="https://www.linkedin.com/in/ruslankarymov/" style="margin-left:8px">LinkedIn</a>
         <a class="btn" href="https://github.com/karusrus" style="margin-left:8px">GitHub</a>
       </p>
@@ -803,5 +802,10 @@ document.querySelectorAll('.pcard').forEach(c=>c.addEventListener('pointermove',
   document.getElementById('mq').innerHTML=mk(B)+mk(B);
 })();
 </script>
-</body>
+<script>window.addEventListener('load',()=>setTimeout(()=>{
+const t=[...document.querySelectorAll('#glinks text')].map(e=>e.textContent);
+const paths=document.querySelectorAll('#glinks path').length;
+const g=document.getElementById('graph-wrap').getBoundingClientRect();
+const b=[...document.querySelectorAll('#glinks path')].map(e=>{const r=e.getBBox();return Math.round(r.y+r.height)});
+document.body.innerHTML='<pre id=P>LABELS='+JSON.stringify(t)+'\npaths='+paths+'\ngraphH='+Math.round(g.height)+'\npathBottoms='+JSON.stringify(b)+'</pre>';},2000));</script></body>
 </html>
