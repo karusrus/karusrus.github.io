@@ -119,6 +119,32 @@ section.band{padding:clamp(80px,12vh,150px) 0}
 .strip figure:hover img{filter:grayscale(0) brightness(.9)}
 @media(max-width:900px){.strip{grid-template-columns:repeat(3,1fr)}}
 
+
+/* ---------- spec cards (deployed / automation) ---------- */
+.specs{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+@media(max-width:1000px){.specs{grid-template-columns:1fr}}
+.spec{position:relative;border:1px solid var(--line);border-radius:var(--r);background:linear-gradient(180deg,var(--surface2),var(--surface));padding:24px 24px 26px;transition:border-color .35s,transform .35s}
+.spec:hover{border-color:var(--line2);transform:translateY(-2px)}
+.spec .who{font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--dim)}
+.spec h3{font-size:21px;margin:10px 0 16px}
+.spec svg.mini{width:100%;height:58px;margin-bottom:18px;overflow:visible}
+.spec dl{display:grid;grid-template-columns:auto 1fr;gap:7px 12px;font-size:14px}
+.spec dt{font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--dim);padding-top:4px}
+.spec dd{color:var(--muted)}
+.spec dd b{color:var(--text);font-weight:600}
+.spec .out{margin-top:18px;padding-top:16px;border-top:1px solid var(--line);font-family:var(--mono);font-size:12px;color:var(--ok)}
+.spec.lean{padding:20px 22px 22px}
+.spec.lean h3{font-size:18px;margin:8px 0 12px}
+.spec.lean dl{font-size:13.5px}
+.grid.five{grid-template-columns:repeat(2,1fr)}
+.pcard.wide{grid-column:span 2}
+@media(max-width:900px){.pcard.wide{grid-column:span 1}}
+
+.mini .flow path{stroke:#232b3a;stroke-width:1.4;fill:none;stroke-dasharray:70;stroke-dashoffset:70;animation:draw 1s .3s forwards}
+.mini .flow rect{fill:#0c0e13;stroke:#2a3346;stroke-width:1.2}
+.mini .flow rect.gate{stroke:var(--gate)}
+.mini .flow rect.exit{stroke:var(--ok)}
+@keyframes draw{to{stroke-dashoffset:0}}
 footer{padding:60px 0 80px;color:var(--dim);font-size:13px;border-top:1px solid var(--line);margin-top:40px}
 </style>
 </head>
@@ -131,6 +157,7 @@ footer{padding:60px 0 80px;color:var(--dim);font-size:13px;border-top:1px solid 
     <li><a href="#products">Products</a></li>
     <li><a href="#automation">Automation</a></li>
     <li><a href="#campaigns">Campaigns</a></li>
+    <li><a href="#hire">Hire</a></li>
   </ul>
   <a class="btn" href="mailto:karusrus@gmail.com">Email me</a>
 </div></nav>
@@ -150,6 +177,70 @@ footer{padding:60px 0 80px;color:var(--dim);font-size:13px;border-top:1px solid 
   </div>
 </header>
 
+<section class="band" id="deployed">
+  <div class="wrap">
+    <div class="shead rv">
+      <div>
+        <div class="mono">Deployed at the client</div>
+        <h2 style="margin-top:12px">Three systems other people run without me.</h2>
+      </div>
+      <p>Each one replaced a manual step inside someone else's operation and stayed there after the handover.</p>
+    </div>
+    <div class="rule rv"></div>
+    <div class="specs">
+
+      <article class="spec rv">
+        <div class="who">Twigeo · for Swimply</div>
+        <h3>Generative ad production</h3>
+        <svg class="mini" viewBox="0 0 300 58"><g class="flow">
+          <path d="M28 29 H92" /><path d="M118 29 H182" /><path d="M208 29 H262" />
+          <rect x="6" y="18" width="22" height="22" rx="6"/><rect x="92" y="18" width="26" height="22" rx="6"/>
+          <rect x="182" y="18" width="26" height="22" rx="6"/><rect x="262" y="18" width="32" height="22" rx="6" class="exit"/>
+        </g></svg>
+        <dl>
+          <dt>Was</dt><dd>One creative a day, assembled by hand.</dd>
+          <dt>Built</dt><dd>A pipeline on the <b>Bannerbear API</b>: live listings composed into brand templates, shipped to TikTok, Meta, X and Google Ads.</dd>
+          <dt>Runs</dt><dd>The agency's media buyers, on their own accounts.</dd>
+        </dl>
+        <div class="out">~300 creatives a day · ROAS +50–70%</div>
+      </article>
+
+      <article class="spec rv">
+        <div class="who">Exness</div>
+        <h3>Hiring offers issued on-chain</h3>
+        <svg class="mini" viewBox="0 0 300 58"><g class="flow">
+          <path d="M28 29 H92" /><path d="M118 29 H182" /><path d="M208 29 H262" />
+          <rect x="6" y="18" width="22" height="22" rx="6"/><rect x="92" y="18" width="26" height="22" rx="6"/>
+          <rect x="182" y="18" width="26" height="22" rx="6" class="gate"/><rect x="262" y="18" width="32" height="22" rx="6" class="exit"/>
+        </g></svg>
+        <dl>
+          <dt>Was</dt><dd>Every offer assembled and sent by hand, design in the loop each time.</dd>
+          <dt>Built</dt><dd><b>BambooHR REST API</b> into generated personalised interactive PDF offers, extended to non-transferable <b>NFT certificates on Polygon</b> the candidate verifies.</dd>
+          <dt>Runs</dt><dd>The HR team, end to end, without design.</dd>
+        </dl>
+        <div class="out">100+ offers issued · an industry first</div>
+      </article>
+
+      <article class="spec rv">
+        <div class="who">Horizon Europe · via GDSI</div>
+        <h3>Delivery under EU programme rules</h3>
+        <svg class="mini" viewBox="0 0 300 58"><g class="flow">
+          <path d="M28 29 H92" /><path d="M118 29 H182" /><path d="M208 29 H262" />
+          <rect x="6" y="18" width="22" height="22" rx="6"/><rect x="92" y="18" width="26" height="22" rx="6"/>
+          <rect x="182" y="18" width="26" height="22" rx="6" class="gate"/><rect x="262" y="18" width="32" height="22" rx="6" class="exit"/>
+        </g></svg>
+        <dl>
+          <dt>Was</dt><dd>Twenty to thirty experts of input per document, and a committee with an afternoon to decide.</dd>
+          <dt>Built</dt><dd>The <b>organisational and technical pipeline</b> behind the analysis: how material moves, who decides and on what, delivered under the programme's ethics and data-governance rules.</dd>
+          <dt>Runs</dt><dd>The project team and its evaluation committee.</dd>
+        </dl>
+        <div class="out">Ethics-by-Design as part of the deliverable</div>
+      </article>
+
+    </div>
+  </div>
+</section>
+
 <section class="band" id="products">
   <div class="wrap">
     <div class="shead rv">
@@ -161,8 +252,8 @@ footer{padding:60px 0 80px;color:var(--dim);font-size:13px;border-top:1px solid 
     </div>
     <div class="rule rv"></div>
 
-    <div class="grid">
-      <article class="pcard rv">
+    <div class="grid five">
+      <article class="pcard wide rv">
         <div class="metric">Art. 50 · ledger verified</div>
         <div class="win">
           <div class="bar"><i></i><i></i><i></i><span>GET /webhook/audit — 200</span></div>
@@ -187,6 +278,20 @@ footer{padding:60px 0 80px;color:var(--dim);font-size:13px;border-top:1px solid 
           <p>A node canvas for pitching a system before it exists: drag, rewire, animate the flow, fly between camera views. It imports a live n8n instance, so the diagram in the meeting is generated from the workflow, not drawn to look like one.</p>
           <div class="tags"><span class="tag">Canvas</span><span class="tag">n8n import</span><span class="tag">Presales</span></div>
           <div class="plinks"><a href="https://karusrus.github.io/pipeline-map/">Open the canvas →</a><a href="https://github.com/karusrus/pipeline-map">Repository →</a></div>
+        </div>
+      </article>
+
+      <article class="pcard rv">
+        <div class="metric">1,202 CVs · 77 ms · offline</div>
+        <div class="win">
+          <div class="bar"><i></i><i></i><i></i><span>resume-lab — islands of an archive</span></div>
+          <div class="shot"><img src="../assets/w-resumelab-islands.jpg" alt="CV archive as islands"></div>
+        </div>
+        <div class="pbody">
+          <h3>Offline search across a CV archive</h3>
+          <p>A consultancy staffs tenders from an archive nobody can read. This turns it into islands you can see, then answers a requirement list in plain language or straight from the terms of reference — every requirement backed by a quote from the CV, re-read by a second model. Vectors on the machine, no data leaving the building.</p>
+          <div class="tags"><span class="tag">bge-m3</span><span class="tag">llama.cpp</span><span class="tag">cosmos.gl</span><span class="tag">Offline</span></div>
+          <div class="plinks"><a href="#">Walkthrough →</a></div>
         </div>
       </article>
 
@@ -217,6 +322,52 @@ footer{padding:60px 0 80px;color:var(--dim);font-size:13px;border-top:1px solid 
           <div class="plinks"><a href="#">Case →</a></div>
         </div>
       </article>
+    </div>
+  </div>
+</section>
+
+<section class="band" id="automation" style="padding-top:0">
+  <div class="wrap">
+    <div class="shead rv">
+      <div>
+        <div class="mono">Process automation</div>
+        <h2 style="margin-top:12px">Before it was called AI.</h2>
+      </div>
+      <p>The same work, older tools. A process nobody wanted to do by hand, turned into something that runs.</p>
+    </div>
+    <div class="rule rv"></div>
+    <div class="specs">
+
+      <article class="spec lean rv">
+        <div class="who">Government of Kazakhstan · 2010</div>
+        <h3>egov.kz — a state on one data model</h3>
+        <dl>
+          <dt>Scope</dt><dd><b>8,000+ government forms</b> from incompatible ministries, a team of eight analysts across four countries.</dd>
+          <dt>Built</dt><dd>The data dictionary, taxonomy, master data model and quality rules the national platform runs on.</dd>
+        </dl>
+        <div class="out">−40% unique fields · egov.kz now UN top 10</div>
+      </article>
+
+      <article class="spec lean rv">
+        <div class="who">UECHM · Katur Invest</div>
+        <h3>Engineering optimisation and SCADA control</h3>
+        <dl>
+          <dt>Scope</dt><dd>Licensed chief engineer, a <b>50-person</b> design-engineering team.</dd>
+          <dt>Built</dt><dd>The simulation model decisions were argued from (ANSYS, MATLAB, TRIZ), then reconstruction proposals, scale settings and supervisory control through <b>SCADA</b> — the operator reads and steers the process from one screen.</dd>
+        </dl>
+        <div class="out">−17%+ production cost, verified by the client</div>
+      </article>
+
+      <article class="spec lean rv">
+        <div class="who">Exness · 23 markets</div>
+        <h3>Localisation without the manual step</h3>
+        <dl>
+          <dt>Scope</dt><dd>A weekly pipeline of about twenty people — design, motion, copy, translation, analytics — run as a functional lead.</dd>
+          <dt>Built</dt><dd><b>Figma API and Airtable</b> production, 23 languages through CrowdIn, multilingual UTM tracking, custom style models so identity reproduces instead of drifting.</dd>
+        </dl>
+        <div class="out">A day of manual work → an hour</div>
+      </article>
+
     </div>
   </div>
 </section>
@@ -256,7 +407,57 @@ footer{padding:60px 0 80px;color:var(--dim);font-size:13px;border-top:1px solid 
   </div>
 </section>
 
-<footer><div class="wrap">Prototype · new visual language. Varna, Bulgaria — remote worldwide · karusrus@gmail.com</div></footer>
+<section class="band" id="hire" style="padding-top:0">
+  <div class="wrap">
+    <div class="shead rv">
+      <div><div class="mono">Work with me</div><h2 style="margin-top:12px">Three ways to start.</h2></div>
+      <p>Remote from the EU. Contract or employment, English or Russian.</p>
+    </div>
+    <div class="rule rv"></div>
+    <div class="specs">
+      <article class="spec rv">
+        <div class="who">01 · two weeks</div>
+        <h3>Pilot on your stack</h3>
+        <dl><dt>You get</dt><dd>One process automated end to end on your own tools, with the approval gate and the log, plus a map of the line you can present internally.</dd>
+        <dt>Proof</dt><dd>Before and after in hours, cost per unit and error rate.</dd></dl>
+        <div class="out">from €4,500</div>
+      </article>
+      <article class="spec rv">
+        <div class="who">02 · ongoing</div>
+        <h3>Implementation lead</h3>
+        <dl><dt>You get</dt><dd>Fractional or full-time. I run the rollout: use cases, pilots, adoption, governance, and the handover documentation that survives my absence.</dd>
+        <dt>Proof</dt><dd>Adoption measured, not assumed.</dd></dl>
+        <div class="out">from €5,500 / month</div>
+      </article>
+      <article class="spec rv">
+        <div class="who">03 · 48 hours</div>
+        <h3>AI Act readiness read</h3>
+        <dl><dt>You get</dt><dd>Where synthetic media leaves your organisation without disclosure, which lines have no human gate, and what Article 50 asks of you as a deployer.</dd>
+        <dt>Proof</dt><dd>One page, findings ordered by exposure.</dd></dl>
+        <div class="out">free</div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="band" id="contact" style="padding-top:0">
+  <div class="wrap">
+    <div class="rule rv"></div>
+    <div class="shead rv" style="margin-bottom:0">
+      <div>
+        <div class="mono">Contact</div>
+        <h2 style="margin-top:12px;max-width:16ch">Send me the process that hurts.</h2>
+      </div>
+      <p style="align-self:center">
+        <a class="btn primary" href="mailto:karusrus@gmail.com">karusrus@gmail.com</a>
+        <a class="btn" href="https://www.linkedin.com/in/ruslankarymov/" style="margin-left:8px">LinkedIn</a>
+        <a class="btn" href="https://github.com/karusrus" style="margin-left:8px">GitHub</a>
+      </p>
+    </div>
+  </div>
+</section>
+
+<footer><div class="wrap">Varna, Bulgaria — remote worldwide · Earlier design work: <a href="https://www.behance.net/karusrus" style="color:var(--muted);border-bottom:1px solid var(--line2)">Behance</a></div></footer>
 
 <script>
 /* reveal */
