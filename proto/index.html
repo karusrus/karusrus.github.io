@@ -135,14 +135,21 @@ section.band{padding:clamp(80px,12vh,150px) 0}
 /* ---------- career graph ---------- */
 .graph{position:relative;padding:8px 0 4px}
 .graph svg.links{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;overflow:visible}
-.graph .cols{position:relative;display:grid;grid-template-columns:repeat(5,1fr);gap:clamp(18px,3vw,46px);align-items:start}
-.gnode{border:1px solid var(--line2);border-radius:12px;background:linear-gradient(180deg,var(--surface2),var(--surface));padding:14px 14px 13px;position:relative;z-index:2}
+.graph .cols{position:relative;display:grid;grid-template-columns:repeat(5,1fr);gap:clamp(18px,3vw,46px);align-items:stretch}
+.graph .cols > div{display:grid;grid-template-rows:88px auto;gap:12px}
+.gnode{border:1px solid var(--line2);border-radius:12px;background:linear-gradient(180deg,var(--surface2),var(--surface));padding:14px;position:relative;z-index:2;display:flex;flex-direction:column;justify-content:center}
+.graph .flowdash{animation-name:dashmove;animation-timing-function:linear;animation-iteration-count:infinite}
+@keyframes dashmove{to{stroke-dashoffset:-48}}
+.gnode::before,.gnode::after,.out-chip::after{content:'';position:absolute;top:50%;width:7px;height:7px;border-radius:50%;background:#0b0d12;border:1.5px solid var(--line2);transform:translateY(-50%);z-index:3}
+.gnode::before{left:-4px}.gnode::after{right:-4px}
+.out-chip{position:relative}.out-chip::after{right:-4px;border-color:#2f4a3f}
+.gnode.now::before{border-color:var(--accent)}
 .gnode .yr{font-family:var(--mono);font-size:9.5px;letter-spacing:.12em;color:var(--dim)}
 .gnode h4{font-family:var(--display);font-size:15px;font-weight:600;letter-spacing:-.02em;margin-top:6px;line-height:1.15}
 .gnode.now{border-color:var(--accent);box-shadow:0 0 0 1px rgba(91,157,255,.18),0 14px 40px rgba(91,157,255,.10)}
 .gnode.now h4{color:var(--accent)}
-.outs{margin-top:12px;display:flex;flex-direction:column;gap:7px;position:relative;z-index:2}
-.out-chip{border:1px solid var(--line);border-radius:8px;background:rgba(12,14,19,.9);padding:7px 10px;font-size:11.5px;color:var(--muted);line-height:1.3}
+.outs{display:grid;grid-auto-rows:1fr;gap:8px;position:relative;z-index:2}
+.out-chip{border:1px solid var(--line);border-radius:8px;background:rgba(12,14,19,.92);padding:10px 12px;font-size:11.5px;color:var(--muted);line-height:1.4;min-height:48px;display:block}
 .out-chip b{color:var(--text);font-weight:600}
 .graph .legend{margin-top:26px;font-family:var(--mono);font-size:10px;letter-spacing:.1em;color:var(--dim);text-transform:uppercase}
 @media(max-width:1000px){.graph .cols{grid-template-columns:1fr 1fr}.graph svg.links{display:none}}
@@ -608,7 +615,7 @@ document.querySelectorAll('.pcard').forEach(c=>c.addEventListener('pointermove',
     const p=document.createElementNS(ns,'path');
     const [x1,y1]=N[a],[x2,y2]=N[b], mx=(x1+x2)/2;
     p.setAttribute('d',`M${x1} ${y1} C${mx} ${y1}, ${mx} ${y2}, ${x2} ${y2}`);
-    p.setAttribute('fill','none'); p.setAttribute('stroke', main?'#3b4a63':'#2a3446'); p.setAttribute('stroke-width','1.4');
+    p.setAttribute('fill','none'); p.setAttribute('stroke','#1e2634'); p.setAttribute('stroke-width','1.4');
     p.style.strokeDasharray='1400'; p.style.strokeDashoffset='1400';
     p.style.animation=`draw 1.5s ${0.25+i*0.09}s cubic-bezier(.2,.7,.2,1) forwards`;
     svg.appendChild(p);
@@ -637,50 +644,50 @@ document.querySelectorAll('.pcard').forEach(c=>c.addEventListener('pointermove',
   svg.appendChild(st);
 })();
 
-/* ---------- career graph: links computed from real geometry ---------- */
+/* ---------- career graph: wires in the pipeline-map language ---------- */
 (function(){
   const wrap=document.getElementById('graph-wrap'); if(!wrap) return;
   const svg=document.getElementById('glinks'); const NS='http://www.w3.org/2000/svg';
   const id=x=>document.getElementById(x);
-  // from -> to. Stage to stage, and each output into the next stage.
-  const L=[['g1','g2',1],['g2','g3',1],['g3','g4',1],['g4','g5',1],
-           ['o1a','g2',0],['o1b','g2',0],['o2a','g3',0],['o2b','g3',0],
-           ['o3a','g4',0],['o3b','g4',0],['o4a','g5',0],['o4b','g5',0],
-           ['o2b','g5',0],['o1b','g5',0]];
+  const C={stage:'#5b9dff', craft:'#3ddc97', gov:'#f0883e'};
+  // from, to, kind, colour
+  const L=[
+    ['g1','g2','stage'],['g2','g3','stage'],['g3','g4','stage'],['g4','g5','stage'],
+    ['o1a','g2','craft'],['o1b','g2','craft'],
+    ['o2a','g3','craft'],['o2b','g3','craft'],
+    ['o3a','g4','craft'],['o3b','g4','craft'],
+    ['o4a','g5','gov'],['o4b','g5','gov'],
+    ['o1b','g5','craft'],['o2b','g5','craft']
+  ];
   function draw(){
-    svg.innerHTML='';
     const W=wrap.clientWidth,H=wrap.clientHeight;
     svg.setAttribute('viewBox',`0 0 ${W} ${H}`);
     const box=wrap.getBoundingClientRect();
     const R=e=>{const r=e.getBoundingClientRect();return {x:r.left-box.left,y:r.top-box.top,w:r.width,h:r.height}};
-    L.forEach(([a,b,main],i)=>{
+    let out='';
+    L.forEach(([a,b,kind],i)=>{
       const A=id(a),B=id(b); if(!A||!B) return;
-      const ra=R(A),rb=R(B);
+      const ra=R(A),rb=R(B), col=C[kind];
       const x1=ra.x+ra.w, y1=ra.y+ra.h/2, x2=rb.x, y2=rb.y+rb.h/2;
-      const dx=Math.max(26,(x2-x1)*.55);
-      const d=`M${x1} ${y1} C${x1+dx} ${y1}, ${x2-dx} ${y2}, ${x2} ${y2}`;
-      const p=document.createElementNS(NS,'path');
-      p.setAttribute('d',d); p.setAttribute('fill','none');
-      p.setAttribute('stroke','#1e2634');
-      p.setAttribute('stroke-width', main?'1.8':'1.1');
-      if(!main) p.setAttribute('stroke-dasharray','3 4');
-      const len=p.getTotalLength?0:0;
-      p.style.strokeDasharray = main? '1200':'3 4';
-      if(main){p.style.strokeDashoffset='1200';p.style.animation=`draw 1.4s ${.2+i*.12}s cubic-bezier(.2,.7,.2,1) forwards`}
-      else {p.style.opacity='0';p.style.animation=`fade .8s ${.5+i*.06}s forwards`}
-      svg.appendChild(p);
-      if(main){
-        const dot=document.createElementNS(NS,'circle');
-        dot.setAttribute('r','3'); dot.setAttribute('fill','#5b9dff');
-        const am=document.createElementNS(NS,'animateMotion');
-        am.setAttribute('dur','3.4s'); am.setAttribute('repeatCount','indefinite');
-        am.setAttribute('begin',(1.4+i*0.8)+'s'); am.setAttribute('path',d);
-        dot.appendChild(am); svg.appendChild(dot);
+      const main=kind==='stage';
+      let d;
+      if(x2-x1 < 40){            // long reach: dip under the row, the way the map routes a back edge
+        const yv=Math.max(y1,y2)+56;
+        d=`M${x1} ${y1} C${x1+70} ${y1}, ${x1+70} ${yv}, ${x1+10} ${yv} L${x2-70} ${yv} C${x2-30} ${yv}, ${x2-30} ${y2}, ${x2} ${y2}`;
+      } else {
+        const dx=Math.max(46,(x2-x1)*0.55);
+        d=`M${x1} ${y1} C${x1+dx} ${y1}, ${x2-dx} ${y2}, ${x2} ${y2}`;
+      }
+      const wid = main?3:1.8, dur = main?3.2:4.6;
+      out += `<path id="w${i}" d="${d}" fill="none" stroke="${col}" stroke-width="${wid}" opacity="${main?.38:.24}"/>`;
+      out += `<path d="${d}" fill="none" stroke="${col}" stroke-width="${wid*0.75}" stroke-linecap="round" stroke-dasharray="${main?'7 17':'5 15'}" class="flowdash" style="animation-duration:${(main?1.5:2.4)}s"/>`;
+      const dots = main?2:1;
+      for(let k=0;k<dots;k++){
+        out += `<circle r="${main?3.4:2.4}" fill="#0b0d12" stroke="${col}" stroke-width="${main?2:1.5}">`
+             + `<animateMotion dur="${dur}s" begin="${(-k*dur/dots).toFixed(2)}s" repeatCount="indefinite"><mpath href="#w${i}"/></animateMotion></circle>`;
       }
     });
-    const st=document.createElementNS(NS,'style');
-    st.textContent='@keyframes draw{to{stroke-dashoffset:0}}@keyframes fade{to{opacity:.85}}';
-    svg.appendChild(st);
+    svg.innerHTML = out;
   }
   const ro=new ResizeObserver(()=>requestAnimationFrame(draw)); ro.observe(wrap);
   addEventListener('load',()=>requestAnimationFrame(draw));
@@ -715,7 +722,7 @@ document.querySelectorAll('.pcard').forEach(c=>c.addEventListener('pointermove',
       labels.forEach((t,i)=>{
         const x=pad+i*(bw+24);
         g.appendChild(el('rect',{x,y:26,width:bw,height:26,rx:7,class:i===gate?'gate':(i===n-1?'exit':'')}));
-        const tx=el('text',{x:x+bw/2,y:68,class:'lb'}); tx.textContent=t; g.appendChild(tx);
+        const tx=el('text',{x:x+bw/2,y:68,class:'lb'}); tx.textContent=t.length>13?t.slice(0,12)+'…':t; g.appendChild(tx);
         if(i<n-1){const d=`M${x+bw} 39 H${x+bw+24}`;const pa=el('path',{d});pa.style.animationDelay=(.25+i*.12)+'s';g.appendChild(pa);paths.push(d)}
       });
       // one packet travelling the whole line, over and over
