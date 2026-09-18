@@ -131,6 +131,23 @@ section.band{padding:clamp(80px,12vh,150px) 0}
 @media(max-width:900px){.strip{grid-template-columns:repeat(3,1fr)}}
 
 
+
+/* ---------- career graph ---------- */
+.graph{position:relative;padding:8px 0 4px}
+.graph svg.links{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;overflow:visible}
+.graph .cols{position:relative;display:grid;grid-template-columns:repeat(5,1fr);gap:clamp(18px,3vw,46px);align-items:start}
+.gnode{border:1px solid var(--line2);border-radius:12px;background:linear-gradient(180deg,var(--surface2),var(--surface));padding:14px 14px 13px;position:relative;z-index:2}
+.gnode .yr{font-family:var(--mono);font-size:9.5px;letter-spacing:.12em;color:var(--dim)}
+.gnode h4{font-family:var(--display);font-size:15px;font-weight:600;letter-spacing:-.02em;margin-top:6px;line-height:1.15}
+.gnode.now{border-color:var(--accent);box-shadow:0 0 0 1px rgba(91,157,255,.18),0 14px 40px rgba(91,157,255,.10)}
+.gnode.now h4{color:var(--accent)}
+.outs{margin-top:12px;display:flex;flex-direction:column;gap:7px;position:relative;z-index:2}
+.out-chip{border:1px solid var(--line);border-radius:8px;background:rgba(12,14,19,.9);padding:7px 10px;font-size:11.5px;color:var(--muted);line-height:1.3}
+.out-chip b{color:var(--text);font-weight:600}
+.graph .legend{margin-top:26px;font-family:var(--mono);font-size:10px;letter-spacing:.1em;color:var(--dim);text-transform:uppercase}
+@media(max-width:1000px){.graph .cols{grid-template-columns:1fr 1fr}.graph svg.links{display:none}}
+@media(max-width:640px){.graph .cols{grid-template-columns:1fr}}
+
 /* ---------- spec cards (deployed / automation) ---------- */
 .specs{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
 @media(max-width:1000px){.specs{grid-template-columns:1fr}}
@@ -179,6 +196,7 @@ footer{padding:60px 0 80px;color:var(--dim);font-size:13px;border-top:1px solid 
 <nav id="nav"><div class="wrap in">
   <div class="brandmark"><span class="dot"></span> RUSLAN KARYMOV</div>
   <ul>
+    <li><a href="#graph">Path</a></li>
     <li><a href="#deployed">Deployed</a></li>
     <li><a href="#products">Products</a></li>
     <li><a href="#automation">Automation</a></li>
@@ -205,6 +223,60 @@ footer{padding:60px 0 80px;color:var(--dim);font-size:13px;border-top:1px solid 
   </div>
 </header>
 
+<section class="band" id="graph" style="padding-bottom:0">
+  <div class="wrap">
+    <div class="shead rv">
+      <div>
+        <div class="mono">How it connects</div>
+        <h2 style="margin-top:12px">Every stage output is an input of the next.</h2>
+      </div>
+      <p>Not a career list. What each period produced and where it is still used today.</p>
+    </div>
+    <div class="rule rv"></div>
+    <div class="graph rv" id="graph-wrap">
+      <svg class="links" id="glinks"></svg>
+      <div class="cols">
+        <div>
+          <div class="gnode" id="g1"><div class="yr">2007 — 2011</div><h4>Chief engineer</h4></div>
+          <div class="outs">
+            <div class="out-chip" id="o1a"><b>50 engineers</b> led, delivery structure that holds</div>
+            <div class="out-chip" id="o1b"><b>TRIZ · FEA · SCADA</b> — systems thinking, −17% cost</div>
+          </div>
+        </div>
+        <div>
+          <div class="gnode" id="g2"><div class="yr">2011 — 2022</div><h4>Design lead, regulated fintech</h4></div>
+          <div class="outs">
+            <div class="out-chip" id="o2a"><b>23 markets</b> weekly, ~20 people as functional lead</div>
+            <div class="out-chip" id="o2b"><b>Figma API · BambooHR · Polygon</b> — first pipelines</div>
+          </div>
+        </div>
+        <div>
+          <div class="gnode" id="g3"><div class="yr">2023 — 2024</div><h4>Creative performance</h4></div>
+          <div class="outs">
+            <div class="out-chip" id="o3a"><b>300 creatives/day</b> generated, ROAS +50–70%</div>
+            <div class="out-chip" id="o3b"><b>SQL winner selection</b> — CPA −20–25%</div>
+          </div>
+        </div>
+        <div>
+          <div class="gnode" id="g4"><div class="yr">2023 — 2025</div><h4>EU institutional delivery</h4></div>
+          <div class="outs">
+            <div class="out-chip" id="o4a"><b>Governance as a condition</b> — Ethics-by-Design</div>
+            <div class="out-chip" id="o4b"><b>Committees</b> — 20–30 experts into one decision</div>
+          </div>
+        </div>
+        <div>
+          <div class="gnode now" id="g5"><div class="yr">2025 — now</div><h4>Independent — AI implementation</h4></div>
+          <div class="outs">
+            <div class="out-chip" id="o5a"><b>Transparency Kit</b> · gate, ledger, registry</div>
+            <div class="out-chip" id="o5b"><b>Pipelines on the client's stack</b>, handed over</div>
+          </div>
+        </div>
+      </div>
+      <div class="legend">output → input · the pulse is where the work still runs</div>
+    </div>
+  </div>
+</section>
+
 <section class="band" id="deployed">
   <div class="wrap">
     <div class="shead rv">
@@ -218,7 +290,7 @@ footer{padding:60px 0 80px;color:var(--dim);font-size:13px;border-top:1px solid 
     <div class="specs">
 
       <article class="spec rv">
-        <div class="flowpanel" data-flow="brief,compose,variants,ship" data-gate="" data-thumb="t-swimply.jpg"></div>
+        <div class="flowpanel" data-flow="brief,Bannerbear API,variants,TikTok · Meta · Google" data-gate="" data-thumb="t-swimply.jpg"></div>
         <div class="who">Twigeo · for Swimply</div>
         <h3>Generative ad production</h3>
         <dl>
@@ -230,7 +302,7 @@ footer{padding:60px 0 80px;color:var(--dim);font-size:13px;border-top:1px solid 
       </article>
 
       <article class="spec rv">
-        <div class="flowpanel" data-flow="request,generate,approve,mint" data-gate="2" data-thumb="t-offer.jpg" data-tall="1"></div>
+        <div class="flowpanel" data-flow="request,generate,approve,mint" data-gate="2" data-thumb="t-offer.jpg,t-nft.jpg" data-tall="1"></div>
         <div class="who">Exness</div>
         <h3>Hiring offers issued on-chain</h3>
         <dl>
@@ -536,7 +608,7 @@ document.querySelectorAll('.pcard').forEach(c=>c.addEventListener('pointermove',
     const p=document.createElementNS(ns,'path');
     const [x1,y1]=N[a],[x2,y2]=N[b], mx=(x1+x2)/2;
     p.setAttribute('d',`M${x1} ${y1} C${mx} ${y1}, ${mx} ${y2}, ${x2} ${y2}`);
-    p.setAttribute('fill','none'); p.setAttribute('stroke','#1e2634'); p.setAttribute('stroke-width','1.4');
+    p.setAttribute('fill','none'); p.setAttribute('stroke', main?'#3b4a63':'#2a3446'); p.setAttribute('stroke-width','1.4');
     p.style.strokeDasharray='1400'; p.style.strokeDashoffset='1400';
     p.style.animation=`draw 1.5s ${0.25+i*0.09}s cubic-bezier(.2,.7,.2,1) forwards`;
     svg.appendChild(p);
@@ -563,6 +635,58 @@ document.querySelectorAll('.pcard').forEach(c=>c.addEventListener('pointermove',
   const st=document.createElementNS(ns,'style');
   st.textContent='@keyframes draw{to{stroke-dashoffset:0}}@keyframes pop{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}';
   svg.appendChild(st);
+})();
+
+/* ---------- career graph: links computed from real geometry ---------- */
+(function(){
+  const wrap=document.getElementById('graph-wrap'); if(!wrap) return;
+  const svg=document.getElementById('glinks'); const NS='http://www.w3.org/2000/svg';
+  const id=x=>document.getElementById(x);
+  // from -> to. Stage to stage, and each output into the next stage.
+  const L=[['g1','g2',1],['g2','g3',1],['g3','g4',1],['g4','g5',1],
+           ['o1a','g2',0],['o1b','g2',0],['o2a','g3',0],['o2b','g3',0],
+           ['o3a','g4',0],['o3b','g4',0],['o4a','g5',0],['o4b','g5',0],
+           ['o2b','g5',0],['o1b','g5',0]];
+  function draw(){
+    svg.innerHTML='';
+    const W=wrap.clientWidth,H=wrap.clientHeight;
+    svg.setAttribute('viewBox',`0 0 ${W} ${H}`);
+    const box=wrap.getBoundingClientRect();
+    const R=e=>{const r=e.getBoundingClientRect();return {x:r.left-box.left,y:r.top-box.top,w:r.width,h:r.height}};
+    L.forEach(([a,b,main],i)=>{
+      const A=id(a),B=id(b); if(!A||!B) return;
+      const ra=R(A),rb=R(B);
+      const x1=ra.x+ra.w, y1=ra.y+ra.h/2, x2=rb.x, y2=rb.y+rb.h/2;
+      const dx=Math.max(26,(x2-x1)*.55);
+      const d=`M${x1} ${y1} C${x1+dx} ${y1}, ${x2-dx} ${y2}, ${x2} ${y2}`;
+      const p=document.createElementNS(NS,'path');
+      p.setAttribute('d',d); p.setAttribute('fill','none');
+      p.setAttribute('stroke','#1e2634');
+      p.setAttribute('stroke-width', main?'1.8':'1.1');
+      if(!main) p.setAttribute('stroke-dasharray','3 4');
+      const len=p.getTotalLength?0:0;
+      p.style.strokeDasharray = main? '1200':'3 4';
+      if(main){p.style.strokeDashoffset='1200';p.style.animation=`draw 1.4s ${.2+i*.12}s cubic-bezier(.2,.7,.2,1) forwards`}
+      else {p.style.opacity='0';p.style.animation=`fade .8s ${.5+i*.06}s forwards`}
+      svg.appendChild(p);
+      if(main){
+        const dot=document.createElementNS(NS,'circle');
+        dot.setAttribute('r','3'); dot.setAttribute('fill','#5b9dff');
+        const am=document.createElementNS(NS,'animateMotion');
+        am.setAttribute('dur','3.4s'); am.setAttribute('repeatCount','indefinite');
+        am.setAttribute('begin',(1.4+i*0.8)+'s'); am.setAttribute('path',d);
+        dot.appendChild(am); svg.appendChild(dot);
+      }
+    });
+    const st=document.createElementNS(NS,'style');
+    st.textContent='@keyframes draw{to{stroke-dashoffset:0}}@keyframes fade{to{opacity:.85}}';
+    svg.appendChild(st);
+  }
+  const ro=new ResizeObserver(()=>requestAnimationFrame(draw)); ro.observe(wrap);
+  addEventListener('load',()=>requestAnimationFrame(draw));
+  addEventListener('resize',()=>requestAnimationFrame(draw));
+  if(document.fonts&&document.fonts.ready) document.fonts.ready.then(draw);
+  [60,300,900].forEach(t=>setTimeout(draw,t));
 })();
 
 /* ---------- flow panels: drawn from data, alive ---------- */
@@ -601,12 +725,12 @@ document.querySelectorAll('.pcard').forEach(c=>c.addEventListener('pointermove',
       dot.appendChild(am); g.appendChild(dot);
     }
     svg.appendChild(g); panel.appendChild(svg);
-    if(panel.dataset.thumb){
+    (panel.dataset.thumb||'').split(',').filter(Boolean).forEach(src=>{
       const f=document.createElement('figure');
       f.className='thumb'+(panel.dataset.tall?' tall':'');
-      f.innerHTML=`<img src="../assets/${panel.dataset.thumb}" alt="">`;
+      f.innerHTML=`<img src="../assets/${src}" alt="">`;
       panel.appendChild(f);
-    }
+    });
   });
 })();
 
