@@ -147,11 +147,11 @@ section.band{padding:clamp(88px,11vh,132px) 0}
 
 
 /* ---------- career graph ---------- */
-.graph .cols{position:relative;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:clamp(16px,2.6vw,38px);align-items:stretch}
+.graph .cols{position:relative;display:grid;grid-template-columns:repeat(5,1fr);gap:clamp(16px,2.6vw,38px);align-items:stretch}
 .gnode{position:relative;z-index:3;border:1px solid var(--line2);border-radius:11px;background:rgba(17,20,27,.96);box-shadow:0 10px 30px rgba(0,0,0,.45);overflow:visible;display:flex;flex-direction:column}
 .gnode .ntitle{display:flex;align-items:baseline;justify-content:space-between;gap:10px;padding:14px 15px;border-radius:10px 10px 0 0;background:linear-gradient(180deg,#141a24,#10141c);border-bottom:1px solid var(--line)}
-.gnode .ntitle span{font-family:var(--display);font-size:clamp(13.5px,1.15vw,16px);font-weight:600;letter-spacing:-.01em;color:var(--text);line-height:1.15}
-.gnode .ntitle em{font-family:var(--mono);font-style:normal;font-size:clamp(9.5px,.78vw,11px);letter-spacing:.1em;color:#96a1b3;white-space:nowrap}
+.gnode .ntitle span{font-family:var(--display);font-size:16px;font-weight:600;letter-spacing:-.01em;color:var(--text);line-height:1.15}
+.gnode .ntitle em{font-family:var(--mono);font-style:normal;font-size:11px;letter-spacing:.1em;color:#96a1b3;white-space:nowrap}
 .gnode.now{border-color:var(--accent);box-shadow:0 0 0 1px rgba(91,157,255,.22),0 16px 44px rgba(91,157,255,.12)}
 .gnode.now .ntitle{background:linear-gradient(180deg,#152134,#101826)}
 .gnode.now .ntitle span{color:var(--accent)}
@@ -168,7 +168,7 @@ section.band{padding:clamp(88px,11vh,132px) 0}
 .gnode::before{left:-4px}.gnode::after{right:-4px}
 .out-chip{position:relative}.out-chip::after{right:-4px;border-color:#2f4a3f}
 .gnode.now::before{border-color:var(--accent)}
-.nrow{border-top:1px solid var(--line);padding:12px 15px;font-size:clamp(12px,1vw,13.5px);color:#ccd5e2;line-height:1.4;position:relative}
+.nrow{border-top:1px solid var(--line);padding:12px 15px;font-size:13.5px;color:#ccd5e2;line-height:1.4;position:relative}
 .nrow b{color:var(--text);font-weight:600}
 .nrow:first-of-type{border-top:0}
 .out-chip b{color:var(--text);font-weight:600}
@@ -258,7 +258,12 @@ section.band{padding:clamp(88px,11vh,132px) 0}
 @keyframes draw{to{stroke-dashoffset:0}}
 footer{padding:60px 0 80px;color:var(--dim);font-size:13px;border-top:1px solid var(--line);margin-top:40px}
 </style>
-</head>
+<script>addEventListener('DOMContentLoaded',()=>setTimeout(()=>{
+ const W=document.documentElement.clientWidth, bad=[];
+ const clipped=el=>{for(let p=el.parentElement;p;p=p.parentElement){const o=getComputedStyle(p).overflowX;if(o==='hidden'||o==='clip'||o==='auto'||o==='scroll')return true}return false};
+ document.querySelectorAll('*').forEach(el=>{const r=el.getBoundingClientRect();
+   if((r.right>W+1||r.left<-1)&&!clipped(el)) bad.push((el.tagName+'.'+(el.className&&el.className.baseVal!==undefined?el.className.baseVal:el.className||'')).slice(0,40)+' '+Math.round(r.left)+'..'+Math.round(r.right));});
+ document.title='OV '+W+' sw='+document.documentElement.scrollWidth+' | '+bad.slice(0,12).join(' | ');},2400));</script></head>
 <body>
 
 <nav id="nav"><div class="wrap in">
