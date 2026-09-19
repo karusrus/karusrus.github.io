@@ -175,21 +175,32 @@ section.band{padding:clamp(88px,11vh,132px) 0}
 
 
 /* ---------- floating framed assets ---------- */
-.stage{position:relative;margin:-4px -4px 18px;aspect-ratio:16/9;min-height:190px;max-height:250px;border:1px solid var(--line);border-radius:12px;background:radial-gradient(120% 120% at 20% 0%,#0a0d13,#06070b);overflow:hidden}
+.stage{position:relative;margin:-4px -4px 18px;aspect-ratio:16/11;min-height:210px;max-height:340px;border:1px solid var(--line);border-radius:12px;background:radial-gradient(120% 120% at 20% 0%,#0a0d13,#06070b);overflow:hidden}
 .stage .fl{position:absolute;left:10px;right:10px;bottom:8px;height:66px}
-.float{position:absolute;border-radius:10px;overflow:hidden;background:#05060a;box-shadow:0 12px 34px rgba(0,0,0,.6);will-change:transform;max-height:62%}
-.float img{object-fit:cover;height:100%}
-.float img{display:block;width:100%;height:auto;filter:saturate(1.05) brightness(1.02)}
-.float.b{border:2px solid var(--accent);box-shadow:0 10px 26px rgba(0,0,0,.55)}
-.float.g{border:2px solid var(--ok);box-shadow:0 10px 26px rgba(0,0,0,.55)}
-.float.o{border:2px solid var(--gate);box-shadow:0 10px 26px rgba(0,0,0,.55)}
-@keyframes drift1{0%,100%{transform:translate3d(0,0,0) rotate(-1.5deg)}50%{transform:translate3d(6px,-10px,0) rotate(1deg)}}
-@keyframes drift2{0%,100%{transform:translate3d(0,0,0) rotate(2deg)}50%{transform:translate3d(-8px,8px,0) rotate(-1deg)}}
-@keyframes drift3{0%,100%{transform:translate3d(0,0,0) rotate(-1deg)}50%{transform:translate3d(10px,6px,0) rotate(2deg)}}
-.float.d1{animation:drift1 13s ease-in-out infinite}
-.float.d2{animation:drift2 17s ease-in-out infinite}
-.float.d3{animation:drift3 15s ease-in-out infinite}
-@media(prefers-reduced-motion:reduce){.float{animation:none!important}}
+.stage svg.fx{position:absolute;inset:0;width:100%;height:100%;z-index:1;pointer-events:none}
+.stage svg.fx path{fill:none;stroke-width:1;stroke-dasharray:2.5 4.5;stroke-linecap:round;opacity:.75;animation:dashcrawl 14s linear infinite}
+@keyframes dashcrawl{to{stroke-dashoffset:-140}}
+.float{position:absolute;z-index:2;border-radius:9px;overflow:hidden;background:#05060a;box-shadow:0 10px 28px rgba(0,0,0,.62);will-change:transform}
+.float img{display:block;width:100%;height:100%;object-fit:cover;object-position:50% 32%;filter:saturate(1.08) brightness(1.06)}
+.float.b{border:1px solid var(--accent)}
+.float.g{border:1px solid var(--ok)}
+.float.o{border:1px solid var(--gate)}
+.float.inv img{filter:invert(1) hue-rotate(180deg) saturate(1.15) brightness(.92) contrast(1.05)}
+.float.tag{display:flex;align-items:center;justify-content:center;padding:6px 8px;background:rgba(7,9,14,.94);font-family:var(--mono);font-size:9.5px;line-height:1.3;letter-spacing:.06em;text-align:center;text-transform:uppercase;color:#aab5c6}
+.float.tag.b{color:#9cc3ff}.float.tag.g{color:#7fe0b5}.float.tag.o{color:#f3ab73}
+/* egov: the artefact is a data model, so the data model is what runs here */
+.stage .dmx{position:absolute;left:0;top:0;width:100%;height:58%;z-index:2}
+.dmx .blk{fill:#0b0e15;stroke:var(--line2);stroke-width:1}
+.dmx .hd{font-family:var(--mono);font-size:5.2px;letter-spacing:.14em;fill:#7d8799;text-transform:uppercase}
+.dmx .row{fill:#2b3547}
+.dmx .row.dup{fill:#5a3a22}
+.dmx .row.uni{fill:#1f3f5f}
+.dmx .row.key{fill:#1c4a38}
+.dmx .lnk{fill:none;stroke-width:.8;stroke-dasharray:2 3;opacity:.7;animation:dashcrawl 11s linear infinite}
+.dmx .mark{font-family:var(--mono);font-size:5.4px;letter-spacing:.1em;fill:var(--ok)}
+@media(prefers-reduced-motion:reduce){.stage svg.fx path,.dmx .lnk{animation:none}}
+
+@media(max-width:1000px){.stage{max-height:420px}}
 
 /* ---------- spec cards (deployed / automation) ---------- */
 .specs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
@@ -197,7 +208,7 @@ section.band{padding:clamp(88px,11vh,132px) 0}
 .spec{position:relative;border:1px solid var(--line);border-radius:var(--r);background:linear-gradient(180deg,var(--surface2),var(--surface));padding:24px 24px 26px;transition:border-color .35s,transform .35s;display:flex;flex-direction:column;min-width:0}
 .spec:hover{border-color:var(--line2);transform:translateY(-2px)}
 .spec .flowpanel{margin:-4px 0 20px;border:1px solid var(--line);border-radius:12px;background:radial-gradient(120% 120% at 20% 0%,#0a0d13,#06070b);padding:14px;display:flex;align-items:center;gap:14px;min-height:108px}
-.stage .flowpanel{position:absolute;left:10px;right:10px;bottom:8px;margin:0;border:1px solid var(--line);border-radius:10px;background:rgba(6,7,11,.86);backdrop-filter:blur(6px);min-height:0;padding:8px 10px}
+.stage .flowpanel{position:absolute;left:50%;transform:translateX(-50%);width:calc(100% - 20px);max-width:460px;bottom:8px;margin:0;border:0;border-radius:10px;background:none;backdrop-filter:none;min-height:0;padding:8px 10px}
 .spec .flowpanel svg{flex:1;min-width:0;width:100%;height:auto;overflow:visible}
 .spec .thumb{flex:none;width:74px;border:1px solid var(--line2);border-radius:8px;overflow:hidden;background:#05060a;box-shadow:0 8px 28px rgba(0,0,0,.6)}
 .spec .thumb img{display:block;width:100%;height:auto;filter:saturate(.85) brightness(.92);transition:filter .5s,transform .8s}
@@ -211,11 +222,11 @@ section.band{padding:clamp(88px,11vh,132px) 0}
 .spec dd{color:#b6c0d0}
 .spec dd b{color:var(--text);font-weight:600}
 .spec .out{margin-top:auto;padding-top:16px;border-top:1px solid var(--line);font-family:var(--mono);font-size:12px;color:var(--ok)}
-.specs.four{grid-template-columns:repeat(4,minmax(0,1fr))}
-@media(max-width:1200px){.specs.four{grid-template-columns:repeat(2,1fr)}}
+.specs.four{grid-template-columns:repeat(2,minmax(0,1fr))}
+@media(max-width:1000px){.specs.four{grid-template-columns:1fr}}
 @media(max-width:700px){.specs.four{grid-template-columns:1fr}}
 .spec.lean{padding:20px 22px 22px}
-.spec.lean h3{font-size:18px;margin:8px 0 14px}
+.spec.lean h3{font-size:21px;margin:8px 0 16px}
 .spec.lean dl{font-size:13px}
 .grid.five{grid-template-columns:repeat(2,1fr)}
 .pcard.wide{grid-column:span 2}
@@ -331,7 +342,7 @@ footer{padding:60px 0 80px;color:var(--dim);font-size:13px;border-top:1px solid 
     <div class="specs">
 
       <article class="spec rv">
-        <div class="stage"><figure class="float g d1" style="width:34%;top:12px;left:6%"><img src="../assets/a-swimply-post.jpg" alt="Generated feed creative for Swimply"></figure><figure class="float b d2" style="width:24%;top:22px;right:8%"><img src="../assets/a-swimply-story.jpg" alt="Generated story creative for Swimply"></figure><div class="flowpanel" data-flow="brief,Bannerbear API,variants,TikTok · Meta" data-gate=""></div></div>
+        <div class="stage"><figure class="float b" data-p="16,60,26,1"><img src="../assets/a-swimply-post.jpg" alt="Generated feed creative for Swimply"></figure><figure class="float b" data-p="41,48,15,0.561"><img src="../assets/a-swimply-story.jpg" alt="Generated story creative for Swimply"></figure><figure class="float g" data-p="69,30,27,2.25"><img src="../assets/a-swimply-cta.jpg" alt="Story call to action, composed from the listing"></figure><figure class="float tag o" data-p="89,80,17"><figcaption>300 / day</figcaption></figure><div class="flowpanel" data-flow="brief,Bannerbear API,variants,TikTok · Meta" data-gate=""></div></div>
         <div class="who">Twigeo · for Swimply</div>
         <h3>Generative ad production</h3>
         <dl>
@@ -343,7 +354,7 @@ footer{padding:60px 0 80px;color:var(--dim);font-size:13px;border-top:1px solid 
       </article>
 
       <article class="spec rv">
-        <div class="stage"><figure class="float b d2" style="width:26%;top:10px;left:8%"><img src="../assets/a-offer-doc.jpg" alt="Job offer generated from BambooHR, merge fields visible"></figure><figure class="float o d1" style="width:30%;top:24px;right:7%"><img src="../assets/a-nft-cert.jpg" alt="Offer minted as a certificate on Polygon"></figure><div class="flowpanel" data-flow="request,generate,approve,mint" data-gate="2"></div></div>
+        <div class="stage"><figure class="float b" data-p="13,58,17,0.706"><img src="../assets/a-offer-doc.jpg" alt="Job offer generated from BambooHR, merge fields visible"></figure><figure class="float o" data-p="37,44,18,0.777"><img src="../assets/a-nft-cert.jpg" alt="The accepted offer as a certificate"></figure><figure class="float g" data-p="61,62,15,0.606"><img src="../assets/a-nft-card1.jpg" alt="Certificate front, issued to the candidate"></figure><figure class="float b" data-p="85,38,13,0.545"><img src="../assets/a-nft-phone.jpg" alt="The candidate verifies the certificate on a phone"></figure><div class="flowpanel" data-flow="request,generate,approve,mint" data-gate="2"></div></div>
         <div class="who">Exness</div>
         <h3>Hiring offers issued on-chain</h3>
         <dl>
@@ -355,7 +366,7 @@ footer{padding:60px 0 80px;color:var(--dim);font-size:13px;border-top:1px solid 
       </article>
 
       <article class="spec rv">
-        <div class="stage"><figure class="float b d3" style="width:36%;top:10px;left:5%"><img src="../assets/a-gdsi-hub.jpg" alt="Delegation data hub"></figure><figure class="float o d2" style="width:30%;top:26px;right:6%"><img src="../assets/a-gdsi-plan.jpg" alt="Programme content architecture"></figure><div class="flowpanel wp"></div></div>
+        <div class="stage"><figure class="float b" data-p="17,62,26,1.493"><img src="../assets/a-gdsi-hub.jpg" alt="Delegation data hub"></figure><figure class="float o" data-p="45,30,25,1.984"><img src="../assets/a-gdsi-plan.jpg" alt="Programme content architecture, redrawn"></figure><figure class="float g" data-p="71,60,19,1.242"><img src="../assets/a-gdsi-conf.jpg" alt="Programme event material for an EU delegation"></figure><figure class="float b" data-p="90,26,15,1"><img src="../assets/a-gdsi-youth.jpg" alt="Programme campaign material for an EU delegation"></figure><div class="flowpanel wp"></div></div>
         <div class="who">Horizon Europe · via GDSI</div>
         <h3>Delivery under EU programme rules</h3>
         <dl>
@@ -470,7 +481,7 @@ footer{padding:60px 0 80px;color:var(--dim);font-size:13px;border-top:1px solid 
       <article class="spec lean rv">
         <div class="who">Government of Kazakhstan · 2010 · parallel to the engineering practice</div>
         <h3>egov.kz — a state on one data model</h3>
-        <div class="flowpanel" data-flow="8000 forms,dictionary,taxonomy,platform" data-gate="" data-thumb=""></div>
+        <div class="stage dm"><svg class="dmx" role="img" aria-label="Fields from incompatible ministry forms collapsing into one shared dictionary"></svg><div class="flowpanel" data-flow="8000 forms,dictionary,taxonomy,platform" data-gate=""></div></div>
         <dl>
           <dt>Scope</dt><dd><b>8,000+ government forms</b> from incompatible ministries, a team of eight analysts across four countries.</dd>
           <dt>Built</dt><dd>The data dictionary, taxonomy, master data model and quality rules the national platform runs on.</dd>
@@ -481,7 +492,7 @@ footer{padding:60px 0 80px;color:var(--dim);font-size:13px;border-top:1px solid 
       <article class="spec lean rv">
         <div class="who">UECHM · Katur Invest</div>
         <h3>Engineering optimisation and SCADA control</h3>
-        <div class="flowpanel" data-flow="sensors,model,scale settings,SCADA" data-gate="2" data-thumb=""></div>
+        <div class="stage"><figure class="float b" data-p="18,58,30,1.292"><img src="../assets/a-eng-cfd.jpg" alt="Gas flow simulation inside the shaft furnace"></figure><figure class="float g" data-p="50,38,31,1.552"><img src="../assets/a-eng-scada.jpg" alt="SCADA screen: gas parameters on the shaft furnace"></figure><figure class="float o inv" data-p="75,62,12,0.581"><img src="../assets/a-eng-vessel.jpg" alt="Vessel drawing from the reconstruction proposal"></figure><figure class="float b inv" data-p="91,32,17,1.061"><img src="../assets/a-eng-math.jpg" alt="Heat transfer equations behind the model"></figure><div class="flowpanel" data-flow="sensors,model,scale settings,SCADA" data-gate="2"></div></div>
         <dl>
           <dt>Scope</dt><dd>Licensed chief engineer, a <b>50-person</b> design-engineering team.</dd>
           <dt>Built</dt><dd>The simulation model decisions were argued from (ANSYS, MATLAB, TRIZ), then reconstruction proposals, scale settings and supervisory control through <b>SCADA</b> — the operator reads and steers the process from one screen.</dd>
@@ -492,7 +503,7 @@ footer{padding:60px 0 80px;color:var(--dim);font-size:13px;border-top:1px solid 
       <article class="spec lean rv">
         <div class="who">Curvature · GDSI · Exness · DexTools</div>
         <h3>Decision material for committees</h3>
-        <div class="flowpanel" data-flow="30 experts,structure,review,decision" data-gate="2" data-thumb=""></div>
+        <div class="stage"><figure class="float b" data-p="17,58,27,1.526"><img src="../assets/a-doc-gdsi.jpg" alt="Strategic communication plan for an EU delegation"></figure><figure class="float g" data-p="45,36,23,1.406"><img src="../assets/a-doc-exness.jpg" alt="Partner brochure: the numbers a decision is argued from"></figure><figure class="float o" data-p="73,62,27,2.054"><img src="../assets/a-doc-dextools.jpg" alt="DexTools dashboard audit, reviewed screen by screen"></figure><figure class="float tag b" data-p="91,26,16"><figcaption>20–30 experts → one document</figcaption></figure><div class="flowpanel" data-flow="30 experts,structure,review,decision" data-gate="2"></div></div>
         <dl>
           <dt>Scope</dt><dd>Boards, CIOs and EU evaluation committees: ten minutes, no context, a decision to make.</dd>
           <dt>Built</dt><dd>A repeatable way to turn <b>20–30 experts of input</b> into one document that answers in the order it is asked: 100+ page tenders, executive dashboards, authored video walkthroughs ordered by impact against effort.</dd>
@@ -503,7 +514,7 @@ footer{padding:60px 0 80px;color:var(--dim);font-size:13px;border-top:1px solid 
       <article class="spec lean rv">
         <div class="who">Exness · 23 markets</div>
         <h3>Localisation without the manual step</h3>
-        <div class="flowpanel" data-flow="brief,Figma API,23 locales,publish" data-gate="" data-thumb=""></div>
+        <div class="stage"><figure class="float b" data-p="13,60,17,1"><img src="../assets/a-loc-vi.jpg" alt="The same campaign in Vietnamese"></figure><figure class="float g" data-p="34,34,17,1"><img src="../assets/a-loc-ko.jpg" alt="The same campaign in Korean"></figure><figure class="float o" data-p="55,62,17,1"><img src="../assets/a-loc-ar.jpg" alt="The same campaign in Arabic"></figure><figure class="float b" data-p="76,34,17,1"><img src="../assets/a-loc-es.jpg" alt="The same campaign in Spanish"></figure><figure class="float g" data-p="90,64,14,1.6"><img src="../assets/a-loc-funnel.jpg" alt="Multilingual UTM tracking across the funnel"></figure><div class="flowpanel" data-flow="brief,Figma API,23 locales,publish" data-gate=""></div></div>
         <dl>
           <dt>Scope</dt><dd>A weekly pipeline of about twenty people — design, motion, copy, translation, analytics — run as a functional lead.</dd>
           <dt>Built</dt><dd><b>Figma API and Airtable</b> production, 23 languages through CrowdIn, multilingual UTM tracking, custom style models so identity reproduces instead of drifting.</dd>
@@ -795,12 +806,14 @@ document.querySelectorAll('.pcard').forEach(c=>c.addEventListener('pointermove',
       labels.forEach((t,i)=>{
         const x=pad+i*(bw+24);
         g.appendChild(el('rect',{x,y:26,width:bw,height:26,rx:7,class:i===gate?'gate':(i===n-1?'exit':'')}));
-        const tx=el('text',{x:x+bw/2,y:68,class:'lb'}); tx.textContent=t.length>15?t.slice(0,14)+'…':t; g.appendChild(tx);
+        const tx=el('text',{x:i===0?x-1:(i===n-1?x+bw+1:x+bw/2),y:68,class:'lb'});
+        tx.style.textAnchor=i===0?'start':(i===n-1?'end':'middle');
+        tx.textContent=t.length>15?t.slice(0,14)+'…':t; g.appendChild(tx);
         if(i<n-1){const d=`M${x+bw} 39 H${x+bw+24}`;const pa=el('path',{d});pa.style.animationDelay=(.25+i*.12)+'s';g.appendChild(pa);paths.push(d)}
       });
       // one packet travelling the whole line, over and over
       const full=`M${pad+bw} 39 H${W-pad-bw}`;
-      const dot=el('circle',{r:2.6,fill:'#5b9dff',opacity:'.9'});
+      const dot=el('circle',{r:2.6,fill:'#5b9dff',opacity:'.9',cx:pad+bw,cy:39});
       const am=el('animateMotion',{dur:'4.5s',repeatCount:'indefinite',begin:(1.2+Math.random()).toFixed(1)+'s',path:full});
       dot.appendChild(am); g.appendChild(dot);
     }
@@ -812,6 +825,135 @@ document.querySelectorAll('.pcard').forEach(c=>c.addEventListener('pointermove',
       panel.appendChild(f);
     });
   });
+})();
+
+/* ---------- egov: the data model, drawn ---------- */
+(function(){
+  const NS='http://www.w3.org/2000/svg';
+  const mk=(n,a)=>{const e=document.createElementNS(NS,n);for(const k in a)e.setAttribute(k,a[k]);return e;};
+  document.querySelectorAll('svg.dmx').forEach(svg=>{
+    svg.setAttribute('viewBox','0 0 300 118');
+    svg.setAttribute('preserveAspectRatio','xMidYMid meet');
+    const g=mk('g',{});
+    // left: three ministries, each with its own form fields
+    const src=[['ministry A',2],['ministry B',38],['ministry C',74]];
+    const rows=[];           // {x2,y,kind}
+    src.forEach(([name,y],m)=>{
+      g.appendChild(mk('rect',{class:'blk',x:6,y,width:84,height:30,rx:5}));
+      const t=mk('text',{class:'hd',x:12,y:y+9}); t.textContent=name; g.appendChild(t);
+      [0,1,2].forEach(k=>{
+        const ry=y+14+k*6, dup=(m+k)%3!==0;
+        g.appendChild(mk('rect',{class:'row '+(dup?'dup':'uni'),x:12,y:ry,width:dup?46:62,height:3.4,rx:1.7}));
+        rows.push({y:ry+1.7,dup,i:m*3+k});
+      });
+    });
+    // right: one dictionary every form now reads from
+    g.appendChild(mk('rect',{class:'blk',x:206,y:14,width:88,height:76,rx:5}));
+    const dh=mk('text',{class:'hd',x:213,y:26}); dh.textContent='data dictionary'; g.appendChild(dh);
+    const keys=[36,50,64,78];
+    keys.forEach((y,k)=>{
+      g.appendChild(mk('rect',{class:'row key',x:213,y,width:k===3?50:74,height:4,rx:2}));
+    });
+    // nine fields, four surviving keys: the duplicates land on the same row
+    const map=[0,1,2, 0,1,3, 2,0,1];
+    rows.forEach((r,i)=>{
+      const ky=keys[map[i]]+2, x1=r.dup?58:74, x2=206, mx=104+i*10;
+      const p=mk('path',{class:'lnk',stroke:r.dup?'#f0883e':'#5b9dff',
+        d:`M${x1} ${r.y} H${mx} V${ky} H${x2}`});
+      p.style.animationDelay=(i*.35)+'s';
+      g.appendChild(p);
+    });
+    const m=mk('text',{class:'mark',x:206,y:104}); m.textContent='nine fields → four'; g.appendChild(m);
+    const l=mk('text',{class:'hd',x:6,y:114}); l.textContent='incompatible forms'; g.appendChild(l);
+    svg.appendChild(g);
+  });
+})();
+
+/* ---------- floating assets: placed from data, drifting, wired to each other ---------- */
+(function(){
+  const NS='http://www.w3.org/2000/svg';
+  const mk=(n,a)=>{const e=document.createElementNS(NS,n);for(const k in a)e.setAttribute(k,a[k]);return e;};
+  const COL={b:'#5b9dff',g:'#3ddc97',o:'#f0883e'};
+  const still=matchMedia('(prefers-reduced-motion:reduce)');
+  const S=[];
+  document.querySelectorAll('.stage').forEach(st=>{
+    const fl=[...st.querySelectorAll('.float')];
+    if(!fl.length) return;
+    const svg=mk('svg',{class:'fx','aria-hidden':'true'});
+    st.insertBefore(svg,st.firstChild);
+    const items=fl.map((el,i)=>{
+      const v=(el.dataset.p||'50,30,18').split(',').map(Number);
+      el.style.left=v[0]+'%'; el.style.width=v[2]+'%';
+      if(v[3]) el.style.aspectRatio=String(v[3]);
+      const k=el.classList.contains('g')?'g':el.classList.contains('o')?'o':'b';
+      return {el,cx:v[0],cy:v[1],col:COL[k],
+        ax:5+(i*3)%5, ay:4+(i*2)%4,
+        sx:.00019+((i*7)%5)*.000028, sy:.00015+((i*5)%4)*.000031, ph:i*2.1};
+    });
+    const segs=[];
+    for(let i=0;i<items.length-1;i++)
+      segs.push({p:svg.appendChild(mk('path',{stroke:items[i].col})),a:items[i],b:items[i+1]});
+    const tail=svg.appendChild(mk('path',{stroke:items[items.length-1].col}));
+    const dots=items.map(it=>svg.appendChild(mk('circle',{r:1.7,fill:it.col,opacity:.8})));
+    S.push({st,svg,items,segs,tail,dots,w:0,h:0,py:0,vis:false});
+  });
+  if(!S.length) return;
+
+  // an elbow, the way the pipeline draws one
+  function route(x1,y1,x2,y2){
+    const dx=x2-x1, dy=y2-y1;
+    if(Math.abs(dy)<8) return `M${x1} ${y1} H${x2}`;
+    if(Math.abs(dx)<8) return `M${x1} ${y1} V${y2}`;
+    const mx=x1+dx/2, r=Math.min(6,Math.abs(dx)/2-1,Math.abs(dy)/2-1),
+          sx=Math.sign(dx), sy=Math.sign(dy);
+    return `M${x1} ${y1} H${mx-r*sx} Q${mx} ${y1} ${mx} ${y1+r*sy} V${y2-r*sy} Q${mx} ${y2} ${mx+r*sx} ${y2} H${x2}`;
+  }
+  function measure(s){
+    const r=s.st.getBoundingClientRect(); s.w=r.width; s.h=r.height;
+    // низ полосы — по первой нарисованной рамке конвейера, а не по коробке svg:
+    // сверху у неё пустое поле, и ассеты наезжали бы на схему
+    const ps=s.st.querySelector('.flowpanel svg'),
+          ink=(ps&&ps.querySelector('rect'))||ps||s.st.querySelector('.dmx');
+    s.py=ink?Math.max(40,ink.getBoundingClientRect().top-r.top-6):s.h*.72;
+    const band=s.py-4;
+    s.items.forEach(it=>{it.bx=it.cx/100*s.w; it.by=it.cy/100*band;
+      it.el.style.top=it.by.toFixed(1)+'px';
+      it.hw=it.el.offsetWidth/2; it.hh=it.el.offsetHeight/2});
+  }
+  function draw(s,t){
+    s.items.forEach((it,i)=>{
+      const dx=t?it.ax*Math.sin(t*it.sx+it.ph):0, dy=t?it.ay*Math.sin(t*it.sy+it.ph*1.7):0;
+      it.x=it.bx+dx; it.y=it.by+dy;
+      it.el.style.transform=`translate(-50%,-50%) translate3d(${dx.toFixed(2)}px,${dy.toFixed(2)}px,0)`;
+      s.dots[i].setAttribute('cx',it.x.toFixed(1)); s.dots[i].setAttribute('cy',(it.y+(it.hh||0)+4).toFixed(1));
+    });
+    s.segs.forEach(g=>{
+      const sgn=g.b.x>=g.a.x?1:-1;
+      g.p.setAttribute('d',route(g.a.x+sgn*(g.a.hw+4),g.a.y,g.b.x-sgn*(g.b.hw+4),g.b.y));
+    });
+    const last=s.items[s.items.length-1];
+    s.tail.setAttribute('d',`M${last.x} ${last.y+last.hh+4} V${s.py}`);
+  }
+  let raf=0;
+  const frame=t=>{ raf=0; let live=false;
+    S.forEach(s=>{ if(s.vis){ live=true; draw(s,t) } });
+    if(live&&!still.matches) raf=requestAnimationFrame(frame);
+  };
+  const kick=()=>{ if(!raf&&!still.matches) raf=requestAnimationFrame(frame) };
+  const relayout=()=>{ S.forEach(s=>{measure(s); draw(s,0)}); kick() };
+
+  const io=new IntersectionObserver(es=>{
+    es.forEach(e=>{const s=S.find(x=>x.st===e.target); if(s) s.vis=e.isIntersecting});
+    kick();
+  },{rootMargin:'140px'});
+  S.forEach(s=>io.observe(s.st));
+
+  relayout();
+  let rt; addEventListener('resize',()=>{clearTimeout(rt);rt=setTimeout(relayout,140)});
+  addEventListener('load',relayout);
+  if(document.fonts&&document.fonts.ready) document.fonts.ready.then(relayout);
+  document.querySelectorAll('.float img').forEach(im=>im.complete||im.addEventListener('load',relayout,{once:true}));
+  still.addEventListener&&still.addEventListener('change',relayout);
 })();
 
 /* one typed line, once */
