@@ -22,6 +22,7 @@
 }
 *{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
 body{background:var(--bg);color:var(--text);font-family:var(--body);font-size:16px;line-height:1.55;-webkit-font-smoothing:antialiased;overflow-x:hidden}
 .wrap{width:min(1240px,92vw);margin:0 auto}
 .mono{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--dim)}
@@ -36,7 +37,8 @@ a{color:inherit;text-decoration:none}
   .rv{opacity:1;transform:none}
   *{transition:none!important}
   .float,.marq .row,.term .cur,.arc .seg::after,.graph .flowdash{animation:none!important}
-  #cv path,.flowpanel .flow path,.mini .flow path,.graph svg.links path{animation:none!important;stroke-dashoffset:0!important}
+  svg.dsh rect.bar.on{width:66px}
+  #cv path,.flowpanel .flow path,.graph svg.links path{animation:none!important;stroke-dashoffset:0!important}
   #cv g{animation:none!important;opacity:1!important}
 }
 
@@ -48,7 +50,13 @@ nav .brandmark{display:flex;align-items:center;gap:10px;font-family:var(--mono);
 nav .dot{width:8px;height:8px;border-radius:50%;background:var(--ok);box-shadow:0 0 12px var(--ok)}
 nav ul{display:flex;gap:26px;list-style:none;font-size:13px;color:var(--muted)}
 nav ul a:hover{color:var(--text)}
-@media(max-width:820px){nav ul{display:none}}
+@media(max-width:820px){
+  nav ul{gap:0;overflow-x:auto;flex:1;-webkit-overflow-scrolling:touch;scrollbar-width:none;mask-image:linear-gradient(90deg,#000 88%,transparent)}
+  nav ul::-webkit-scrollbar{display:none}
+  nav ul li{flex:none}
+  nav ul a{padding:8px 4px;display:inline-block;padding:8px 10px;display:block}
+  nav .brandmark span.nm{display:none}
+}
 
 /* ---------- hero ---------- */
 .hero{position:relative;min-height:96vh;display:flex;align-items:center;padding:120px 0 140px;overflow:hidden}
@@ -75,8 +83,9 @@ nav ul a:hover{color:var(--text)}
 .btn.primary:hover{background:#fff}
 
 /* terminal line */
-.term{margin-top:44px;position:relative;font-family:var(--mono);font-size:13px;color:var(--muted);background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px 16px;max-width:660px;overflow:hidden;white-space:nowrap}
-@media(max-width:620px){.term{white-space:normal;word-break:break-word;font-size:11.5px}}
+.term{margin-top:44px;position:relative;font-family:var(--mono);font-size:13px;color:var(--muted);background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px 16px;max-width:840px;overflow:hidden;white-space:nowrap}
+@media(max-width:900px){.term{white-space:normal;word-break:break-word}}
+@media(max-width:620px){.term{font-size:11.5px}}
 .term .p{color:var(--dim)}
 .term .ok{color:var(--ok)}
 .term.tl{max-width:none;margin:36px 0 0;font-size:12.5px;background:linear-gradient(180deg,#0c0e13,#090b10)}
@@ -96,7 +105,7 @@ section.band{padding:clamp(88px,11vh,132px) 0}
 
 /* ---------- product cards ---------- */
 .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:18px}
-@media(max-width:900px){.grid{grid-template-columns:1fr}}
+@media(max-width:900px){.grid,.grid.five{grid-template-columns:1fr}}
 .pcard{position:relative;border:1px solid var(--line);border-radius:var(--r);background:linear-gradient(180deg,var(--surface2),var(--surface));overflow:hidden;transition:border-color .35s,transform .35s}
 .pcard::after{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(320px circle at var(--mx,50%) var(--my,0%),rgba(91,157,255,.10),transparent 60%);opacity:0;transition:opacity .4s}
 .pcard:hover{border-color:var(--line2);transform:translateY(-2px)}
@@ -110,7 +119,9 @@ section.band{padding:clamp(88px,11vh,132px) 0}
 .win .shot::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,transparent 55%,rgba(7,8,11,.30));pointer-events:none}
 .win .shot img{width:100%;height:100%;object-fit:cover;object-position:50% 12%;filter:saturate(1.02) contrast(1.02);transition:filter .5s,transform .8s cubic-bezier(.2,.7,.2,1)}
 .pcard:hover .win .shot img{filter:saturate(1.08) contrast(1.05);transform:scale(1.015)}
-.pcard.wide .win .shot{aspect-ratio:21/9}
+.pcard.wide .win .shot{aspect-ratio:32/9}
+.pcard.wide .win .shot img{object-position:50% 46%}
+.pcard.wide .pbody p{max-width:78ch}
 .pbody{padding:20px 22px 24px}
 .pbody h3{font-size:24px;margin-bottom:10px}
 .pbody p{color:#b0bbcb;font-size:15px}
@@ -123,16 +134,18 @@ section.band{padding:clamp(88px,11vh,132px) 0}
 
 /* ---------- campaign card ---------- */
 .camp{border:1px solid var(--line);border-radius:var(--r);background:linear-gradient(180deg,var(--surface2),var(--surface));overflow:hidden}
-.camp .top{padding:34px 34px 26px;display:grid;grid-template-columns:1.25fr 1fr;gap:34px}
+.camp .top{padding:34px 34px 26px;display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:34px}
+.camp .top>*{min-width:0}
 @media(max-width:900px){.camp .top{grid-template-columns:1fr}}
 .camp h3{font-size:clamp(24px,2.6vw,34px);margin-bottom:14px}
 .camp p{color:#b0bbcb;font-size:15px}
-.nums{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;align-self:start}
+.nums{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;align-self:start;min-width:0}
+@media(max-width:620px){.nums{grid-template-columns:1fr}}
 .num{border:1px solid var(--line);border-radius:12px;padding:16px 14px;background:var(--surface)}
 .num b{display:block;font-family:var(--display);font-size:30px;letter-spacing:-.03em;line-height:1}
 .num b i{font-style:normal;color:var(--accent);font-size:.6em}
 .num span{display:block;color:var(--dim);font-size:12px;margin-top:8px;line-height:1.35}
-.marq{overflow:hidden;border-top:1px solid var(--line);padding:16px 0;mask-image:linear-gradient(90deg,transparent,#000 10%,#000 90%,transparent);-webkit-mask-image:linear-gradient(90deg,transparent,#000 10%,#000 90%,transparent)}
+.marq{overflow:hidden;border-top:1px solid var(--line);padding:16px 0;mask-image:linear-gradient(90deg,transparent,#000 72px,#000 calc(100% - 72px),transparent);-webkit-mask-image:linear-gradient(90deg,transparent,#000 72px,#000 calc(100% - 72px),transparent)}
 .marq .row{display:flex;gap:10px;width:max-content;animation:mq 56s linear infinite}
 .marq .row.b{animation-duration:72s;animation-direction:reverse}
 .marq.hm{border-top:0;padding:0;margin:30px 0 4px;display:grid;gap:9px}
@@ -142,37 +155,37 @@ section.band{padding:clamp(88px,11vh,132px) 0}
 @keyframes mq{to{transform:translateX(-50%)}}
 .chip{display:flex;align-items:center;gap:9px;white-space:nowrap;border:1px solid var(--line);border-radius:999px;padding:9px 16px;background:var(--surface);font-family:var(--display);font-weight:600;font-size:15px;color:var(--text)}
 .chip small{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--dim);font-weight:400}
-.stage.wide{aspect-ratio:auto;height:clamp(215px,18vw,285px);max-height:none;margin:0;border:0;border-top:1px solid var(--line);border-radius:0;background:radial-gradient(120% 140% at 50% 0%,#0a0d13,#07080b)}
+.stage.wide{aspect-ratio:auto;height:clamp(215px,20vw,310px);max-height:none;margin:0;border:0;border-top:1px solid var(--line);border-radius:0;background:radial-gradient(120% 140% at 50% 0%,#0a0d13,#07080b);-webkit-mask-image:linear-gradient(90deg,transparent,#000 26px,#000 calc(100% - 26px),transparent);mask-image:linear-gradient(90deg,transparent,#000 26px,#000 calc(100% - 26px),transparent)}
 
 
 
 /* ---------- career graph ---------- */
 .graph .cols{position:relative;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:clamp(16px,2.6vw,38px);align-items:stretch}
 .gnode{position:relative;z-index:3;border:1px solid var(--line2);border-radius:11px;background:rgba(17,20,27,.96);box-shadow:0 10px 30px rgba(0,0,0,.45);overflow:visible;display:flex;flex-direction:column}
-.gnode .ntitle{display:flex;align-items:baseline;justify-content:space-between;gap:10px;padding:14px 15px;border-radius:10px 10px 0 0;background:linear-gradient(180deg,#141a24,#10141c);border-bottom:1px solid var(--line)}
+.gnode .ntitle{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:baseline;gap:4px 10px;padding:14px 15px;border-radius:10px 10px 0 0;background:linear-gradient(180deg,#141a24,#10141c);border-bottom:1px solid var(--line)}
 .gnode .ntitle span{font-family:var(--display);font-size:clamp(13.5px,1.15vw,16px);font-weight:600;letter-spacing:-.01em;color:var(--text);line-height:1.15}
-.gnode .ntitle em{font-family:var(--mono);font-style:normal;font-size:clamp(9.5px,.78vw,11px);letter-spacing:.1em;color:#96a1b3;white-space:nowrap}
+.gnode .ntitle em{font-family:var(--mono);font-style:normal;font-size:clamp(9.5px,.78vw,11px);letter-spacing:.1em;color:#96a1b3;white-space:nowrap;justify-self:end}
+@media(max-width:1240px){.gnode .ntitle{grid-template-columns:minmax(0,1fr)}.gnode .ntitle em{justify-self:start}}
 .gnode.now{border-color:var(--accent);box-shadow:0 0 0 1px rgba(91,157,255,.22),0 16px 44px rgba(91,157,255,.12)}
 .gnode.now .ntitle{background:linear-gradient(180deg,#152134,#101826)}
 .gnode.now .ntitle span{color:var(--accent)}
 
-.graph{position:relative;padding:14px 0 110px}
+.graph{position:relative;padding:14px 0 150px}
+@media(max-width:1000px){.graph{padding-bottom:24px}}
 .graph svg.links{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;overflow:visible;z-index:4}
 .graph svg.links path{pointer-events:none}
 .graph .wlb{font-family:var(--mono);font-size:11.5px;letter-spacing:.04em;text-anchor:middle;opacity:.9;paint-order:stroke;stroke:#07080b;stroke-width:3px}
-.paused *{animation-play-state:paused!important}
+.paused *,.paused *::before,.paused *::after{animation-play-state:paused!important}
 .paused .float{animation-play-state:paused!important}
 .graph .flowdash{animation-name:dashmove;animation-timing-function:linear;animation-iteration-count:infinite}
 @keyframes dashmove{to{stroke-dashoffset:-48}}
-.gnode::before,.gnode::after,.out-chip::after{content:'';position:absolute;top:50%;width:7px;height:7px;border-radius:50%;background:#0b0d12;border:1.5px solid var(--line2);transform:translateY(-50%);z-index:3}
+.gnode::before,.gnode::after{content:'';position:absolute;top:50%;width:7px;height:7px;border-radius:50%;background:#0b0d12;border:1.5px solid var(--line2);transform:translateY(-50%);z-index:3}
 .gnode::before{left:-4px}.gnode::after{right:-4px}
-.out-chip{position:relative}.out-chip::after{right:-4px;border-color:#2f4a3f}
 .gnode.now::before{border-color:var(--accent)}
 .nrow{border-top:1px solid var(--line);padding:12px 15px;font-size:clamp(12px,1vw,13.5px);color:#ccd5e2;line-height:1.4;position:relative}
 .nrow b{color:var(--text);font-weight:600}
 .nrow:first-of-type{border-top:0}
-.out-chip b{color:var(--text);font-weight:600}
-.graph .legend{margin-top:30px;font-family:var(--mono);font-size:11px;letter-spacing:.1em;color:var(--dim);text-transform:uppercase}
+.graph .legend{margin-top:64px;font-family:var(--mono);font-size:11px;letter-spacing:.1em;color:var(--dim);text-transform:uppercase}
 @media(max-width:1000px){.graph .cols{grid-template-columns:1fr 1fr}.graph svg.links{display:none}}
 @media(max-width:640px){.graph .cols{grid-template-columns:1fr}}
 
@@ -189,6 +202,7 @@ section.band{padding:clamp(88px,11vh,132px) 0}
 .float.g{border:1px solid var(--ok)}
 .float.o{border:1px solid var(--gate)}
 .float.inv img{filter:invert(1) hue-rotate(180deg) saturate(1.15) brightness(.92) contrast(1.05)}
+.float.hot img{filter:brightness(.76) contrast(1.06) saturate(1.02)}
 .float.tag{display:flex;align-items:center;justify-content:center;padding:10px;background:linear-gradient(180deg,#11141b,#0a0d13)}
 .float.tag figcaption{text-align:center}
 .float.tag b{display:block;font-family:var(--display);font-size:clamp(19px,2.2vw,32px);font-weight:700;letter-spacing:-.03em;line-height:1;color:var(--text)}
@@ -198,19 +212,20 @@ section.band{padding:clamp(88px,11vh,132px) 0}
 .stage .dmx{position:absolute;left:-1%;top:2%;width:58%;height:56%;z-index:2}
 .stage .dsh{position:absolute;right:1%;top:2%;width:37%;height:56%;z-index:2}
 .dsh .pane{fill:#0b0e15;stroke:var(--line2);stroke-width:1}
-.dsh .hd{font-family:var(--mono);font-size:5px;letter-spacing:.14em;fill:#96a1b3;text-transform:uppercase}
+.dsh .hd{font-family:var(--mono);font-size:6.4px;letter-spacing:.14em;fill:#96a1b3;text-transform:uppercase}
 .dsh .kpi{font-family:var(--display);font-size:22px;font-weight:700;letter-spacing:-.03em;fill:var(--ok)}
 .dsh .bar{fill:#2b3547}.dsh .bar.on{fill:var(--ok);opacity:.85}
 .dsh .tick{stroke:#1b2230;stroke-width:.6}
-.dsh .sm{font-family:var(--mono);font-size:4.3px;letter-spacing:.08em;fill:#a6b1c3}
+.dsh .sm{font-family:var(--mono);font-size:6px;letter-spacing:.06em;fill:#a6b1c3}
+.dsh .sm.foot{font-size:5.2px;fill:#96a1b3}
 .dmx .blk{fill:#0b0e15;stroke:var(--line2);stroke-width:1}
-.dmx .hd{font-family:var(--mono);font-size:5.2px;letter-spacing:.14em;fill:#96a1b3;text-transform:uppercase}
+.dmx .hd{font-family:var(--mono);font-size:7.6px;letter-spacing:.14em;fill:#96a1b3;text-transform:uppercase}
 .dmx .row{fill:#2b3547}
 .dmx .row.dup{fill:#5a3a22}
 .dmx .row.uni{fill:#1f3f5f}
 .dmx .row.key{fill:#1c4a38}
 .dmx .lnk{fill:none;stroke-width:.8;stroke-dasharray:2 3;opacity:.7;animation:dashcrawl 11s linear infinite}
-.dmx .mark{font-family:var(--mono);font-size:5.4px;letter-spacing:.1em;fill:var(--ok)}
+.dmx .mark{font-family:var(--mono);font-size:8px;letter-spacing:.1em;fill:var(--ok)}
 @media(prefers-reduced-motion:reduce){.stage svg.fx path,.dmx .lnk{animation:none}}
 
 @media(max-width:1000px){.stage{max-height:420px}}
@@ -223,25 +238,23 @@ section.band{padding:clamp(88px,11vh,132px) 0}
 .spec .flowpanel{margin:-4px 0 20px;border:1px solid var(--line);border-radius:12px;background:radial-gradient(120% 120% at 20% 0%,#0a0d13,#06070b);padding:14px;display:flex;align-items:center;gap:14px;min-height:108px}
 .stage .flowpanel{position:absolute;left:50%;transform:translateX(-50%);width:calc(100% - 20px);max-width:460px;bottom:8px;margin:0;border:0;border-radius:10px;background:none;backdrop-filter:none;min-height:0;padding:8px 10px}
 .spec .flowpanel svg{flex:1;min-width:0;width:100%;height:auto;overflow:visible}
-.spec .thumb{flex:none;width:74px;border:1px solid var(--line2);border-radius:8px;overflow:hidden;background:#05060a;box-shadow:0 8px 28px rgba(0,0,0,.6)}
-.spec .thumb img{display:block;width:100%;height:auto;transition:transform .8s}
-.spec:hover .thumb img{filter:none;transform:scale(1.04)}
-.spec .thumb.tall{width:62px}
 .spec .who{font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--dim)}
 .spec h3{font-size:24px;margin:10px 0 16px}
-.spec svg.mini{width:100%;height:58px;margin-bottom:18px;overflow:visible}
 .spec dl{display:grid;grid-template-columns:auto 1fr;gap:7px 12px;font-size:14px}
 .spec dt{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:#a6b1c3;padding-top:4px}
 .spec dd{color:#ccd5e2}
 .spec dd b{color:var(--text);font-weight:600}
-.spec .out{margin-top:auto;padding-top:16px;border-top:1px solid var(--line);font-family:var(--mono);font-size:12px;color:var(--ok)}
+.spec .out{margin-top:auto;padding-top:16px;border-top:1px solid var(--line);font-family:var(--mono);font-size:12px;color:var(--ok);display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 14px}
+.spec .out .go{margin-left:auto;color:var(--accent);text-decoration:none;border-bottom:1px solid rgba(91,157,255,.4);padding-bottom:2px}
+.spec .out .go:hover{border-bottom-color:var(--accent)}
 .specs.four{grid-template-columns:repeat(2,minmax(0,1fr))}
 @media(max-width:1000px){.specs.four{grid-template-columns:1fr}}
 @media(max-width:700px){.specs.four{grid-template-columns:1fr}}
 .spec.lean{padding:20px 22px 22px}
 .spec.lean h3{font-size:21px;margin:8px 0 16px}
 .spec.lean dl{font-size:13px}
-.grid.five{grid-template-columns:repeat(2,1fr)}
+.grid.five{grid-template-columns:repeat(2,minmax(0,1fr))}
+@media(max-width:900px){.grid.five{grid-template-columns:1fr}}
 .pcard.wide{grid-column:span 2}
 @media(max-width:900px){.pcard.wide{grid-column:span 1}}
 
@@ -251,13 +264,13 @@ section.band{padding:clamp(88px,11vh,132px) 0}
 .flowpanel .flow rect{fill:#0c0e13;stroke:#2a3346;stroke-width:1.2}
 .flowpanel .flow rect.gate{stroke:var(--gate)}
 .flowpanel .flow rect.exit{stroke:var(--ok)}
-.mini .flow path{stroke:#232b3a;stroke-width:1.4;fill:none;stroke-dasharray:70;stroke-dashoffset:70;animation:draw 1s .3s forwards}
-.mini .flow rect{fill:#0c0e13;stroke:#2a3346;stroke-width:1.2}
-.mini .flow rect.gate{stroke:var(--gate)}
-.mini .flow rect.exit{stroke:var(--ok)}
 @keyframes draw{to{stroke-dashoffset:0}}
+.clinks{display:flex;flex-wrap:wrap;align-items:center;gap:10px;align-self:center}
+.btn.big{height:54px;font-size:16px;padding:0 26px}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:5px}
 footer{padding:60px 0 80px;color:var(--dim);font-size:13px;border-top:1px solid var(--line);margin-top:40px}
 </style>
+<noscript><style>.rv{opacity:1!important;transform:none!important}</style></noscript>
 </head>
 <body>
 
@@ -270,6 +283,7 @@ footer{padding:60px 0 80px;color:var(--dim);font-size:13px;border-top:1px solid 
     <li><a href="#automation">Automation</a></li>
     <li><a href="#campaigns">Campaigns</a></li>
     <li><a href="#hire">Hire</a></li>
+    <li><a href="#contact">Contact</a></li>
   </ul>
   <a class="btn" href="mailto:karusrus@gmail.com">Email me</a>
 </div></nav>
@@ -282,7 +296,7 @@ footer{padding:60px 0 80px;color:var(--dim);font-size:13px;border-top:1px solid 
   <div class="wrap">
     <div class="mono rv">AI Implementation &amp; Automation Lead</div>
     <h1 class="rv" style="margin-top:18px">Production lines with a <em>human gate</em>, handed over working.</h1>
-    <p class="sub rv">I take an operation that already runs — creative, marketing, business — and put AI inside it where it pays: a pipeline, an approval gate a named person signs, a ledger an auditor can read. Eleven years inside a regulated fintech, then delivery for EU institutions.</p>
+    <p class="sub rv">I take an operation that already runs — creative, marketing, business — and put AI inside it where it pays: a pipeline, an approval gate a named person signs, a ledger an auditor can read. Eleven years inside a regulated fintech, then delivery for EU institutions. Based in Bulgaria, EU work rights, no sponsorship needed.</p>
     <div class="marq hm rv" aria-label="Brands and institutions this work was done for"><div class="row" id="mq1"></div><div class="row b" id="mq2"></div></div>
     <div class="cta rv">
       <a class="btn primary" href="#products">See what it looks like</a>
@@ -340,7 +354,7 @@ footer{padding:60px 0 80px;color:var(--dim);font-size:13px;border-top:1px solid 
       </div>
       <div class="legend">the label on a wire is what actually travels it</div>
     </div>
-    <div class="term tl rv" data-cmd="assert output(stage[n]) == input(stage[n+1])" data-out="PASS · 5 stages · nothing dropped on the way"></div>
+    <div class="term tl rv" data-cmd="check handovers --all" data-out="PASS · 5 stages · nothing dropped on the way"></div>
   </div>
 </section>
 
@@ -357,9 +371,9 @@ footer{padding:60px 0 80px;color:var(--dim);font-size:13px;border-top:1px solid 
     <div class="specs">
 
       <article class="spec rv">
-        <div class="stage"><figure class="float b" data-p="16,60,26,1"><img src="../assets/a-swimply-post.jpg" alt="Generated feed creative for Swimply"></figure><figure class="float b" data-p="41,48,15,0.561"><img src="../assets/a-swimply-story.jpg" alt="Generated story creative for Swimply"></figure><figure class="float g" data-p="69,30,27,2.25"><img src="../assets/a-swimply-cta.jpg" alt="Story call to action, composed from the listing"></figure><figure class="float tag o" data-p="0,0,0,1.15"><figcaption><b>300</b><span>creatives a day</span></figcaption></figure><div class="flowpanel" data-flow="brief,Bannerbear API,variants,TikTok · Meta" data-gate=""></div></div>
         <div class="who">Twigeo · for Swimply</div>
         <h3>Generative ad production</h3>
+        <div class="stage"><figure class="float b" data-ar="1"><img loading="lazy" decoding="async" src="../assets/a-swimply-post.jpg" alt="Generated feed creative for Swimply"></figure><figure class="float b" data-ar="0.561"><img loading="lazy" decoding="async" src="../assets/a-swimply-story.jpg" alt="Generated story creative for Swimply"></figure><figure class="float g" data-ar="2.25"><img loading="lazy" decoding="async" src="../assets/a-swimply-cta.jpg" alt="Story call to action, composed from the listing"></figure><figure class="float tag o" data-ar="1.15"><figcaption><b>300</b><span>creatives a day</span></figcaption></figure><div class="flowpanel" data-flow="brief,Bannerbear API,variants,TikTok · Meta" data-gate=""></div></div>
         <dl>
           <dt>Was</dt><dd>One creative a day, assembled by hand.</dd>
           <dt>Built</dt><dd>A pipeline on the <b>Bannerbear API</b>: live listings composed into brand templates, shipped to TikTok, Meta, X and Google Ads.</dd>
@@ -369,9 +383,9 @@ footer{padding:60px 0 80px;color:var(--dim);font-size:13px;border-top:1px solid 
       </article>
 
       <article class="spec rv">
-        <div class="stage"><figure class="float b" data-p="13,58,17,0.706"><img src="../assets/a-offer-doc.jpg" alt="Job offer generated from BambooHR, merge fields visible"></figure><figure class="float o" data-p="37,44,18,0.777"><img src="../assets/a-nft-cert.jpg" alt="The accepted offer as a certificate"></figure><figure class="float g" data-p="61,62,15,0.606"><img src="../assets/a-nft-card1.jpg" alt="Certificate front, issued to the candidate"></figure><figure class="float b" data-p="85,38,13,0.545"><img src="../assets/a-nft-phone.jpg" alt="The candidate verifies the certificate on a phone"></figure><div class="flowpanel" data-flow="request,generate,approve,mint" data-gate="2"></div></div>
         <div class="who">Exness</div>
         <h3>Hiring offers issued on-chain</h3>
+        <div class="stage"><figure class="float b" data-ar="0.706"><img loading="lazy" decoding="async" src="../assets/a-offer-doc.jpg" alt="Job offer generated from BambooHR, merge fields visible"></figure><figure class="float o" data-ar="0.777"><img loading="lazy" decoding="async" src="../assets/a-nft-cert.jpg" alt="The accepted offer as a certificate"></figure><figure class="float g" data-ar="0.606"><img loading="lazy" decoding="async" src="../assets/a-nft-card1.jpg" alt="Certificate front, issued to the candidate"></figure><figure class="float b" data-ar="0.545"><img loading="lazy" decoding="async" src="../assets/a-nft-phone.jpg" alt="The candidate verifies the certificate on a phone"></figure><div class="flowpanel" data-flow="request,generate,approve,mint" data-gate="2"></div></div>
         <dl>
           <dt>Was</dt><dd>Every offer assembled and sent by hand, design in the loop each time.</dd>
           <dt>Built</dt><dd><b>BambooHR REST API</b> into generated personalised interactive PDF offers, extended to non-transferable <b>NFT certificates on Polygon</b> the candidate verifies for themselves.</dd>
@@ -381,9 +395,9 @@ footer{padding:60px 0 80px;color:var(--dim);font-size:13px;border-top:1px solid 
       </article>
 
       <article class="spec rv">
-        <div class="stage"><figure class="float b" data-p="17,62,26,1.493"><img src="../assets/a-gdsi-hub.jpg" alt="Delegation data hub"></figure><figure class="float o" data-p="45,30,25,1.984"><img src="../assets/a-gdsi-plan.jpg" alt="Programme content architecture, redrawn"></figure><figure class="float g" data-p="71,60,19,1.242"><img src="../assets/a-gdsi-conf.jpg" alt="Programme event material for an EU delegation"></figure><figure class="float b" data-p="90,26,15,1"><img src="../assets/a-gdsi-youth.jpg" alt="Programme campaign material for an EU delegation"></figure><div class="flowpanel wp"></div></div>
         <div class="who">Horizon Europe · via GDSI</div>
         <h3>Delivery under EU programme rules</h3>
+        <div class="stage"><figure class="float b hot" data-ar="1.493"><img loading="lazy" decoding="async" src="../assets/a-gdsi-hub.jpg" alt="Delegation data hub"></figure><figure class="float o hot" data-ar="1.984"><img loading="lazy" decoding="async" src="../assets/a-gdsi-plan.jpg" alt="Programme content architecture, redrawn"></figure><figure class="float g hot" data-ar="1.242"><img loading="lazy" decoding="async" src="../assets/a-gdsi-conf.jpg" alt="Programme event material for an EU delegation"></figure><figure class="float b" data-ar="1"><img loading="lazy" decoding="async" src="../assets/a-gdsi-youth.jpg" alt="Programme campaign material for an EU delegation"></figure><div class="flowpanel wp"></div></div>
         <dl>
           <dt>Was</dt><dd>Twenty to thirty experts of input per document, and a committee with an afternoon to decide.</dd>
           <dt>Built</dt><dd>The <b>organisational and technical pipeline</b> behind the analysis: how material moves, who decides and on what, delivered under the programme's ethics and data-governance rules.</dd>
@@ -393,7 +407,7 @@ footer{padding:60px 0 80px;color:var(--dim);font-size:13px;border-top:1px solid 
       </article>
 
     </div>
-    <div class="term tl rv" data-cmd="ssh client &quot;systemctl status pipeline&quot;" data-out="active (running) · owner: the client’s team · since handover"></div>
+    <div class="term tl rv" data-cmd="status --where=client" data-out="active (running) · owner: the client’s team · since handover"></div>
   </div>
 </section>
 
@@ -412,8 +426,8 @@ footer{padding:60px 0 80px;color:var(--dim);font-size:13px;border-top:1px solid 
       <article class="pcard wide rv">
         <div class="metric">Art. 50 · ledger verified</div>
         <div class="win">
-          <div class="bar"><i></i><i></i><i></i><span>GET /webhook/audit — 200</span></div>
-          <div class="shot"><img src="../assets/w-aiact-audit.png" alt="Audit view"></div>
+          <div class="bar"><i></i><i></i><i></i><span>n8n · AI Act gate · active</span></div>
+          <div class="shot"><img loading="lazy" decoding="async" src="../assets/w-aiact-line.jpg" alt="A production line in n8n: the AI Act gate, a human approval step and the publish node marked as the exit"></div>
         </div>
         <div class="pbody">
           <h3>AI Act Transparency Kit</h3>
@@ -427,7 +441,7 @@ footer{padding:60px 0 80px;color:var(--dim);font-size:13px;border-top:1px solid 
         <div class="metric">MIT · one HTML file</div>
         <div class="win">
           <div class="bar"><i></i><i></i><i></i><span>pipeline-map — import n8n</span></div>
-          <div class="shot"><img src="../assets/w-pipeline-overview.jpg" alt="Pipeline Map"></div>
+          <div class="shot"><img loading="lazy" decoding="async" src="../assets/w-pipeline-overview.jpg" alt="Pipeline Map"></div>
         </div>
         <div class="pbody">
           <h3>Pipeline Map</h3>
@@ -441,7 +455,7 @@ footer{padding:60px 0 80px;color:var(--dim);font-size:13px;border-top:1px solid 
         <div class="metric">1,202 CVs · 77 ms · offline</div>
         <div class="win">
           <div class="bar"><i></i><i></i><i></i><span>resume-lab — 1,202 CVs, nothing leaves the machine</span></div>
-          <div class="shot"><img src="../assets/w-resumelab-dark.jpg" alt="The CV archive drawn as islands: 1,202 CVs in 19 clusters, all offline"></div>
+          <div class="shot"><img loading="lazy" decoding="async" src="../assets/w-resumelab-dark.jpg" alt="The CV archive drawn as islands: 1,202 CVs in 19 clusters, all offline"></div>
         </div>
         <div class="pbody">
           <h3>Privacy-first local-LLM CV evaluation</h3>
@@ -455,7 +469,7 @@ footer{padding:60px 0 80px;color:var(--dim);font-size:13px;border-top:1px solid 
         <div class="metric">1,000 iterations · 70/30</div>
         <div class="win">
           <div class="bar"><i></i><i></i><i></i><span>rc-scanner — live signal</span></div>
-          <div class="shot"><img src="../assets/scanner-grid-dark.jpg" alt="Solana scanner"></div>
+          <div class="shot"><img loading="lazy" decoding="async" src="../assets/scanner-grid-dark.jpg" alt="Solana scanner"></div>
         </div>
         <div class="pbody">
           <h3>Solana DEX Signal Scanner</h3>
@@ -469,7 +483,7 @@ footer{padding:60px 0 80px;color:var(--dim);font-size:13px;border-top:1px solid 
         <div class="metric">Impact / effort matrix</div>
         <div class="win">
           <div class="bar"><i></i><i></i><i></i><span>dextools — dashboard audit</span></div>
-          <div class="shot"><img src="../assets/dextools.jpg" alt="DexTools audit"></div>
+          <div class="shot"><img loading="lazy" decoding="async" src="../assets/dextools.jpg" alt="DexTools audit"></div>
         </div>
         <div class="pbody">
           <h3>DexTools dashboard audit</h3>
@@ -509,7 +523,7 @@ footer{padding:60px 0 80px;color:var(--dim);font-size:13px;border-top:1px solid 
       <article class="spec lean rv">
         <div class="who">UECHM · Katur Invest</div>
         <h3>Engineering optimisation and SCADA control</h3>
-        <div class="stage"><figure class="float b" data-p="18,58,30,1.292"><img src="../assets/a-eng-cfd.jpg" alt="Gas flow simulation inside the shaft furnace"></figure><figure class="float g" data-p="50,38,31,1.552"><img src="../assets/a-eng-scada.jpg" alt="SCADA screen: gas parameters on the shaft furnace"></figure><figure class="float o inv" data-p="75,62,12,0.581"><img src="../assets/a-eng-vessel.jpg" alt="Vessel drawing from the reconstruction proposal"></figure><figure class="float b inv" data-p="91,32,17,1.061"><img src="../assets/a-eng-math.jpg" alt="Heat transfer equations behind the model"></figure><div class="flowpanel" data-flow="sensors,model,scale settings,SCADA" data-gate="2"></div></div>
+        <div class="stage"><figure class="float b" data-ar="1.292"><img loading="lazy" decoding="async" src="../assets/a-eng-cfd.jpg" alt="Gas flow simulation inside the shaft furnace"></figure><figure class="float g hot" data-ar="1.552"><img loading="lazy" decoding="async" src="../assets/a-eng-scada.jpg" alt="SCADA screen: gas parameters on the shaft furnace"></figure><figure class="float o inv" data-ar="0.581"><img loading="lazy" decoding="async" src="../assets/a-eng-vessel.jpg" alt="Vessel drawing from the reconstruction proposal"></figure><figure class="float b inv" data-ar="1.061"><img loading="lazy" decoding="async" src="../assets/a-eng-math.jpg" alt="Heat transfer equations behind the model"></figure><div class="flowpanel" data-flow="sensors,model,scale settings,SCADA" data-gate="2"></div></div>
         <dl>
           <dt>Scope</dt><dd>Licensed chief engineer, a <b>50-person</b> design-engineering team.</dd>
           <dt>Built</dt><dd>The simulation model decisions were argued from (ANSYS, MATLAB, TRIZ), then reconstruction proposals, scale settings and supervisory control through <b>SCADA</b> — the operator reads and steers the process from one screen.</dd>
@@ -520,7 +534,7 @@ footer{padding:60px 0 80px;color:var(--dim);font-size:13px;border-top:1px solid 
       <article class="spec lean rv">
         <div class="who">Curvature · GDSI · Exness · DexTools</div>
         <h3>Decision material for committees</h3>
-        <div class="stage"><figure class="float b" data-p="17,58,27,1.526"><img src="../assets/a-doc-gdsi.jpg" alt="Strategic communication plan for an EU delegation"></figure><figure class="float g" data-p="45,36,23,1.406"><img src="../assets/a-doc-exness.jpg" alt="Partner brochure: the numbers a decision is argued from"></figure><figure class="float o" data-p="73,62,27,2.054"><img src="../assets/a-doc-dextools.jpg" alt="DexTools dashboard audit, reviewed screen by screen"></figure><figure class="float tag b" data-p="0,0,0,1.15"><figcaption><b>20–30</b><span>experts → one document</span></figcaption></figure><div class="flowpanel" data-flow="30 experts,structure,review,decision" data-gate="2"></div></div>
+        <div class="stage"><figure class="float b hot" data-ar="1.526"><img loading="lazy" decoding="async" src="../assets/a-doc-gdsi.jpg" alt="Strategic communication plan for an EU delegation"></figure><figure class="float g hot" data-ar="1.406"><img loading="lazy" decoding="async" src="../assets/a-doc-exness.jpg" alt="Partner brochure: the numbers a decision is argued from"></figure><figure class="float o" data-ar="2.054"><img loading="lazy" decoding="async" src="../assets/a-doc-dextools.jpg" alt="DexTools dashboard audit, reviewed screen by screen"></figure><figure class="float tag b" data-ar="1.15"><figcaption><b>20–30</b><span>experts → one document</span></figcaption></figure><div class="flowpanel" data-flow="30 experts,structure,review,decision" data-gate="2"></div></div>
         <dl>
           <dt>Scope</dt><dd>Boards, CIOs and EU evaluation committees: ten minutes, no context, a decision to make.</dd>
           <dt>Built</dt><dd>A repeatable way to turn <b>20–30 experts of input</b> into one document that answers in the order it is asked: 100+ page tenders, executive dashboards, authored video walkthroughs ordered by impact against effort.</dd>
@@ -531,7 +545,7 @@ footer{padding:60px 0 80px;color:var(--dim);font-size:13px;border-top:1px solid 
       <article class="spec lean rv">
         <div class="who">Exness · 23 markets</div>
         <h3>Localisation without the manual step</h3>
-        <div class="stage"><figure class="float b" data-p="13,60,17,1"><img src="../assets/a-loc-vi.jpg" alt="The same campaign in Vietnamese"></figure><figure class="float g" data-p="34,34,17,1"><img src="../assets/a-loc-ko.jpg" alt="The same campaign in Korean"></figure><figure class="float o" data-p="55,62,17,1"><img src="../assets/a-loc-ar.jpg" alt="The same campaign in Arabic"></figure><figure class="float b" data-p="76,34,17,1"><img src="../assets/a-loc-es.jpg" alt="The same campaign in Spanish"></figure><figure class="float g" data-p="90,64,14,1.6"><img src="../assets/a-loc-funnel.jpg" alt="Multilingual UTM tracking across the funnel"></figure><div class="flowpanel" data-flow="brief,Figma API,23 locales,publish" data-gate=""></div></div>
+        <div class="stage"><figure class="float b" data-ar="1"><img loading="lazy" decoding="async" src="../assets/a-loc-vi.jpg" alt="The same campaign in Vietnamese"></figure><figure class="float g hot" data-ar="1"><img loading="lazy" decoding="async" src="../assets/a-loc-ko.jpg" alt="The same campaign in Korean"></figure><figure class="float o" data-ar="1"><img loading="lazy" decoding="async" src="../assets/a-loc-ar.jpg" alt="The same campaign in Arabic"></figure><figure class="float b" data-ar="1"><img loading="lazy" decoding="async" src="../assets/a-loc-es.jpg" alt="The same campaign in Spanish"></figure><figure class="float g hot" data-ar="1.6"><img loading="lazy" decoding="async" src="../assets/a-loc-funnel.jpg" alt="Multilingual UTM tracking across the funnel"></figure><div class="flowpanel" data-flow="brief,Figma API,23 locales,publish" data-gate=""></div></div>
         <dl>
           <dt>Scope</dt><dd>A weekly pipeline of about twenty people — design, motion, copy, translation, analytics — run as a functional lead.</dd>
           <dt>Built</dt><dd><b>Figma API and Airtable</b> production, 23 languages through CrowdIn, multilingual UTM tracking, custom style models so identity reproduces instead of drifting.</dd>
@@ -554,6 +568,7 @@ footer{padding:60px 0 80px;color:var(--dim);font-size:13px;border-top:1px solid 
       <p>Eleven years of campaigns run as a production line, and the numbers that came out of it.</p>
     </div>
 
+    <div class="rule rv"></div>
     <div class="camp rv">
       <div class="top">
         <div>
@@ -567,9 +582,9 @@ footer{padding:60px 0 80px;color:var(--dim);font-size:13px;border-top:1px solid 
         </div>
       </div>
       <div class="marq"><div class="row" id="mq"></div></div>
-      <div class="stage wide"><figure class="float b" data-p="0,0,0,1"><img src="../assets/c-real-madrid.jpg" alt="Real Madrid CF co-branding, localised for Exness"></figure><figure class="float o" data-p="0,0,0,1.78"><img src="../assets/c-uniswap.jpg" alt="Uniswap cross-chain launch creative"></figure><figure class="float g" data-p="0,0,0,1"><img src="../assets/c-duolingo.jpg" alt="Duolingo course launch creative"></figure><figure class="float b" data-p="0,0,0,1.9"><img src="../assets/c-cisco.jpg" alt="Curvature co-branding with Cisco"></figure><figure class="float o" data-p="0,0,0,1"><img src="../assets/c-swimply.jpg" alt="Swimply listing creative, generated"></figure><figure class="float g" data-p="0,0,0,1.57"><img src="../assets/c-dextools.jpg" alt="DexTools dashboard audit"></figure><figure class="float b" data-p="0,0,0,1"><img src="../assets/c-red-bull.jpg" alt="Red Bull Racing contest creative"></figure><figure class="float o" data-p="0,0,0,1.33"><img src="../assets/c-wwf.jpg" alt="WWF calendar for Exness"></figure></div>
+      <div class="stage wide"><figure class="float b" data-ar="1"><img loading="lazy" decoding="async" src="../assets/c-real-madrid.jpg" alt="Real Madrid CF co-branding, localised for Exness"></figure><figure class="float o" data-ar="1.78"><img loading="lazy" decoding="async" src="../assets/c-uniswap.jpg" alt="Uniswap cross-chain launch creative"></figure><figure class="float g" data-ar="1"><img loading="lazy" decoding="async" src="../assets/c-duolingo.jpg" alt="Duolingo course launch creative"></figure><figure class="float b" data-ar="1.9"><img loading="lazy" decoding="async" src="../assets/c-cisco.jpg" alt="Curvature co-branding with Cisco"></figure><figure class="float o" data-ar="1.57"><img loading="lazy" decoding="async" src="../assets/c-dextools.jpg" alt="DexTools dashboard audit"></figure><figure class="float g" data-ar="1.33"><img loading="lazy" decoding="async" src="../assets/c-wwf.jpg" alt="WWF calendar for Exness"></figure></div>
     </div>
-    <div class="term tl rv" data-cmd="select variant from creatives order by cpa asc limit 1" data-out="500+ assets a week · 23 markets · CPA −25%"></div>
+    <div class="term tl rv" data-cmd="select winner from variants order by cpa" data-out="500+ assets a week · 23 markets · CPA −25%"></div>
   </div>
 </section>
 
@@ -586,21 +601,21 @@ footer{padding:60px 0 80px;color:var(--dim);font-size:13px;border-top:1px solid 
         <h3>Pilot on your stack</h3>
         <dl><dt>You get</dt><dd>One process automated end to end on your own tools, with the approval gate and the log, plus a map of the line you can present internally.</dd>
         <dt>Proof</dt><dd>Before and after in hours, cost per unit and error rate.</dd></dl>
-        <div class="out">from €4,500</div>
+        <div class="out">from €4,500 <a class="go" href="mailto:karusrus@gmail.com?subject=Pilot%20on%20our%20stack">Start a pilot →</a></div>
       </article>
       <article class="spec rv">
         <div class="who">02 · ongoing</div>
         <h3>Implementation lead</h3>
         <dl><dt>You get</dt><dd>Fractional or full-time. I run the rollout: use cases, pilots, adoption, governance, and the handover documentation that survives my absence.</dd>
         <dt>Proof</dt><dd>Adoption measured, not assumed.</dd></dl>
-        <div class="out">monthly rate on request</div>
+        <div class="out">monthly rate on request <a class="go" href="mailto:karusrus@gmail.com?subject=Implementation%20lead">Ask for the rate →</a></div>
       </article>
       <article class="spec rv">
         <div class="who">03 · 48 hours</div>
         <h3>AI Act readiness read</h3>
         <dl><dt>You get</dt><dd>Where synthetic media leaves your organisation without disclosure, which lines have no human gate, and what Article 50 asks of you as a deployer.</dd>
         <dt>Proof</dt><dd>One page, findings ordered by exposure.</dd></dl>
-        <div class="out">free</div>
+        <div class="out">free <a class="go" href="mailto:karusrus@gmail.com?subject=AI%20Act%20readiness%20read">Book the read →</a></div>
       </article>
     </div>
     <div class="term tl rv" data-cmd="./start --pilot --stack=yours" data-out="one process · one gate · one log · then it is yours"></div>
@@ -609,17 +624,16 @@ footer{padding:60px 0 80px;color:var(--dim);font-size:13px;border-top:1px solid 
 
 <section class="band" id="contact">
   <div class="wrap">
-    <div class="rule rv"></div>
     <div class="shead rv" style="margin-bottom:0">
       <div>
         <div class="mono">Contact</div>
         <h2 style="margin-top:12px;max-width:16ch">Send me the process that hurts.</h2>
       </div>
-      <p style="align-self:center">
-        <a class="btn primary" href="mailto:karusrus@gmail.com">karusrus@gmail.com</a>
-        <a class="btn" href="CV_Ruslan_Karymov.pdf" style="margin-left:8px">CV, PDF</a>
-        <a class="btn" href="https://www.linkedin.com/in/ruslankarymov/" style="margin-left:8px">LinkedIn</a>
-        <a class="btn" href="https://github.com/karusrus" style="margin-left:8px">GitHub</a>
+      <p class="clinks">
+        <a class="btn primary big" href="mailto:karusrus@gmail.com?subject=A%20process%20that%20hurts">karusrus@gmail.com</a>
+        <a class="btn" href="CV_Ruslan_Karymov.pdf">CV, PDF</a>
+        <a class="btn" href="https://www.linkedin.com/in/ruslankarymov/">LinkedIn</a>
+        <a class="btn" href="https://github.com/karusrus">GitHub</a>
       </p>
     </div>
   </div>
@@ -650,7 +664,7 @@ document.querySelectorAll('.pcard').forEach(c=>c.addEventListener('pointermove',
   const rs=()=>{dpr=Math.min(devicePixelRatio||1,2);w=c.clientWidth;h=c.clientHeight;c.width=w*dpr;c.height=h*dpr;x.setTransform(dpr,0,0,dpr,0,0);
     P=Array.from({length:Math.min(55,Math.round(w*h/26000))},()=>({x:Math.random()*w,y:Math.random()*h,
       vx:(Math.random()-.5)*.14,vy:(Math.random()-.5)*.14,r:Math.random()*1.5+.4,a:Math.random()*.5+.15}))};
-  rs(); addEventListener('resize',rs);
+  rs(); let dr; addEventListener('resize',()=>{clearTimeout(dr);dr=setTimeout(rs,140)});
   window.__dustOn=true;
   let raf=null;
   const stop=()=>{ if(raf){cancelAnimationFrame(raf);raf=null} };
@@ -737,7 +751,7 @@ document.querySelectorAll('.pcard').forEach(c=>c.addEventListener('pointermove',
     const colW = nodes.length>1 ? (nodes[1].x - nodes[0].x) : 240;
     let lanes=0; const laneOf={};
     const lane = i => (laneOf[i] !== undefined ? laneOf[i] : (laneOf[i]=lanes++));
-    let out='';
+    let out='', labels='';
     L.forEach(([a,b,kind,label],i)=>{
       const A=id(a),B=id(b); if(!A||!B) return;
       const ra=R(A),rb=R(B), col=C[kind];
@@ -747,7 +761,7 @@ document.querySelectorAll('.pcard').forEach(c=>c.addEventListener('pointermove',
       const under = span > colW*0.9;          // reaches past the neighbour → travel below the row
       let d, ymid;
       if(under){
-        const yv = rowBottom + 24 + lane(i)*20;
+        const yv = rowBottom + 26 + lane(i)*30;
         ymid = yv;
         d=`M${x1} ${y1} C${x1+40} ${y1}, ${x1+40} ${yv}, ${x1+70} ${yv} L${x2-70} ${yv} C${x2-40} ${yv}, ${x2-40} ${y2}, ${x2} ${y2}`;
       } else {
@@ -759,7 +773,7 @@ document.querySelectorAll('.pcard').forEach(c=>c.addEventListener('pointermove',
       out += `<path id="w${i}" d="${d}" fill="none" stroke="${col}" stroke-width="${wid}" opacity="${main?.38:.24}"/>`;
       out += `<path d="${d}" fill="none" stroke="${col}" stroke-width="${wid*0.75}" stroke-linecap="round" stroke-dasharray="${main?'7 17':'5 15'}" class="flowdash" style="animation-duration:${(main?1.5:2.4)}s"/>`;
       if(label){
-        out += `<text x="${(x1+x2)/2}" y="${ymid-9}" class="wlb" fill="${col}">${label}</text>`;
+        labels += `<text x="${(x1+x2)/2}" y="${ymid-10}" class="wlb" fill="${col}">${label}</text>`;
       }
       const dots = main?2:1;
       for(let k=0;k<dots;k++){
@@ -767,7 +781,7 @@ document.querySelectorAll('.pcard').forEach(c=>c.addEventListener('pointermove',
              + `<animateMotion dur="${dur}s" begin="${(-k*dur/dots).toFixed(2)}s" repeatCount="indefinite"><mpath href="#w${i}"/></animateMotion></circle>`;
       }
     });
-    svg.innerHTML = out;
+    svg.innerHTML = out + labels;
   }
   let t=null, lastW=0;
   const schedule=()=>{ clearTimeout(t); t=setTimeout(()=>{ const w=wrap.clientWidth; if(w===lastW) return; lastW=w; draw(); }, 120); };
@@ -786,7 +800,7 @@ document.querySelectorAll('.pcard').forEach(c=>c.addEventListener('pointermove',
     e.target.classList.toggle('paused', off);
     smil(e.target).forEach(sv=>{ try{ off||still ? sv.pauseAnimations() : sv.unpauseAnimations(); }catch(_){} });
   }),{rootMargin:'120px'});
-  document.querySelectorAll('.stage,.flowpanel,#graph-wrap,.marq').forEach(el=>io.observe(el));
+  document.querySelectorAll('.hero,.stage,#graph-wrap,.marq').forEach(el=>io.observe(el));
   if(still) document.querySelectorAll('svg').forEach(sv=>{ try{ sv.pauseAnimations() }catch(_){} });
   // dust stops when the hero scrolls away
   const hero=document.querySelector('.hero');
@@ -831,12 +845,6 @@ document.querySelectorAll('.pcard').forEach(c=>c.addEventListener('pointermove',
       dot.appendChild(am); g.appendChild(dot);
     }
     svg.appendChild(g); panel.appendChild(svg);
-    (panel.dataset.thumb||'').split(',').filter(Boolean).forEach(src=>{
-      const f=document.createElement('figure');
-      f.className='thumb'+(panel.dataset.tall?' tall':'');
-      f.innerHTML=`<img src="../assets/${src}" alt="">`;
-      panel.appendChild(f);
-    });
   });
 })();
 
@@ -845,7 +853,7 @@ document.querySelectorAll('.pcard').forEach(c=>c.addEventListener('pointermove',
   const NS='http://www.w3.org/2000/svg';
   const mk=(n,a)=>{const e=document.createElementNS(NS,n);for(const k in a)e.setAttribute(k,a[k]);return e;};
   document.querySelectorAll('svg.dmx').forEach(svg=>{
-    svg.setAttribute('viewBox','0 0 300 118');
+    svg.setAttribute('viewBox','0 0 300 126');
     svg.setAttribute('preserveAspectRatio','xMidYMid meet');
     const g=mk('g',{});
     // left: three ministries, each with its own form fields
@@ -862,7 +870,7 @@ document.querySelectorAll('.pcard').forEach(c=>c.addEventListener('pointermove',
     });
     // right: one dictionary every form now reads from
     g.appendChild(mk('rect',{class:'blk',x:206,y:14,width:88,height:76,rx:5}));
-    const dh=mk('text',{class:'hd',x:213,y:26}); dh.textContent='data dictionary'; g.appendChild(dh);
+    const dh=mk('text',{class:'hd',x:213,y:26}); dh.textContent='dictionary'; g.appendChild(dh);
     const keys=[36,50,64,78];
     keys.forEach((y,k)=>{
       g.appendChild(mk('rect',{class:'row key',x:213,y,width:k===3?50:74,height:4,rx:2}));
@@ -876,8 +884,8 @@ document.querySelectorAll('.pcard').forEach(c=>c.addEventListener('pointermove',
       p.style.animationDelay=(i*.35)+'s';
       g.appendChild(p);
     });
-    const m=mk('text',{class:'mark',x:206,y:104}); m.textContent='nine fields → four'; g.appendChild(m);
-    const l=mk('text',{class:'hd',x:6,y:114}); l.textContent='incompatible forms'; g.appendChild(l);
+    const m=mk('text',{class:'mark',x:206,y:104}); m.textContent='9 fields → 4'; g.appendChild(m);
+    const l=mk('text',{class:'hd',x:6,y:120}); l.textContent='incompatible forms'; g.appendChild(l);
     svg.appendChild(g);
   });
 })();
@@ -892,16 +900,17 @@ document.querySelectorAll('.pcard').forEach(c=>c.addEventListener('pointermove',
     svg.setAttribute('preserveAspectRatio','xMidYMid meet');
     const g=mk('g',{});
     g.appendChild(mk('rect',{class:'pane',x:1,y:1,width:128,height:116,rx:6}));
-    g.appendChild(tx(10,15,'hd','unique fields'));
-    g.appendChild(tx(10,42,'kpi','−40%'));
-    [56,86].forEach(y=>g.appendChild(mk('line',{class:'tick',x1:10,y1:y+11,x2:120,y2:y+11})));
-    g.appendChild(tx(10,60,'sm','before · one model per ministry'));
-    g.appendChild(mk('rect',{class:'bar',x:10,y:64,width:110,height:6,rx:3}));
-    g.appendChild(tx(10,90,'sm','after · one shared dictionary'));
-    const b=mk('rect',{class:'bar on',x:10,y:94,width:110,height:6,rx:3});
+    g.appendChild(tx(10,17,'hd','unique fields'));
+    g.appendChild(tx(10,46,'kpi','−40%'));
+    g.appendChild(tx(10,63,'sm','before · per ministry'));
+    g.appendChild(mk('rect',{class:'bar',x:10,y:67,width:110,height:6,rx:3}));
+    g.appendChild(tx(10,85,'sm','after · one dictionary'));
+    const b=mk('rect',{class:'bar on',x:10,y:89,width:110,height:6,rx:3});
     b.appendChild(mk('animate',{attributeName:'width',from:'110',to:'66',dur:'1.4s',begin:'0.6s',fill:'freeze'}));
     g.appendChild(b);
-    g.appendChild(tx(10,112,'sm','8,000+ forms · 8 analysts · 4 countries'));
+    g.appendChild(mk('line',{class:'tick',x1:10,y1:99,x2:120,y2:99}));
+    g.appendChild(tx(10,107,'sm foot','8,000+ forms · 8 analysts'));
+    g.appendChild(tx(10,115,'sm foot','4 countries · one model'));
     svg.appendChild(g);
   });
 })();
@@ -920,9 +929,8 @@ document.querySelectorAll('.pcard').forEach(c=>c.addEventListener('pointermove',
     st.insertBefore(svg,st.firstChild);
     const items=fl.map((el,i)=>{
       // из разметки берём только пропорцию: высота у всех одна, её считает measure
-      const v=(el.dataset.p||'0,0,0,1.4').split(',').map(Number);
       const k=el.classList.contains('g')?'g':el.classList.contains('o')?'o':'b';
-      return {el,ar:Math.max(.5,Math.min(1.9,v[3]||1.4)),col:COL[k],
+      return {el,ar:Math.max(.5,Math.min(1.9,parseFloat(el.dataset.ar)||1.4)),col:COL[k],
         ax:9+(i*5)%9, ay:7+(i*4)%7,
         sx:.00022+((i*7)%5)*.000034, sy:.00017+((i*5)%4)*.000038, ph:i*2.1};
     });
@@ -951,16 +959,20 @@ document.querySelectorAll('.pcard').forEach(c=>c.addEventListener('pointermove',
           ink=(ps&&ps.querySelector('rect'))||ps;
     s.hasFlow=!!ink;
     s.py=ink?Math.max(40,ink.getBoundingClientRect().top-r.top-8):s.h-10;
-    const band=s.py-4, n=s.items.length;
-    const sumAr=s.items.reduce((a,it)=>a+it.ar,0);
+    const band=s.py-4;
+    // на телефоне шесть кадров по 45px нечитаемы — берём три и крупно
+    const keep=innerWidth<620?Math.min(3,s.items.length):s.items.length;
+    s.items.forEach((it,i)=>{ it.on=i<keep; it.el.style.display=it.on?'':'none' });
+    const live=s.items.filter(it=>it.on), n=live.length;
+    const sumAr=live.reduce((a,it)=>a+it.ar,0);
     // одна высота на весь ряд, ширина — из пропорции; ряд растянут от края до края,
     // так что широкие кадры перекрывают соседей — это и компенсируется дрейфом
     const fh=Math.max(52,Math.min(band*.60,(s.w*1.18)/sumAr,210));
-    const ws=s.items.map(it=>fh*it.ar);
-    const edge=6, span=Math.max(0,s.w-edge*2-ws[0]/2-ws[n-1]/2);
+    const ws=live.map(it=>fh*it.ar);
+    const edge=14, span=Math.max(0,s.w-edge*2-ws[0]/2-ws[n-1]/2);
     let low=0;
-    [...ws.keys()].sort((a,b)=>ws[b]-ws[a]).forEach((idx,rank)=>s.items[idx].el.style.zIndex=String(3+rank));
-    s.items.forEach((it,i)=>{
+    [...ws.keys()].sort((a,b)=>ws[b]-ws[a]).forEach((idx,rank)=>live[idx].el.style.zIndex=String(3+rank));
+    live.forEach((it,i)=>{
       it.el.style.width=ws[i].toFixed(1)+'px'; it.el.style.height=fh.toFixed(1)+'px';
       it.hw=ws[i]/2; it.hh=fh/2;
       it.bx=edge+ws[0]/2+(n<2?0:span*i/(n-1));
@@ -972,15 +984,19 @@ document.querySelectorAll('.pcard').forEach(c=>c.addEventListener('pointermove',
   }
   function draw(s,t){
     s.items.forEach((it,i)=>{
-      const dx=t?it.ax*Math.sin(t*it.sx+it.ph):0, dy=t?it.ay*Math.sin(t*it.sy+it.ph*1.7):0;
+      if(!it.on){ s.dots[i].setAttribute('r','0'); return; }
+      let dx=t?it.ax*Math.sin(t*it.sx+it.ph):0, dy=t?it.ay*Math.sin(t*it.sy+it.ph*1.7):0;
+      // край сцены — жёсткая граница: кадр не выезжает за неё ни при каком дрейфе
+      dx=Math.max(2+it.hw-it.bx,Math.min(s.w-2-it.hw-it.bx,dx));
       it.x=it.bx+dx; it.y=it.by+dy;
+      s.dots[i].setAttribute('r','1.9');
       it.el.style.transform=`translate(-50%,-50%) translate3d(${dx.toFixed(2)}px,${dy.toFixed(2)}px,0)`;
       s.dots[i].setAttribute('cx',it.x.toFixed(1)); s.dots[i].setAttribute('cy',(it.y+it.hh+3).toFixed(1));
     });
-    s.segs.forEach(g=>g.p.setAttribute('d',
-      bus(g.a.x,g.a.y+g.a.hh+3,g.b.x,g.b.y+g.b.hh+3,s.lane)));
-    const last=s.items[s.items.length-1];
-    s.tail.setAttribute('d',s.hasFlow?`M${last.x} ${Math.max(s.lane,last.y+last.hh+3)} V${s.py+6}`:'');
+    s.segs.forEach(g=>g.p.setAttribute('d', (g.a.on&&g.b.on)
+      ? bus(g.a.x,g.a.y+g.a.hh+3,g.b.x,g.b.y+g.b.hh+3,s.lane) : ''));
+    const last=[...s.items].reverse().find(it=>it.on);
+    s.tail.setAttribute('d',(s.hasFlow&&last)?`M${last.x} ${Math.max(s.lane,last.y+last.hh+3)} V${s.py+6}`:'');
   }
   let raf=0;
   const frame=t=>{ raf=0; let live=false;
@@ -997,10 +1013,12 @@ document.querySelectorAll('.pcard').forEach(c=>c.addEventListener('pointermove',
   S.forEach(s=>io.observe(s.st));
 
   relayout();
-  let rt; addEventListener('resize',()=>{clearTimeout(rt);rt=setTimeout(relayout,140)});
-  addEventListener('load',relayout);
-  if(document.fonts&&document.fonts.ready) document.fonts.ready.then(relayout);
-  document.querySelectorAll('.float img').forEach(im=>im.complete||im.addEventListener('load',relayout,{once:true}));
+  let rt, pending=0;
+  const soon=()=>{ if(pending) return; pending=requestAnimationFrame(()=>{pending=0; relayout()}) };
+  addEventListener('resize',()=>{clearTimeout(rt);rt=setTimeout(relayout,140)});
+  addEventListener('load',soon);
+  if(document.fonts&&document.fonts.ready) document.fonts.ready.then(soon);
+  document.querySelectorAll('.float img').forEach(im=>im.complete||im.addEventListener('load',soon,{once:true}));
   still.addEventListener&&still.addEventListener('change',relayout);
 })();
 
@@ -1008,9 +1026,11 @@ document.querySelectorAll('.pcard').forEach(c=>c.addEventListener('pointermove',
 (function(){
   const t=document.getElementById('tt');
   const s='curl -H "X-Audit-Token: ***" localhost:5678/webhook/audit  ';
+  const done=()=>t.insertAdjacentHTML('beforeend','<span class="ok">200 · chain verified · 61 decisions</span>');
+  if(matchMedia('(prefers-reduced-motion:reduce)').matches){ t.textContent=s; done(); return; }
   let i=0;
   const tick=()=>{ t.textContent=s.slice(0,i++); if(i<=s.length) setTimeout(tick,22);
-    else t.insertAdjacentHTML('beforeend','<span class="ok">200 · chain verified · 61 decisions</span>'); };
+    else done(); };
   setTimeout(tick,900);
 })();
 
@@ -1018,20 +1038,19 @@ document.querySelectorAll('.pcard').forEach(c=>c.addEventListener('pointermove',
 (function(){
   const still=matchMedia('(prefers-reduced-motion:reduce)').matches;
   const run=el=>{
-    const cmd=el.dataset.cmd||'', out=el.dataset.out||'',
-          c=el.querySelector('.c'), o=el.querySelector('.o');
-    if(still){ c.textContent=cmd; o.textContent=out; el.classList.add('done'); return; }
+    const cmd=el.dataset.cmd||'', c=el.querySelector('.c');
+    if(still){ c.textContent=cmd; el.classList.add('done'); return; }
     let i=0;
     const tick=()=>{ c.textContent=cmd.slice(0,i++);
-      if(i<=cmd.length) setTimeout(tick,16);
-      else setTimeout(()=>{ o.textContent=out; el.classList.add('done') },240); };
+      if(i<=cmd.length) setTimeout(tick,12); else el.classList.add('done'); };
     tick();
   };
   const io=new IntersectionObserver((es,ob)=>es.forEach(e=>{
     if(!e.isIntersecting) return; ob.unobserve(e.target); run(e.target);
   }),{rootMargin:'0px 0px -12% 0px'});
   document.querySelectorAll('.term.tl').forEach(el=>{
-    el.innerHTML='<span class="p">$</span> <span class="c"></span><span class="cur"></span><span class="ok o"></span>';
+    el.innerHTML='<span class="p">$</span> <span class="c"></span><span class="cur"></span>'
+      +'<span class="ok o">'+(el.dataset.out||'')+'</span>';
     io.observe(el);
   });
 })();
