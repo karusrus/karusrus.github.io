@@ -5,6 +5,13 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Integer NPU · Ruslan Karymov</title>
 <meta name="description" content="A phone NPU returned garbage in llama.cpp. Integer math made it 3.3× faster than the CPU at reading prompts, with the same answers.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="The phone's NPU returned garbage. Now it reads prompts 3.3× faster than the CPU.">
+<meta property="og:description" content="Integer math on the Snapdragon 7 Gen 4 NPU in llama.cpp: 3.3× vs CPU, 2.3× vs GPU, same answers. The reasoning step by step, dead ends included.">
+<meta property="og:url" content="https://karusrus.github.io/npu/">
+<meta property="og:image" content="https://karusrus.github.io/assets/w-npu.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://karusrus.github.io/assets/w-npu.jpg">
 <style>
 @font-face{font-family:'Bricolage';font-style:normal;font-display:swap;font-weight:200 800;src:url(../fonts/bricolage-grotesque-latin-wght-normal.woff2) format('woff2-variations')}
 @font-face{font-family:'Instrument';font-style:normal;font-display:swap;font-weight:400 700;src:url(../fonts/instrument-sans-latin-wght-normal.woff2) format('woff2-variations')}
@@ -409,7 +416,7 @@ footer{padding:56px 0 80px;color:var(--dim);font-size:14px}
   <div class="up">
     <div><b>llama.cpp</b>bug #29473 + fix</div>
     <div><b>PrismML</b>PR #290</div>
-    <div><b>Qualcomm AI Hub</b>21-chip FP16 map</div>
+    <div><b>Qualcomm</b>FP16 chip map report</div>
   </div>
 </div>
 
