@@ -1,0 +1,562 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Integer NPU · Ruslan Karymov</title>
+<meta name="description" content="A phone NPU returned garbage in llama.cpp. Integer math made it 3.3× faster than the CPU at reading prompts, with the same answers.">
+<style>
+@font-face{font-family:'Bricolage';font-style:normal;font-display:swap;font-weight:200 800;src:url(../fonts/bricolage-grotesque-latin-wght-normal.woff2) format('woff2-variations')}
+@font-face{font-family:'Instrument';font-style:normal;font-display:swap;font-weight:400 700;src:url(../fonts/instrument-sans-latin-wght-normal.woff2) format('woff2-variations')}
+@font-face{font-family:'JBMono';font-style:normal;font-display:swap;font-weight:100 800;src:url(../fonts/jetbrains-mono-latin-wght-normal.woff2) format('woff2-variations')}
+:root{
+  --bg:#07080b; --surface:#0c0e13; --surface2:#11141b; --line:#252b36; --line2:#323a4a;
+  --text:#f2f5fa; --muted:#c2ccdb; --dim:#96a1b3;
+  --accent:#5b9dff; --gate:#f0883e; --ok:#3ddc97;
+  --gray1:#707a8c; --gray2:#4b5364;
+  --display:'Bricolage',ui-sans-serif,system-ui,sans-serif;
+  --body:'Instrument',ui-sans-serif,system-ui,sans-serif;
+  --mono:'JBMono',ui-monospace,SFMono-Regular,Menlo,monospace;
+  --r:16px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:var(--body);font-size:16px;line-height:1.55;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+.wrap{width:min(1120px,92vw);margin:0 auto}
+.mono{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--dim)}
+h1,h2{font-family:var(--display);font-weight:600;letter-spacing:-.035em;line-height:1.04}
+h3{font-family:var(--display);font-weight:600;letter-spacing:-.02em;line-height:1.2}
+a{color:inherit}
+p{color:var(--muted)}
+.rv{opacity:0;transform:translateY(14px);transition:opacity .7s cubic-bezier(.2,.7,.2,1),transform .7s cubic-bezier(.2,.7,.2,1)}
+.rv.in{opacity:1;transform:none}
+
+nav{position:sticky;top:0;z-index:50;backdrop-filter:blur(14px);background:rgba(7,8,11,.78);border-bottom:1px solid var(--line)}
+nav .in{display:flex;align-items:center;justify-content:space-between;height:56px}
+nav a{text-decoration:none;font-size:14px;color:var(--muted)}
+nav a:hover{color:var(--text)}
+
+section{padding:88px 0;border-bottom:1px solid var(--line)}
+.shead{margin-bottom:36px}
+.shead h2{font-size:clamp(30px,4.2vw,48px);margin-top:12px}
+.shead p{max-width:720px;margin-top:14px;font-size:17px}
+
+/* hero */
+.hero{padding:96px 0 72px}
+.hero h1{font-size:clamp(38px,6.2vw,76px);max-width:15ch;margin-top:18px}
+.hero .lede{max-width:700px;margin-top:22px;font-size:19px;color:var(--muted)}
+.tiles{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:48px}
+.tile{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:20px 20px 18px}
+.tile .v{font-family:var(--body);font-weight:600;font-size:clamp(30px,3.6vw,44px);letter-spacing:-.02em;line-height:1.05;font-variant-numeric:tabular-nums}
+.tile .v small{font-size:.5em;color:var(--dim);font-weight:500;margin-left:4px}
+.tile .l{margin-top:8px;font-size:14px;color:var(--dim);line-height:1.4}
+.tile.hi .v{color:var(--text)}
+.tile.hi{border-color:rgba(91,157,255,.45);box-shadow:inset 0 0 0 1px rgba(91,157,255,.12)}
+.links{display:flex;flex-wrap:wrap;gap:10px;margin-top:28px}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:10px 14px;border:1px solid var(--line2);border-radius:999px;font-size:14px;text-decoration:none;color:var(--muted);background:var(--surface)}
+.btn:hover{color:var(--text);border-color:var(--dim)}
+
+/* ---------- reasoning trace ---------- */
+.trace{position:relative;display:grid;grid-template-columns:1fr 280px;gap:40px;align-items:start}
+.lanes{position:relative}
+.lanehead{display:grid;grid-template-columns:1fr 56px 1fr;margin-bottom:18px}
+.lanehead div{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--dim)}
+.lanehead div:first-child{text-align:right}
+.lanehead span{display:inline-block;width:8px;height:8px;border-radius:50%;margin:0 8px;vertical-align:1px}
+.steps{position:relative}
+.spine{position:absolute;left:50%;top:0;bottom:0;width:2px;transform:translateX(-1px)}
+.spine svg{position:absolute;inset:0;width:2px;height:100%;overflow:visible}
+.step{position:relative;display:grid;grid-template-columns:1fr 56px 1fr;align-items:center;min-height:118px;margin-bottom:6px}
+.step .card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px 16px;opacity:0;transform:translateY(18px) scale(.98);transition:opacity .6s cubic-bezier(.2,.7,.2,1),transform .6s cubic-bezier(.2,.7,.2,1),border-color .6s}
+.step.on .card{opacity:1;transform:none}
+.step.l .card{grid-column:1;text-align:left}
+.step.r .card{grid-column:3}
+.step .dot{grid-column:2;justify-self:center;width:14px;height:14px;border-radius:50%;background:var(--bg);border:2px solid var(--line2);transition:background .4s,border-color .4s,box-shadow .4s;z-index:2}
+.step.on .dot{background:var(--dotc,var(--accent));border-color:var(--bg);box-shadow:0 0 0 2px var(--dotc,var(--accent)),0 0 18px var(--dotc,var(--accent))}
+.step.r .dot{grid-row:1}
+.step .when{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;color:var(--dim);text-transform:uppercase;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.chip{display:inline-block;padding:2px 7px;border-radius:999px;border:1px solid var(--line2);font-family:var(--mono);font-size:10px;letter-spacing:.08em;color:var(--muted)}
+.step h3{font-size:18px;margin-top:8px}
+.step p{font-size:14.5px;margin-top:6px;line-height:1.5}
+.step .num{font-family:var(--body);font-weight:600;font-variant-numeric:tabular-nums;color:var(--text)}
+.step.dead .card{border-style:dashed;background:transparent}
+.step.dead h3{color:var(--dim);text-decoration:line-through;text-decoration-thickness:1.5px;text-decoration-color:rgba(240,136,62,.7)}
+.step.dead .dot{--dotc:var(--gate)}
+.step.key .card{border-color:rgba(91,157,255,.5)}
+.step.bug .dot{--dotc:#e5534b}
+.q{font-style:italic;color:var(--text)}
+
+/* gauge */
+.gauge{position:sticky;top:84px;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:20px}
+.gauge .t{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--dim)}
+.gauge .big{font-weight:600;font-size:56px;letter-spacing:-.03em;line-height:1;margin-top:14px;font-variant-numeric:tabular-nums}
+.gauge .big small{font-size:16px;color:var(--dim);font-weight:500;margin-left:6px}
+.gauge .sub{font-size:13px;color:var(--dim);margin-top:6px;min-height:38px}
+.gauge svg{display:block;width:100%;height:auto;margin-top:12px}
+.gauge .ver{font-family:var(--mono);font-size:11px;color:var(--muted);margin-top:10px}
+.gauge .state{display:inline-flex;align-items:center;gap:6px;font-family:var(--mono);font-size:11px;margin-top:12px;padding:3px 8px;border-radius:999px;border:1px solid var(--line2);color:var(--muted)}
+.gauge .state i{width:7px;height:7px;border-radius:50%;background:var(--gray1)}
+.gauge .state.bad i{background:#e5534b}
+.gauge .state.good i{background:var(--ok)}
+.replay{margin-top:14px;font-size:13px;background:none;border:1px solid var(--line2);color:var(--muted);border-radius:999px;padding:6px 12px;cursor:pointer;font-family:var(--body)}
+.replay:hover{color:var(--text)}
+
+/* charts */
+.chartcard{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:24px}
+.chartcard h3{font-size:19px}
+.chartcard .cap{font-size:14px;color:var(--dim);margin-top:4px}
+.legend{display:flex;gap:18px;flex-wrap:wrap;margin-top:14px;font-size:13px;color:var(--muted)}
+.legend span{display:inline-flex;align-items:center;gap:7px}
+.legend i{width:10px;height:10px;border-radius:3px;display:inline-block}
+.bars{margin-top:18px}
+.brow{display:grid;grid-template-columns:180px 1fr;gap:14px;align-items:center;padding:10px 0;border-top:1px solid var(--line)}
+.brow:first-child{border-top:0}
+.brow .name{font-size:14px;color:var(--muted);line-height:1.3}
+.brow .name b{display:block;color:var(--text);font-weight:600}
+.btrack{display:flex;flex-direction:column;gap:2px}
+.bar{position:relative;height:18px;display:flex;align-items:center}
+.bar i{display:block;height:100%;width:0;border-radius:0 4px 4px 0;transition:width 1.1s cubic-bezier(.2,.7,.2,1)}
+.bar em{font-style:normal;font-size:12.5px;color:var(--dim);margin-left:8px;white-space:nowrap;font-variant-numeric:tabular-nums;opacity:0;transition:opacity .5s .6s}
+.bar.npu em{color:var(--text);font-weight:600}
+.shown .bar em{opacity:1}
+.bar:hover i{filter:brightness(1.25)}
+.tip{position:fixed;pointer-events:none;z-index:99;background:#151a23;border:1px solid var(--line2);border-radius:8px;padding:7px 10px;font-size:12.5px;color:var(--text);opacity:0;transition:opacity .12s;white-space:nowrap}
+.two{display:grid;grid-template-columns:1.25fr 1fr;gap:16px}
+table{width:100%;border-collapse:collapse;font-size:14px;margin-top:14px;font-variant-numeric:tabular-nums}
+th,td{text-align:right;padding:9px 8px;border-top:1px solid var(--line)}
+th:first-child,td:first-child{text-align:left}
+th{font-weight:500;color:var(--dim);font-size:12.5px}
+td{color:var(--muted)}
+td.hi{color:var(--text);font-weight:600}
+details{margin-top:14px}
+summary{cursor:pointer;font-size:13px;color:var(--dim)}
+.versions svg{width:100%;height:auto;display:block;margin-top:16px}
+
+/* how */
+.pipe{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.pcell{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px;position:relative}
+.pcell .n{font-family:var(--mono);font-size:11px;color:var(--accent)}
+.pcell h3{font-size:17px;margin-top:8px}
+.pcell p{font-size:14px;margin-top:8px}
+.pcell code{font-family:var(--mono);font-size:12px;color:var(--text);background:var(--surface2);border:1px solid var(--line);border-radius:5px;padding:1px 5px}
+
+/* chips */
+.chipgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px;margin-top:18px}
+.cchip{border:1px solid var(--line);border-radius:10px;padding:10px 12px;background:var(--surface);font-size:13px;line-height:1.3}
+.cchip b{display:block;font-weight:600;color:var(--muted)}
+.cchip span{font-family:var(--mono);font-size:10.5px;color:var(--dim)}
+.cchip.no{border-color:rgba(240,136,62,.55);background:rgba(240,136,62,.06)}
+.cchip.no b{color:var(--text)}
+.cchip.me{box-shadow:0 0 0 1px var(--gate)}
+
+/* who */
+.who{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.who .col{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:22px}
+.who h3{font-size:19px;display:flex;align-items:center;gap:10px}
+.who h3 i{width:10px;height:10px;border-radius:50%;display:inline-block}
+.who ul{list-style:none;margin-top:12px}
+.who li{padding:9px 0;border-top:1px solid var(--line);font-size:15px;color:var(--muted)}
+.who li:first-child{border-top:0}
+.limits li{margin:8px 0 0 18px;color:var(--muted)}
+footer{padding:56px 0 80px;color:var(--dim);font-size:14px}
+
+@media(max-width:900px){
+  .tiles{grid-template-columns:repeat(2,1fr)}
+  .trace{grid-template-columns:1fr}
+  .gauge{order:-1;position:sticky;top:60px;z-index:5;display:grid;grid-template-columns:auto 1fr;gap:4px 14px;align-items:center;padding:12px 14px}
+  .gauge .big{font-size:34px;margin-top:0;grid-row:span 2}
+  .gauge svg,.gauge .ver,.gauge .replay{display:none}
+  .gauge .sub{min-height:0;margin:0}
+  .gauge .t{display:none}
+  .gauge .state{margin-top:0;justify-self:start}
+  .lanehead{grid-template-columns:28px 1fr}
+  .lanehead div:first-child{text-align:left;grid-column:2}
+  .lanehead div:last-child{grid-column:2}
+  .spine{left:13px}
+  .step{grid-template-columns:28px 1fr;min-height:0;margin-bottom:12px}
+  .step.l .card,.step.r .card{grid-column:2;grid-row:1}
+  .step .dot,.step.r .dot{grid-column:1;grid-row:1}
+  .two,.pipe,.who{grid-template-columns:1fr}
+  .brow{grid-template-columns:1fr}
+}
+.shot .rv,.shot .step .card{transition:none!important}
+.shot .rv{opacity:1!important;transform:none!important}
+.shot nav,.shot header,.shot footer,.shot section:not(#trace){display:none}
+.shot #trace{border:0;padding-top:0}
+.shot #trace .shead{visibility:hidden}
+.shot .replay{display:none}
+.shot .gauge{position:fixed;top:78px;right:calc((100vw - min(1120px,92vw))/2);width:280px}
+@media(prefers-reduced-motion:reduce){
+  .rv,.step .card{opacity:1!important;transform:none!important;transition:none!important}
+  .bar i,.bar em{transition:none!important}
+  html{scroll-behavior:auto}
+}
+</style>
+</head>
+<body>
+<nav><div class="wrap in"><a href="../">← Ruslan Karymov</a><a href="https://github.com/karusrus/npu-enablement">Repository →</a></div></nav>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="mono rv">Case · On-device AI · llama.cpp · Snapdragon 7 Gen 4</div>
+    <h1 class="rv">The phone's NPU returned garbage. Now it reads prompts 3.3× faster than the CPU.</h1>
+    <p class="lede rv">On a Motorola Edge 70, llama.cpp's NPU backend produced nonsense. The chip's matrix unit has no FP16, and the software assumed it did. Instead of waiting for a fix, we asked what the unit <em>can</em> do: integer math. Three days later the NPU is the fastest way to read a prompt on that phone, with the same answers as the CPU.</p>
+    <div class="tiles">
+      <div class="tile hi rv"><div class="v" data-count="3.3" data-dec="1">0<small>×</small></div><div class="l">prompt speed vs the best CPU setting (Qwen3.5-4B, 512 tokens)</div></div>
+      <div class="tile rv"><div class="v" data-count="2.3" data-dec="1">0<small>×</small></div><div class="l">vs the phone's GPU (Adreno 722, OpenCL)</div></div>
+      <div class="tile rv"><div class="v">10.84</div><div class="l">perplexity on the NPU, 10.85 on the CPU; greedy answers byte-identical</div></div>
+      <div class="tile rv"><div class="v" data-count="21" data-dec="0">0</div><div class="l">Snapdragon chips checked for FP16; 5 lack it</div></div>
+    </div>
+    <div class="links rv">
+      <a class="btn" href="https://github.com/karusrus/npu-enablement">Code, data and logs →</a>
+      <a class="btn" href="https://github.com/ggml-org/llama.cpp/issues/29473">Upstream issue #29473 →</a>
+      <a class="btn" href="https://github.com/PrismML-Eng/llama.cpp/pull/290">Side contribution: PrismML PR #290 →</a>
+    </div>
+  </div>
+</header>
+
+<section id="trace">
+  <div class="wrap">
+    <div class="shead rv">
+      <div class="mono">How we got here</div>
+      <h2>The reasoning, step by step.</h2>
+      <p>I worked with an AI coding agent. I set the direction and the checkpoints; the agent ran the probes, wrote the kernels and measured. Every claim had to hold on the real phone before it counted. The dead ends stay in the picture: they are where most of the learning was.</p>
+    </div>
+    <div class="trace">
+      <div class="lanes">
+        <div class="lanehead"><div>Me · direction <span style="background:var(--gate)"></span></div><div></div><div><span style="background:var(--accent)"></span> Agent · probes, code, numbers</div></div>
+        <div class="steps" id="steps">
+          <div class="spine"><svg preserveAspectRatio="none"><line x1="1" y1="0" x2="1" y2="100%" stroke="#252b36" stroke-width="2"/><line id="spineFill" x1="1" y1="0" x2="1" y2="0" stroke="#5b9dff" stroke-width="2"/></svg></div>
+
+          <div class="step l" style="--dotc:var(--gate)" data-g="0" data-s="idle">
+            <div class="card"><div class="when">26.09 <span class="chip">Question</span></div><h3>The phone has an NPU. Can llama.cpp use it?</h3><p>Motorola Edge 70, Snapdragon 7 Gen 4. The goal: local models that are actually fast.</p></div><div class="dot"></div>
+          </div>
+          <div class="step r bug" data-g="437" data-s="bad" data-note="looks fast, computes nothing">
+            <div class="dot"></div><div class="card"><div class="when">26.09 <span class="chip">Test</span></div><h3>437 tokens/s on the prompt. The answer is gibberish.</h3><p>The speed was fake: the matrix unit wrote zeros and infinities. Attention and the Qwen3.5 layers failed their tests too. Filed upstream as <a href="https://github.com/ggml-org/llama.cpp/issues/29473">#29473</a>.</p></div>
+          </div>
+          <div class="step l" style="--dotc:var(--gate)" data-g="0" data-s="idle">
+            <div class="card"><div class="when">26.09 <span class="chip">Hypothesis</span></div><h3>A hunch: maybe nobody has solved this yet.</h3><p class="q">"That could be our winning case."</p></div><div class="dot"></div>
+          </div>
+          <div class="step r" data-g="0" data-s="idle">
+            <div class="dot"></div><div class="card"><div class="when">26.09 <span class="chip">Evidence</span></div><h3>The maintainer: same models run clean on IQ-9075.</h3><p>Same Hexagon generation (v73), different result. The difference had to be in the chip, not the code.</p></div>
+          </div>
+          <div class="step r key" data-g="0" data-s="idle">
+            <div class="dot"></div><div class="card"><div class="when">27.09 <span class="chip">Test</span> <span class="chip">Evidence</span></div><h3>A probe model on 21 chipsets through Qualcomm AI Hub.</h3><p>Qualcomm's runtime on this chip: <span class="num">fp16=false</span>. Five of 21 Snapdragons have no FP16 in the matrix unit. llama.cpp picks FP16 by generation, so the two v73 parts among them are exposed.</p></div>
+          </div>
+          <div class="step l key" style="--dotc:var(--gate)" data-g="0" data-s="idle">
+            <div class="card"><div class="when">27.09 <span class="chip">Decision</span></div><h3>Turn the error into a resource.</h3><p class="q">"If we teach the matrix unit to count in integers, that's the breakthrough."</p><p>And a condition before investing: show what is actually new.</p></div><div class="dot"></div>
+          </div>
+          <div class="step r" data-g="0" data-s="idle">
+            <div class="dot"></div><div class="card"><div class="when">27.09 <span class="chip">Test</span></div><h3>Map the undocumented integer mode on the SDK emulator.</h3><p>Then the same inputs on the phone: <span class="num">12 of 12</span> output hashes match. An emulator is a hypothesis until hardware agrees.</p></div>
+          </div>
+          <div class="step r key" data-g="118" data-s="good" data-v="v1" data-note="first correct answers on this NPU">
+            <div class="dot"></div><div class="card"><div class="when">27.09 <span class="chip">Build</span></div><h3>First integer matmul. First correct answer from Qwen on this NPU.</h3><p>Weights to int8, activations as two 8-bit planes, the exact 32-bit sum stitched back on the vector unit. <span class="num">118 t/s</span>, already 2.3× the CPU.</p></div>
+          </div>
+          <div class="step l" style="--dotc:var(--gate)" data-g="118" data-s="good" data-v="v1">
+            <div class="card"><div class="when">27.09 <span class="chip">Decision</span></div><h3>Take it end to end, not just a bug report.</h3><p>Correct first, then fast, then clean enough for upstream. Publish code and numbers; keep the SDK lab private (its licence).</p></div><div class="dot"></div>
+          </div>
+          <div class="step r" data-g="147" data-s="good" data-v="v1.2" data-note="integer attention added">
+            <div class="dot"></div><div class="card"><div class="when">27.09 <span class="chip">Measure</span></div><h3>Pipeline the units; attention goes integer too.</h3><p>Matrix unit computes tile <i>i</i> while the vector unit finishes <i>i−1</i> and prepares <i>i+1</i>. <span class="num">118 → 126 → 147 t/s</span>.</p></div>
+          </div>
+          <div class="step l dead" data-g="147" data-s="good" data-v="v1.2">
+            <div class="card"><div class="when">27.09 <span class="chip">Dead end</span></div><h3>Speculative decoding with the NPU as verifier</h3><p>Checking 8 draft tokens costs the NPU more than the CPU. Measured, dropped.</p></div><div class="dot"></div>
+          </div>
+          <div class="step r bug" data-g="147" data-s="bad" data-v="v1.3?" data-note="perplexity 69.5: something is wrong">
+            <div class="dot"></div><div class="card"><div class="when">27.09 <span class="chip">Build</span> <span class="chip">Bug</span></div><h3>Qwen3.5's recurrent layers, eight tokens per pass. Perplexity: 69.5.</h3><p>All unit tests passed. Only the full quality run caught it: a decay product underflowed to 0/0 on fast-forgetting heads. Moved to log space.</p></div>
+          </div>
+          <div class="step r key" data-g="172" data-s="good" data-v="v1.3" data-note="same perplexity as the CPU">
+            <div class="dot"></div><div class="card"><div class="when">27.09 <span class="chip">Measure</span></div><h3>172 tokens/s. Perplexity 10.84 vs 10.85 on the CPU.</h3><p>3.3× the CPU, 2.3× the GPU, byte-identical greedy answers. The chip is detected at start-up; no settings needed.</p></div>
+          </div>
+          <div class="step l dead" data-g="172" data-s="good" data-v="v1.3">
+            <div class="card"><div class="when">27.09 <span class="chip">Dead end</span></div><h3>8-bit activations for 2× matrix speed</h3><p>The matrix unit got faster, the vector unit became the wall. Quality cost +0.3–1.6%. Not worth it.</p></div><div class="dot"></div>
+          </div>
+          <div class="step r dead" data-g="172" data-s="good" data-v="v1.3">
+            <div class="dot"></div><div class="card"><div class="when">28.09 <span class="chip">Dead end</span></div><h3>Decode on CPU and NPU at once</h3><p>Both share one memory bus. Together: +15% over the best alone. Generation is limited by memory, not compute.</p></div>
+          </div>
+          <div class="step r" data-g="172" data-s="good" data-v="v1.4" data-note="decode +8% after two copy fixes">
+            <div class="dot"></div><div class="card"><div class="when">28.09 <span class="chip">Build</span></div><h3>Two slow copies found in decode. Fixed.</h3><p>8192 rows of 12 bytes each, one memory wait per row. Now: one transfer in, one vector gather, one out. Decode <span class="num">8.31 → 8.99 t/s</span>.</p></div>
+          </div>
+          <div class="step l" style="--dotc:var(--gate)" data-g="172" data-s="good" data-v="v1.4">
+            <div class="card"><div class="when">28.09 <span class="chip">Ship</span></div><h3>Public repo, upstream discussion, PR prepared.</h3><p>Side result: a CPU kernel for PrismML's ternary models, 1.9× faster prompts on the same phone, opened as <a href="https://github.com/PrismML-Eng/llama.cpp/pull/290">PR #290</a>.</p></div><div class="dot"></div>
+          </div>
+        </div>
+      </div>
+
+      <aside class="gauge" aria-live="polite">
+        <div class="t">Prompt speed on the NPU</div>
+        <div class="big"><span id="gv">0</span><small>t/s</small></div>
+        <div class="sub" id="gn">scroll the steps</div>
+        <svg id="gsvg" viewBox="0 0 240 150" role="img" aria-label="Prompt speed history: CPU 52 tokens per second, NPU from garbage to 172"></svg>
+        <div class="state" id="gs"><i></i><span>not started</span></div>
+        <div class="ver" id="gver"></div>
+        <button class="replay" id="replay">Replay</button>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<section id="results">
+  <div class="wrap">
+    <div class="shead rv">
+      <div class="mono">Results</div>
+      <h2>Faster than the CPU and the GPU, on the same phone.</h2>
+      <p>Current version v1.4. Motorola Edge 70, 12 GB. llama-bench, 512-token prompt. CPU is the best of 2/4/6/8 threads; GPU is the stock OpenCL backend.</p>
+    </div>
+    <div class="two">
+      <div class="chartcard rv" id="barcard">
+        <h3>Prompt processing, tokens per second</h3>
+        <div class="cap">Higher is better</div>
+        <div class="legend"><span><i style="background:var(--accent)"></i>NPU, integer HMX</span><span><i style="background:var(--gray1)"></i>GPU</span><span><i style="background:var(--gray2)"></i>CPU</span></div>
+        <div class="bars" id="bars"></div>
+        <details><summary>Table view</summary>
+          <table><thead><tr><th>Model</th><th>NPU</th><th>GPU</th><th>CPU</th><th>vs CPU</th></tr></thead><tbody>
+          <tr><td>Qwen3.5-4B Q4_0</td><td class="hi">171.9</td><td>73.9</td><td>51.7</td><td class="hi">3.33×</td></tr>
+          <tr><td>Llama-3.2-1B Q4_0</td><td class="hi">550.6</td><td>307.2</td><td>226.8</td><td class="hi">2.43×</td></tr>
+          <tr><td>Qwen3.5-4B Q4_0, mixed quants</td><td class="hi">105.9</td><td>76.2</td><td>47.1</td><td class="hi">2.25×</td></tr>
+          </tbody></table>
+        </details>
+      </div>
+      <div class="chartcard versions rv">
+        <h3>Qwen3.5-4B prompt speed by version</h3>
+        <div class="cap">Tokens per second; the dashed line is the CPU. v1.4 kept the prompt speed and made generation 8% faster (8.31 → 8.99 t/s).</div>
+        <svg id="vsvg" viewBox="0 0 420 250" role="img" aria-label="Versions: v1 118, v1.1 126, v1.2 147, v1.3 172, v1.4 172 tokens per second; CPU 52"></svg>
+        <table><thead><tr><th>Quality, wikitext-2, 20 × 512</th><th>Perplexity</th><th>Time</th></tr></thead><tbody>
+          <tr><td>CPU</td><td>10.8533</td><td>4:02</td></tr>
+          <tr><td>NPU</td><td class="hi">10.8355</td><td class="hi">1:08</td></tr>
+        </tbody></table>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="how">
+  <div class="wrap">
+    <div class="shead rv">
+      <div class="mono">How it works</div>
+      <h2>Integer math, exact sums.</h2>
+      <p>The matrix unit (HMX) on this chip multiplies 8-bit integers. Everything else is arranged so the answer comes back exact.</p>
+    </div>
+    <div class="pipe">
+      <div class="pcell rv"><div class="n">01 · weights</div><h3>q4_0 → int8</h3><p>Re-quantized per column against the largest block scale in each K chunk. That scale rides in the unit's output conversion.</p></div>
+      <div class="pcell rv"><div class="n">02 · activations</div><h3>16-bit as two 8-bit planes</h3><p>Fed through the <code>uh:2x1</code> mode; a second bias word cancels the unsigned offset exactly.</p></div>
+      <div class="pcell rv"><div class="n">03 · accumulate</div><h3>Coarse + fine, stitched</h3><p>Two 16-bit stores per chunk, joined on the vector unit (HVX) into the exact 32-bit sum, then rescaled.</p></div>
+      <div class="pcell rv"><div class="n">04 · pipeline</div><h3>Both units busy</h3><p>HMX computes tile <i>i</i> while HVX reduces <i>i−1</i> and converts weights for <i>i+1</i>. Attention runs the same way.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="chips">
+  <div class="wrap">
+    <div class="shead rv">
+      <div class="mono">Who needs this</div>
+      <h2>Five of 21 Snapdragons have no FP16 matrix math.</h2>
+      <p>Qualcomm AI Hub, QNN 2.50, one probe model per chipset. On the two v73 parts without FP16, stock llama.cpp takes the FP16 path anyway. 7 Gen 4 is confirmed on a real phone; QCM6690 is untested.</p>
+    </div>
+    <div class="legend rv"><span><i style="background:rgba(240,136,62,.55)"></i>no FP16: needs the integer path</span><span><i style="background:var(--line2)"></i>FP16 available</span></div>
+    <div class="chipgrid rv" id="chipgrid"></div>
+  </div>
+</section>
+
+<section id="who">
+  <div class="wrap">
+    <div class="shead rv">
+      <div class="mono">Working with an AI agent</div>
+      <h2>Who did what.</h2>
+    </div>
+    <div class="who">
+      <div class="col rv"><h3><i style="background:var(--gate)"></i>Me</h3><ul>
+        <li>Picked the goal and the bet: a phone NPU as a real LLM engine</li>
+        <li>Reframed the bug as the opportunity: integers, not a workaround</li>
+        <li>Asked for the novelty case before investing time</li>
+        <li>Set the bar: correct on hardware, same quality as the CPU</li>
+        <li>Chose what to publish, and what to keep private for licence reasons</li>
+      </ul></div>
+      <div class="col rv"><h3><i style="background:var(--accent)"></i>Agent (Claude Code)</h3><ul>
+        <li>Probed the chip: AI Hub runs, emulator, hash checks on the phone</li>
+        <li>Wrote the integer kernels, the pipeline and the auto-detection</li>
+        <li>Measured every version; kept the logs and the dead ends</li>
+        <li>Drafted the write-ups; I edit and publish them</li>
+      </ul></div>
+    </div>
+    <div class="chartcard rv" style="margin-top:16px">
+      <h3>Honest limits</h3>
+      <ul class="limits">
+        <li>The matrix unit speeds up prompts. Generation is memory-bound; the CPU is still slightly faster (Qwen3.5-4B: 9.7 vs 9.0 tokens/s).</li>
+        <li>Only q4_0 weights run on the matrix unit, so mixed-quant models gain less (2.25×).</li>
+        <li>Tested on one phone. Not upstream yet: discussion in #29473.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<footer><div class="wrap">Ruslan Karymov · AI Enablement &amp; Automation Lead · <a href="../">karusrus.github.io</a> · September 2026</div></footer>
+<div class="tip" id="tip"></div>
+
+<script>
+(() => {
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches || location.search.includes('shot=');
+
+  // reveal + counters
+  const io = new IntersectionObserver(es => es.forEach(e => {
+    if (!e.isIntersecting) return;
+    e.target.classList.add('in');
+    const c = e.target.querySelector('[data-count]');
+    if (c) countUp(c);
+    io.unobserve(e.target);
+  }), {threshold: .15});
+  document.querySelectorAll('.rv').forEach(el => io.observe(el));
+  function countUp(el) {
+    const to = +el.dataset.count, dec = +el.dataset.dec, small = el.querySelector('small');
+    const tail = small ? small.outerHTML : '';
+    if (reduce) { el.innerHTML = to.toFixed(dec) + tail; return; }
+    const t0 = performance.now(), d = 1100;
+    (function f(t) { const k = Math.min(1, (t - t0) / d), e = 1 - Math.pow(1 - k, 3);
+      el.innerHTML = (to * e).toFixed(dec) + tail; if (k < 1) requestAnimationFrame(f); })(t0);
+  }
+
+  // ---------- reasoning trace ----------
+  const steps = [...document.querySelectorAll('.step')];
+  const box = document.getElementById('steps');
+  const fill = document.getElementById('spineFill');
+  const gv = document.getElementById('gv'), gn = document.getElementById('gn'), gs = document.getElementById('gs'), gver = document.getElementById('gver');
+  const svg = document.getElementById('gsvg');
+  const CPU = 51.7, MAX = 450;
+  // gauge history plot
+  const W = 240, H = 150, P = 8;
+  const y = v => H - P - (Math.min(v, MAX) / MAX) * (H - 2 * P);
+  svg.innerHTML = `
+    <line x1="${P}" x2="${W - P}" y1="${y(0)}" y2="${y(0)}" stroke="#252b36"/>
+    <line x1="${P}" x2="${W - P}" y1="${y(CPU)}" y2="${y(CPU)}" stroke="#707a8c" stroke-dasharray="4 4"/>
+    <text x="${W - P}" y="${y(CPU) - 5}" text-anchor="end" fill="#96a1b3" font-size="10" font-family="JBMono,monospace">CPU 52</text>
+    <path id="gpath" fill="none" stroke="#5b9dff" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+    <path id="gbad" fill="none" stroke="#e5534b" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+    <circle id="gdot" r="4" fill="#5b9dff" stroke="#0c0e13" stroke-width="2" cx="${P}" cy="${y(0)}"/>`;
+  const gpath = svg.querySelector('#gpath'), gbad = svg.querySelector('#gbad'), gdot = svg.querySelector('#gdot');
+  let cur = 0, target = 0, hist = [], shown = -1;
+
+  function setState(i) {
+    if (i === shown) return; shown = i;
+    const s = steps[i] || null;
+    const g = s ? +s.dataset.g : 0;
+    target = g;
+    const st = s ? s.dataset.s : 'idle';
+    gs.className = 'state' + (st === 'bad' ? ' bad' : st === 'good' ? ' good' : '');
+    gs.querySelector('span').textContent = st === 'bad' ? 'wrong answers' : st === 'good' ? 'answers match the CPU' : (i < 0 ? 'not started' : 'investigating');
+    let note = i < 0 ? 'scroll the steps' : 'no working NPU path yet';
+    for (let k = i; k >= 0; k--) { if (steps[k].dataset.note) { note = steps[k].dataset.note; break; } if (+steps[k].dataset.g === 0) break; }
+    gn.textContent = note;
+    gver.textContent = s && s.dataset.v ? 'version ' + s.dataset.v : '';
+    hist = steps.slice(0, i + 1).map(e => +e.dataset.g);
+    drawHist();
+  }
+  function drawHist() {
+    const n = Math.max(hist.length, 1), step = (W - 2 * P) / (steps.length - 1);
+    let d = '';
+    hist.forEach((v, k) => { d += (k ? 'L' : 'M') + (P + k * step).toFixed(1) + ' ' + y(v).toFixed(1) + ' '; });
+    gpath.setAttribute('d', d);
+    let bd = '';
+    hist.forEach((v, k) => { if (steps[k].dataset.s === 'bad') { const x = P + k * step; bd += 'M' + (x - step).toFixed(1) + ' ' + y(hist[k - 1] || 0).toFixed(1) + 'L' + x.toFixed(1) + ' ' + y(v).toFixed(1) + (k + 1 < hist.length ? 'L' + (x + step).toFixed(1) + ' ' + y(hist[k + 1]).toFixed(1) : '') + ' '; } });
+    gbad.setAttribute('d', bd);
+    const last = hist.length ? hist.length - 1 : 0;
+    gdot.setAttribute('cx', P + last * step); gdot.setAttribute('cy', y(hist[last] || 0));
+    gdot.setAttribute('fill', steps[last] && steps[last].dataset.s === 'bad' ? '#e5534b' : '#5b9dff');
+  }
+  function tick() {
+    cur += (target - cur) * (reduce ? 1 : 0.12);
+    if (Math.abs(target - cur) < .5) cur = target;
+    gv.textContent = Math.round(cur);
+    requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+
+  function onScroll() {
+    const r = box.getBoundingClientRect();
+    const line = innerHeight * 0.62;
+    let last = -1;
+    steps.forEach((s, i) => {
+      const sr = s.getBoundingClientRect();
+      const on = sr.top + sr.height * 0.35 < line;
+      s.classList.toggle('on', on);
+      if (on) last = i;
+    });
+    const prog = Math.max(0, Math.min(1, (line - r.top) / r.height));
+    fill.setAttribute('y2', (prog * 100).toFixed(2) + '%');
+    setState(last);
+  }
+  // ?shot=<px>: jump into the trace (used to render the thumbnail)
+  const shot = new URLSearchParams(location.search).get('shot');
+  if (shot !== null) {
+    document.body.classList.add('shot');
+    document.getElementById('trace').style.marginTop = -(+shot || 0) + 'px';
+  }
+  addEventListener('scroll', onScroll, {passive: true});
+  addEventListener('resize', onScroll);
+  onScroll();
+  document.getElementById('replay').onclick = () => {
+    document.getElementById('trace').scrollIntoView({behavior: reduce ? 'auto' : 'smooth'});
+  };
+
+  // ---------- bars ----------
+  const data = [
+    {m: 'Qwen3.5-4B Q4_0', s: 'all layers q4_0', npu: 171.9, gpu: 73.9, cpu: 51.7},
+    {m: 'Llama-3.2-1B Q4_0', s: 'instruct', npu: 550.6, gpu: 307.2, cpu: 226.8},
+    {m: 'Qwen3.5-4B Q4_0', s: 'mixed quants (unsloth)', npu: 105.9, gpu: 76.2, cpu: 47.1},
+  ];
+  const bars = document.getElementById('bars'), tip = document.getElementById('tip');
+  const bmax = 600;
+  bars.innerHTML = data.map(d => `<div class="brow"><div class="name"><b>${d.m}</b>${d.s}</div><div class="btrack">
+    ${[['npu', 'NPU', 'var(--accent)'], ['gpu', 'GPU', 'var(--gray1)'], ['cpu', 'CPU', 'var(--gray2)']].map(([k, n, c]) =>
+      `<div class="bar ${k}" data-tip="${n} · ${d.m} (${d.s}): ${d[k]} t/s${k === 'npu' ? ' · ' + (d.npu / d.cpu).toFixed(2) + '× CPU' : ''}"><i style="background:${c}" data-w="${d[k] / bmax * 100}"></i><em>${d[k]}${k === 'npu' ? ' · ' + (d.npu / d.cpu).toFixed(1) + '×' : ''}</em></div>`).join('')}
+  </div></div>`).join('');
+  const bio = new IntersectionObserver(es => es.forEach(e => {
+    if (!e.isIntersecting) return;
+    bars.querySelectorAll('i[data-w]').forEach(i => i.style.width = `calc(${i.dataset.w}% - 70px)`);
+    bars.classList.add('shown'); bio.disconnect();
+  }), {threshold: .3});
+  bio.observe(bars);
+  bars.addEventListener('mousemove', e => {
+    const b = e.target.closest('.bar'); if (!b) { tip.style.opacity = 0; return; }
+    tip.textContent = b.dataset.tip; tip.style.opacity = 1;
+    tip.style.left = Math.min(e.clientX + 14, innerWidth - tip.offsetWidth - 8) + 'px'; tip.style.top = (e.clientY - 34) + 'px';
+  });
+  bars.addEventListener('mouseleave', () => tip.style.opacity = 0);
+
+  // ---------- versions ----------
+  const vs = [['v1', 118.3], ['v1.1', 126.0], ['v1.2', 147.1], ['v1.3', 171.9], ['v1.4', 171.5]];
+  const vsvg = document.getElementById('vsvg');
+  const VW = 420, VH = 250, L = 34, R = 56, T = 18, B = 30, vmax = 200;
+  const vy = v => T + (1 - v / vmax) * (VH - T - B);
+  const bw = 22, gap = (VW - L - R) / vs.length;
+  let g = '';
+  [0, 50, 100, 150, 200].forEach(t => { g += `<line x1="${L}" x2="${VW - R}" y1="${vy(t)}" y2="${vy(t)}" stroke="#1a1f29"/><text x="${L - 8}" y="${vy(t) + 4}" text-anchor="end" fill="#96a1b3" font-size="11" font-family="Instrument,sans-serif">${t}</text>`; });
+  vs.forEach(([n, v], k) => {
+    const x = L + gap * k + gap / 2 - bw / 2, h = vy(0) - vy(v);
+    g += `<path class="vb" data-h="${h}" data-x="${x}" data-v="${v}" fill="${k === vs.length - 1 ? '#5b9dff' : '#3a4a66'}" d=""/><text x="${x + bw / 2}" y="${VH - 10}" text-anchor="middle" fill="#c2ccdb" font-size="12" font-family="JBMono,monospace">${n}</text>`;
+    g += `<text class="vl" x="${x + bw / 2}" y="${vy(v) - 8}" text-anchor="middle" fill="#f2f5fa" font-size="12" font-weight="600" font-family="Instrument,sans-serif" opacity="0">${v.toFixed(0)}</text>`;
+  });
+  g += `<line x1="${L}" x2="${VW - R}" y1="${vy(CPU)}" y2="${vy(CPU)}" stroke="#707a8c" stroke-dasharray="4 4"/><text x="${VW - R + 6}" y="${vy(CPU) + 4}" text-anchor="start" fill="#96a1b3" font-size="11" font-family="JBMono,monospace">CPU 52</text>`;
+  vsvg.innerHTML = g;
+  const bar = (x, h) => { const r = Math.min(4, h); const y0 = vy(0); return `M${x} ${y0}V${y0 - h + r}Q${x} ${y0 - h} ${x + r} ${y0 - h}H${x + bw - r}Q${x + bw} ${y0 - h} ${x + bw} ${y0 - h + r}V${y0}Z`; };
+  const vio = new IntersectionObserver(es => es.forEach(e => {
+    if (!e.isIntersecting) return; vio.disconnect();
+    const bs = [...vsvg.querySelectorAll('.vb')], ls = [...vsvg.querySelectorAll('.vl')];
+    const t0 = performance.now(), d = reduce ? 1 : 1200;
+    (function f(t) {
+      bs.forEach((b, k) => { const kk = Math.max(0, Math.min(1, ((t - t0) - k * 140) / d)); const e = 1 - Math.pow(1 - kk, 3); b.setAttribute('d', bar(+b.dataset.x, +b.dataset.h * e)); if (kk >= 1) ls[k].setAttribute('opacity', 1); });
+      if (t - t0 < d + bs.length * 140) requestAnimationFrame(f); else ls.forEach(l => l.setAttribute('opacity', 1));
+    })(t0);
+  }), {threshold: .3});
+  vio.observe(vsvg);
+
+  // ---------- chips ----------
+  const chips = [
+    ['Snapdragon 7 Gen 4', 'SM7750 · v73', 0, 1], ['QCM6690', 'Dragonwing Q-6690 · v73', 0], ['Snapdragon 888', 'SM8350 · v68', 0], ['Snapdragon 778G', 'SM7325 · v68', 0], ['QCS6490', 'RB3 Gen 2 · v68', 0],
+    ['Snapdragon 8 Gen 1', 'SM8450 · v69', 1], ['Snapdragon 8 Gen 2', 'SM8550 · v73', 1], ['Snapdragon 8 Gen 3', 'SM8650 · v75', 1], ['Snapdragon 8 Elite', 'SM8750 · v79', 1], ['8 Elite for Galaxy', 'SM8750-AC · v79', 1],
+    ['8 Elite Gen 5', 'SM8850 · v81', 1], ['8 Elite Gen 5 for Galaxy', 'SM8850-AD · v81', 1], ['Snapdragon X Elite', 'SC8380XP · v73', 1], ['Snapdragon X Plus', 'SC8340XP · v73', 1], ['Snapdragon X2 Elite', 'SC8480XP · v81', 1],
+    ['QCS8550', 'v73', 1], ['IQ-9075', 'QCS9075 · v73', 1], ['IQ-8275', 'QCS8275 · v75', 1], ['SA8295P', 'automotive · v68', 1], ['SA8775P', 'automotive · v73', 1], ['SA7255P', 'automotive · v75', 1],
+  ];
+  document.getElementById('chipgrid').innerHTML = chips.map(([n, s, f, me]) => `<div class="cchip ${f ? '' : 'no'} ${me ? 'me' : ''}"><b>${n}</b><span>${s}${me ? ' · my phone' : ''}</span></div>`).join('');
+})();
+</script>
+</body>
+</html>
