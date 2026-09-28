@@ -185,6 +185,16 @@ footer{padding:56px 0 80px;color:var(--dim);font-size:14px}
 .shot #trace{border:0;padding-top:0}
 .shot #trace .shead{visibility:hidden}
 .shot .replay{display:none}
+.shotpanel{display:none}
+.shot .shotpanel{display:block;position:fixed;left:calc((100vw - min(1120px,92vw))/2);top:58px;width:318px;z-index:10}
+.shotpanel .k{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--dim)}
+.shotpanel .big{font-family:var(--display);font-weight:600;letter-spacing:-.04em;line-height:.92;font-size:92px;margin-top:10px;color:var(--text)}
+.shotpanel .big span{color:var(--accent)}
+.shotpanel .l1{font-family:var(--display);font-weight:600;font-size:26px;letter-spacing:-.02em;line-height:1.1;margin-top:10px}
+.shotpanel .l2{font-size:15px;color:var(--muted);margin-top:8px;line-height:1.35}
+.shotpanel .up{margin-top:22px;display:flex;flex-direction:column;gap:7px}
+.shotpanel .up div{font-size:14px;color:var(--muted);display:flex;gap:8px;align-items:baseline}
+.shotpanel .up b{color:var(--text);font-weight:600;min-width:150px}
 .shot .gauge{position:fixed;top:78px;right:calc((100vw - min(1120px,92vw))/2);width:280px}
 @media(prefers-reduced-motion:reduce){
   .rv,.step .card{opacity:1!important;transform:none!important;transition:none!important}
@@ -391,6 +401,17 @@ footer{padding:56px 0 80px;color:var(--dim);font-size:14px}
 
 <footer><div class="wrap">Ruslan Karymov · AI Enablement &amp; Automation Lead · <a href="../">karusrus.github.io</a> · September 2026</div></footer>
 <div class="tip" id="tip"></div>
+<div class="shotpanel" aria-hidden="true">
+  <div class="k">On-device AI · Snapdragon 7 Gen 4</div>
+  <div class="big">Up to <span>3.3×</span></div>
+  <div class="l1">on the same hardware</div>
+  <div class="l2">by unlocking the NPU's integer mode. Same answers as the CPU.</div>
+  <div class="up">
+    <div><b>llama.cpp</b>bug #29473 + fix</div>
+    <div><b>PrismML</b>PR #290</div>
+    <div><b>Qualcomm AI Hub</b>21-chip FP16 map</div>
+  </div>
+</div>
 
 <script>
 (() => {
