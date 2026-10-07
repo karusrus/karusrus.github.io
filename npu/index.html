@@ -347,6 +347,14 @@ footer{padding:56px 0 80px;color:var(--dim);font-size:14px}
         </tbody></table>
       </div>
     </div>
+    <div class="chartcard rv" style="margin-top:16px">
+      <h3>Side contribution, merged into PrismML</h3>
+      <div class="cap">PrismML compresses models so that every weight is −1, 0 or +1. A 27-billion-parameter model then fits in about 6 GB and runs on a phone. On phone and Mac processors (ARM) their format only had a slow generic code path. The new ARM path decodes the weights in 8-bit lanes and uses the processor's int8 dot-product and matrix instructions. The output is the same bit for bit; their maintainer checked it on an M5 Pro. Merged on 7 October as <a href="https://github.com/PrismML-Eng/llama.cpp/pull/290">PR #290</a>.</div>
+      <table><thead><tr><th>Ternary Bonsai 2 27B, Snapdragon 7 Gen 4 CPU</th><th>Generic</th><th>New ARM path</th></tr></thead><tbody>
+        <tr><td>Reading the prompt, tokens/s</td><td>1.22</td><td class="hi">2.33 (1.9×)</td></tr>
+        <tr><td>Writing the answer, tokens/s</td><td>1.09</td><td class="hi">1.31 (+20%)</td></tr>
+      </tbody></table>
+    </div>
   </div>
 </section>
 
