@@ -421,14 +421,14 @@ footer{padding:60px 0 80px;color:var(--dim);font-size:13px;border-top:1px solid 
 
     <div class="grid five">
       <article class="pcard wide rv">
-        <div class="metric">v1.4 · open source · same answers as the CPU</div>
+        <div class="metric">v1.4 · open source · same accuracy as the CPU</div>
         <div class="win">
           <div class="bar"><i></i><i></i><i></i><span>llama.cpp · Snapdragon 7 Gen 4 NPU · integer HMX</span></div>
           <div class="shot"><img loading="lazy" decoding="async" src="assets/w-npu.jpg" alt="The reasoning trace from the NPU case: a step card reading 172 tokens per second with the same perplexity as the CPU, next to a gauge whose history shows a fake 437 t/s spike, a drop to zero and a climb past the CPU line"></div>
         </div>
         <div class="pbody">
           <h3>A phone NPU that "couldn't" run LLMs, running them</h3>
-          <p>On Snapdragon 7 Gen 4 the NPU returned garbage in llama.cpp: its matrix unit has no FP16 and the software assumed it did. I reframed the bug as the opportunity and, working with an AI coding agent, moved the math to integers. Prompt processing is now 3.3× faster than the CPU and 2.3× faster than the GPU, with the same perplexity and byte-identical answers. A 21-chip map shows which Snapdragons need it. The case page shows the reasoning step by step, dead ends included.</p>
+          <p>On Snapdragon 7 Gen 4 the NPU returned garbage in llama.cpp: its matrix unit has no FP16 and the software assumed it did. I reframed the bug as the opportunity and, working with an AI coding agent, moved the math to integers. Prompt processing is now 3.3× faster than the CPU and 2.3× faster than the GPU, with the same accuracy (perplexity) as the CPU. A kernel from the project is merged into PrismML; the main fix is in review upstream. A 21-chip map shows which Snapdragons need it. The case page shows the reasoning step by step, dead ends included.</p>
           <div class="tags"><span class="tag">llama.cpp</span><span class="tag">Hexagon NPU</span><span class="tag">On-device AI</span><span class="tag">Performance</span><span class="tag">AI pair work</span></div>
           <div class="plinks"><a href="npu/">Case →</a><a href="https://github.com/karusrus/npu-enablement">Repository →</a></div>
         </div>

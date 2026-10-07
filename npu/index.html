@@ -4,10 +4,10 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Integer NPU · Ruslan Karymov</title>
-<meta name="description" content="A phone NPU returned garbage in llama.cpp. Integer math made it 3.3× faster than the CPU at reading prompts, with the same answers.">
+<meta name="description" content="A phone NPU returned garbage in llama.cpp. Integer math made it 3.3× faster than the CPU at reading prompts, with the same accuracy.">
 <meta property="og:type" content="article">
 <meta property="og:title" content="The phone's NPU returned garbage. Now it reads prompts 3.3× faster than the CPU.">
-<meta property="og:description" content="Integer math on the Snapdragon 7 Gen 4 NPU in llama.cpp: 3.3× vs CPU, 2.3× vs GPU, same answers. The reasoning step by step, dead ends included.">
+<meta property="og:description" content="Integer math on the Snapdragon 7 Gen 4 NPU in llama.cpp: 3.3× vs CPU, 2.3× vs GPU, same accuracy. The reasoning step by step, dead ends included.">
 <meta property="og:url" content="https://karusrus.github.io/npu/">
 <meta property="og:image" content="https://karusrus.github.io/assets/w-npu.jpg">
 <meta name="twitter:card" content="summary_large_image">
@@ -217,17 +217,18 @@ footer{padding:56px 0 80px;color:var(--dim);font-size:14px}
   <div class="wrap">
     <div class="mono rv">Case · On-device AI · llama.cpp · Snapdragon 7 Gen 4</div>
     <h1 class="rv">The phone's NPU returned garbage. Now it reads prompts 3.3× faster than the CPU.</h1>
-    <p class="lede rv">On a Motorola Edge 70, llama.cpp's NPU backend produced nonsense. The chip's matrix unit has no FP16, and the software assumed it did. Instead of waiting for a fix, we asked what the unit <em>can</em> do: integer math. Three days later the NPU is the fastest way to read a prompt on that phone, with the same answers as the CPU.</p>
+    <p class="lede rv">On a Motorola Edge 70, llama.cpp's NPU backend produced nonsense. The chip's matrix unit has no FP16, and the software assumed it did. Instead of waiting for a fix, we asked what the unit <em>can</em> do: integer math. Three days later the NPU is the fastest way to read a prompt on that phone, with the same accuracy as the CPU.</p>
     <div class="tiles">
       <div class="tile hi rv"><div class="v" data-count="3.3" data-dec="1">0<small>×</small></div><div class="l">prompt speed vs the best CPU setting (Qwen3.5-4B, 512 tokens)</div></div>
       <div class="tile rv"><div class="v" data-count="2.3" data-dec="1">0<small>×</small></div><div class="l">vs the phone's GPU (Adreno 722, OpenCL)</div></div>
-      <div class="tile rv"><div class="v">10.84</div><div class="l">perplexity on the NPU, 10.85 on the CPU; greedy answers byte-identical</div></div>
+      <div class="tile rv"><div class="v">10.84</div><div class="l">perplexity on the NPU, 10.85 on the CPU: the same accuracy</div></div>
       <div class="tile rv"><div class="v" data-count="21" data-dec="0">0</div><div class="l">Snapdragon chips checked for FP16; 5 lack it</div></div>
     </div>
     <div class="links rv">
       <a class="btn" href="https://github.com/karusrus/npu-enablement">Code, data and logs →</a>
+      <a class="btn" href="https://github.com/ggml-org/llama.cpp/pull/29740">llama.cpp PR #29740 (in review) →</a>
       <a class="btn" href="https://github.com/ggml-org/llama.cpp/issues/29473">Upstream issue #29473 →</a>
-      <a class="btn" href="https://github.com/PrismML-Eng/llama.cpp/pull/290">Side contribution: PrismML PR #290 →</a>
+      <a class="btn" href="https://github.com/PrismML-Eng/llama.cpp/pull/290">PrismML PR #290 (merged) →</a>
     </div>
   </div>
 </header>
@@ -282,7 +283,7 @@ footer{padding:56px 0 80px;color:var(--dim);font-size:14px}
             <div class="dot"></div><div class="card"><div class="when">27.09 <span class="chip">Build</span> <span class="chip">Bug</span></div><h3>Qwen3.5's recurrent layers, eight tokens per pass. Perplexity: 69.5.</h3><p>All unit tests passed. Only the full quality run caught it: a decay product underflowed to 0/0 on fast-forgetting heads. Moved to log space.</p></div>
           </div>
           <div class="step r key" data-g="172" data-s="good" data-v="v1.3" data-note="same perplexity as the CPU">
-            <div class="dot"></div><div class="card"><div class="when">27.09 <span class="chip">Measure</span></div><h3>172 tokens/s. Perplexity 10.84 vs 10.85 on the CPU.</h3><p>3.3× the CPU, 2.3× the GPU, byte-identical greedy answers. The chip is detected at start-up; no settings needed.</p></div>
+            <div class="dot"></div><div class="card"><div class="when">27.09 <span class="chip">Measure</span></div><h3>172 tokens/s. Perplexity 10.84 vs 10.85 on the CPU.</h3><p>3.3× the CPU, 2.3× the GPU, byte-identical greedy answers on the test prompt. The chip is detected at start-up; no settings needed.</p></div>
           </div>
           <div class="step l dead" data-g="172" data-s="good" data-v="v1.3">
             <div class="card"><div class="when">27.09 <span class="chip">Dead end</span></div><h3>8-bit activations for 2× matrix speed</h3><p>The matrix unit got faster, the vector unit became the wall. Quality cost +0.3–1.6%. Not worth it.</p></div><div class="dot"></div>
@@ -295,6 +296,9 @@ footer{padding:56px 0 80px;color:var(--dim);font-size:14px}
           </div>
           <div class="step l" style="--dotc:var(--gate)" data-g="172" data-s="good" data-v="v1.4">
             <div class="card"><div class="when">28.09 <span class="chip">Ship</span></div><h3>Public repo, upstream discussion, PR prepared.</h3><p>Side result: a CPU kernel for PrismML's ternary models, 1.9× faster prompts on the same phone, opened as <a href="https://github.com/PrismML-Eng/llama.cpp/pull/290">PR #290</a>.</p></div><div class="dot"></div>
+          </div>
+          <div class="step r" data-g="172" data-s="good" data-v="v1.4">
+            <div class="dot"></div><div class="card"><div class="when">30.09–07.10 <span class="chip">Upstream</span></div><h3>Cause confirmed upstream. One PR merged.</h3><p>Qualcomm's Hexagon maintainer confirmed it in <a href="https://github.com/ggml-org/llama.cpp/issues/29473">#29473</a>: some lower-end v73 chips have no FP16 in the matrix unit. The integer path is in review as <a href="https://github.com/ggml-org/llama.cpp/pull/29740">llama.cpp PR #29740</a>. The ternary CPU kernel is merged into PrismML (<a href="https://github.com/PrismML-Eng/llama.cpp/pull/290">PR #290</a>). A re-measure of an upstream copy rewrite showed a decode slowdown on this chip; the maintainer is taking another look at our faster version.</p></div>
           </div>
         </div>
       </div>
@@ -400,22 +404,23 @@ footer{padding:56px 0 80px;color:var(--dim);font-size:14px}
       <ul class="limits">
         <li>The matrix unit speeds up prompts. Generation is memory-bound; the CPU is still slightly faster (Qwen3.5-4B: 9.7 vs 9.0 tokens/s).</li>
         <li>Only q4_0 weights run on the matrix unit, so mixed-quant models gain less (2.25×).</li>
-        <li>Tested on one phone. Not upstream yet: discussion in #29473.</li>
+        <li>On a 300-token prompt the greedy text follows the CPU for about 10 tokens, then picks a different word. Perplexity stays the same.</li>
+        <li>Tested on one phone. Not merged into llama.cpp yet: the integer path is in review as #29740.</li>
       </ul>
     </div>
   </div>
 </section>
 
-<footer><div class="wrap">Ruslan Karymov · AI Enablement &amp; Automation Lead · <a href="../">karusrus.github.io</a> · September 2026</div></footer>
+<footer><div class="wrap">Ruslan Karymov · AI Enablement &amp; Automation Lead · <a href="../">karusrus.github.io</a> · updated October 2026</div></footer>
 <div class="tip" id="tip"></div>
 <div class="shotpanel" aria-hidden="true">
   <div class="k">On-device AI · Snapdragon 7 Gen 4</div>
   <div class="big">Up to <span>3.3×</span></div>
   <div class="l1">on the same hardware</div>
-  <div class="l2">by unlocking the NPU's integer mode. Same answers as the CPU.</div>
+  <div class="l2">by unlocking the NPU's integer mode. Same accuracy as the CPU.</div>
   <div class="up">
-    <div><b>llama.cpp</b>bug #29473 + fix</div>
-    <div><b>PrismML</b>PR #290</div>
+    <div><b>llama.cpp</b>PR #29740 · in review</div>
+    <div><b>PrismML</b>PR #290 · merged</div>
     <div><b>Qualcomm</b>FP16 chip map report</div>
   </div>
 </div>
@@ -469,7 +474,7 @@ footer{padding:56px 0 80px;color:var(--dim);font-size:14px}
     target = g;
     const st = s ? s.dataset.s : 'idle';
     gs.className = 'state' + (st === 'bad' ? ' bad' : st === 'good' ? ' good' : '');
-    gs.querySelector('span').textContent = st === 'bad' ? 'wrong answers' : st === 'good' ? 'answers match the CPU' : (i < 0 ? 'not started' : 'investigating');
+    gs.querySelector('span').textContent = st === 'bad' ? 'wrong answers' : st === 'good' ? 'accuracy matches the CPU' : (i < 0 ? 'not started' : 'investigating');
     let note = i < 0 ? 'scroll the steps' : 'no working NPU path yet';
     for (let k = i; k >= 0; k--) { if (steps[k].dataset.note) { note = steps[k].dataset.note; break; } if (+steps[k].dataset.g === 0) break; }
     gn.textContent = note;
