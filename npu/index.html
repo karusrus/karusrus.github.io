@@ -227,6 +227,7 @@ footer{padding:56px 0 80px;color:var(--dim);font-size:14px}
     <div class="links rv">
       <a class="btn" href="https://github.com/karusrus/npu-enablement">Code, data and logs →</a>
       <a class="btn" href="https://github.com/ggml-org/llama.cpp/pull/29740">llama.cpp PR #29740 (in review) →</a>
+      <a class="btn" href="https://github.com/ggml-org/llama.cpp/pull/30341">llama.cpp #30341 (merged, co-author) →</a>
       <a class="btn" href="https://github.com/ggml-org/llama.cpp/issues/29473">Upstream issue #29473 →</a>
       <a class="btn" href="https://github.com/PrismML-Eng/llama.cpp/pull/290">PrismML PR #290 (merged) →</a>
     </div>
@@ -299,6 +300,9 @@ footer{padding:56px 0 80px;color:var(--dim);font-size:14px}
           </div>
           <div class="step r" data-g="172" data-s="good" data-v="v1.4">
             <div class="dot"></div><div class="card"><div class="when">30.09–07.10 <span class="chip">Upstream</span></div><h3>Cause confirmed upstream. One PR merged.</h3><p>Qualcomm's Hexagon maintainer confirmed it in <a href="https://github.com/ggml-org/llama.cpp/issues/29473">#29473</a>: some lower-end v73 chips have no FP16 in the matrix unit. The integer path is in review as <a href="https://github.com/ggml-org/llama.cpp/pull/29740">llama.cpp PR #29740</a>. The ternary CPU kernel is merged into PrismML (<a href="https://github.com/PrismML-Eng/llama.cpp/pull/290">PR #290</a>). A re-measure of an upstream copy rewrite showed a decode slowdown on this chip; the maintainer is taking another look at our faster version.</p></div>
+          </div>
+          <div class="step l" data-g="179" data-s="good" data-v="v1.4">
+            <div class="card"><div class="when">11–12.10 <span class="chip">Upstream</span></div><h3>Merged into llama.cpp, with a co-author credit.</h3><p>The Hexagon maintainer folded the short-row copy path into his rewrite of the copy ops, kept the original commit as co-authored, and merged it as <a href="https://github.com/ggml-org/llama.cpp/pull/30341">#30341</a> (<a href="https://github.com/ggml-org/llama.cpp/commit/8bb3cf0d216a5ae48360179f2931daf284be4d01">commit</a>). On this phone the two conv-state copies went from 142 and 258 µs to 18 and 15 µs per call; decode <span class="num">8.5 → 9.2 t/s</span>.</p></div><div class="dot"></div>
           </div>
         </div>
       </div>
@@ -427,7 +431,7 @@ footer{padding:56px 0 80px;color:var(--dim);font-size:14px}
   <div class="l1">on the same hardware</div>
   <div class="l2">by unlocking the NPU's integer mode. Same accuracy as the CPU.</div>
   <div class="up">
-    <div><b>llama.cpp</b>PR #29740 · in review</div>
+    <div><b>llama.cpp</b>#30341 merged · #29740 in review</div>
     <div><b>PrismML</b>PR #290 · merged</div>
     <div><b>Qualcomm</b>FP16 chip map report</div>
   </div>
