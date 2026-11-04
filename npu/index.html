@@ -4,10 +4,10 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Integer NPU · Ruslan Karymov</title>
-<meta name="description" content="A phone NPU returned garbage in llama.cpp. Integer math made it 3.3× faster than the CPU at reading prompts, with the same accuracy.">
+<meta name="description" content="A phone NPU returned garbage in llama.cpp. Integer math made it 3.1× faster than the CPU at reading prompts, with the same accuracy.">
 <meta property="og:type" content="article">
-<meta property="og:title" content="The phone's NPU returned garbage. Now it reads prompts 3.3× faster than the CPU.">
-<meta property="og:description" content="Integer math on the Snapdragon 7 Gen 4 NPU in llama.cpp: 3.3× vs CPU, 2.3× vs GPU, same accuracy. The reasoning step by step, dead ends included.">
+<meta property="og:title" content="The phone's NPU returned garbage. Now it reads prompts 3.1× faster than the CPU.">
+<meta property="og:description" content="Integer math on the Snapdragon 7 Gen 4 NPU in llama.cpp: 3.1× vs CPU, 2.3× vs GPU, same accuracy. The reasoning step by step, dead ends included.">
 <meta property="og:url" content="https://karusrus.github.io/npu/">
 <meta property="og:image" content="https://karusrus.github.io/assets/w-npu.jpg">
 <meta name="twitter:card" content="summary_large_image">
@@ -216,10 +216,10 @@ footer{padding:56px 0 80px;color:var(--dim);font-size:14px}
 <header class="hero">
   <div class="wrap">
     <div class="mono rv">Case · On-device AI · llama.cpp · Snapdragon 7 Gen 4</div>
-    <h1 class="rv">The phone's NPU returned garbage. Now it reads prompts 3.3× faster than the CPU.</h1>
+    <h1 class="rv">The phone's NPU returned garbage. Now it reads prompts 3.1× faster than the CPU.</h1>
     <p class="lede rv">On a Motorola Edge 70, llama.cpp's NPU backend produced nonsense. The chip's matrix unit has no FP16, and the software assumed it did. Instead of waiting for a fix, we asked what the unit <em>can</em> do: integer math. Three days later the NPU is the fastest way to read a prompt on that phone, with the same accuracy as the CPU.</p>
     <div class="tiles">
-      <div class="tile hi rv"><div class="v" data-count="3.3" data-dec="1">0<small>×</small></div><div class="l">prompt speed vs the best CPU setting (Qwen3.5-4B, 512 tokens)</div></div>
+      <div class="tile hi rv"><div class="v" data-count="3.1" data-dec="1">0<small>×</small></div><div class="l">prompt speed vs the best CPU setting (Qwen3.5-4B, 512 tokens, current llama.cpp)</div></div>
       <div class="tile rv"><div class="v" data-count="2.3" data-dec="1">0<small>×</small></div><div class="l">vs the phone's GPU (Adreno 722, OpenCL)</div></div>
       <div class="tile rv"><div class="v">10.84</div><div class="l">perplexity on the NPU, 10.85 on the CPU: the same accuracy</div></div>
       <div class="tile rv"><div class="v" data-count="21" data-dec="0">0</div><div class="l">Snapdragon chips checked for FP16; 5 lack it</div></div>
@@ -304,6 +304,9 @@ footer{padding:56px 0 80px;color:var(--dim);font-size:14px}
           <div class="step l" data-g="179" data-s="good" data-v="v1.4">
             <div class="card"><div class="when">11–12.10 <span class="chip">Upstream</span></div><h3>Merged into llama.cpp, with a co-author credit.</h3><p>The Hexagon maintainer folded the short-row copy path into his rewrite of the copy ops, kept the original commit as co-authored, and merged it as <a href="https://github.com/ggml-org/llama.cpp/pull/30341">#30341</a> (<a href="https://github.com/ggml-org/llama.cpp/commit/8bb3cf0d216a5ae48360179f2931daf284be4d01">commit</a>). On this phone the two conv-state copies went from 142 and 258 µs to 18 and 15 µs per call; decode <span class="num">8.5 → 9.2 t/s</span>.</p></div><div class="dot"></div>
           </div>
+          <div class="step r" data-g="177" data-s="good" data-v="v1.4, rebased" data-note="3.1× the CPU on current llama.cpp">
+            <div class="dot"></div><div class="card"><div class="when">04.11 <span class="chip">Upstream</span></div><h3>Rebased onto current llama.cpp. A second chip has the same bug.</h3><p>Upstream reorganised the host code; the FP16 checks moved with it and now also cover two newer FP16 users (conv2d and the lightning indexer). On current llama.cpp the CPU reads prompts faster than in September (Qwen3.5-4B: 57 t/s, was 52), while the NPU holds at <span class="num">177 t/s</span>, so the gap is now 3.1×. A developer with a Snapdragon 6 Gen 4 (SM6650) reported the same garbage output in <a href="https://github.com/ggml-org/llama.cpp/issues/29473">#29473</a>. Its limits (2 MB of fast memory, 2 vector threads), simulated on this phone, pass the same tests: Llama-3.2-1B reads prompts at 304 t/s, against 49 without the matrix unit.</p></div>
+          </div>
         </div>
       </div>
 
@@ -311,7 +314,7 @@ footer{padding:56px 0 80px;color:var(--dim);font-size:14px}
         <div class="t">Prompt speed on the NPU</div>
         <div class="big"><span id="gv">0</span><small>t/s</small></div>
         <div class="sub" id="gn">scroll the steps</div>
-        <svg id="gsvg" viewBox="0 0 240 150" role="img" aria-label="Prompt speed history: CPU 52 tokens per second, NPU from garbage to 172"></svg>
+        <svg id="gsvg" viewBox="0 0 240 150" role="img" aria-label="Prompt speed history: CPU 52 tokens per second, NPU from garbage to 177"></svg>
         <div class="state" id="gs"><i></i><span>not started</span></div>
         <div class="ver" id="gver"></div>
         <button class="replay" id="replay">Replay</button>
@@ -325,7 +328,7 @@ footer{padding:56px 0 80px;color:var(--dim);font-size:14px}
     <div class="shead rv">
       <div class="mono">Results</div>
       <h2>Faster than the CPU and the GPU, on the same phone.</h2>
-      <p>Current version v1.4. Motorola Edge 70, 12 GB. llama-bench, 512-token prompt. CPU is the best of 2/4/6/8 threads; GPU is the stock OpenCL backend.</p>
+      <p>Measured on v1.4, 27 September. Motorola Edge 70, 12 GB. llama-bench, 512-token prompt. CPU is the best of 2/4/6/8 threads; GPU is the stock OpenCL backend. After the rebase onto current llama.cpp (4 November) the CPU is faster (Qwen3.5-4B 57.1 t/s) and the NPU holds (177.0 t/s): 3.1×.</p>
     </div>
     <div class="two">
       <div class="chartcard rv" id="barcard">
@@ -417,17 +420,17 @@ footer{padding:56px 0 80px;color:var(--dim);font-size:14px}
         <li>The matrix unit speeds up prompts. Generation is memory-bound; the CPU is still slightly faster (Qwen3.5-4B: 9.7 vs 9.0 tokens/s).</li>
         <li>Only q4_0 weights run on the matrix unit, so mixed-quant models gain less (2.25×).</li>
         <li>On a 300-token prompt the greedy text follows the CPU for about 10 tokens, then picks a different word. Perplexity stays the same.</li>
-        <li>Tested on one phone. Not merged into llama.cpp yet: the integer path is in review as #29740.</li>
+        <li>Tested on one phone; the Snapdragon 6 Gen 4 numbers are a simulation on it. Not merged into llama.cpp yet: the integer path is in review as #29740.</li>
       </ul>
     </div>
   </div>
 </section>
 
-<footer><div class="wrap">Ruslan Karymov · AI Enablement &amp; Automation Lead · <a href="../">karusrus.github.io</a> · updated October 2026</div></footer>
+<footer><div class="wrap">Ruslan Karymov · AI Enablement &amp; Automation Lead · <a href="../">karusrus.github.io</a> · updated November 2026</div></footer>
 <div class="tip" id="tip"></div>
 <div class="shotpanel" aria-hidden="true">
   <div class="k">On-device AI · Snapdragon 7 Gen 4</div>
-  <div class="big">Up to <span>3.3×</span></div>
+  <div class="big">Up to <span>3.1×</span></div>
   <div class="l1">on the same hardware</div>
   <div class="l2">by unlocking the NPU's integer mode. Same accuracy as the CPU.</div>
   <div class="up">
