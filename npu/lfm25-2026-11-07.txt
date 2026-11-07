@@ -1,0 +1,84 @@
+######## LFM2.5-1.2B-Instruct-Q4_0 18:09
+== probe
+ggml-hex: FASTRPC_GET_DOMAINS query failed (0x6c), using static CDSP domains
+ggml-hex: HTP0 HMX FP16: no (integer HMX for Q4_0 matmul and attention)
+| lfm2 1.2B Q4_0                 | 661.25 MiB |     1.17 B | OpenCL,HTP |  99 | HTP0         |            pp32 |        305.34 ± 0.00 |
+== pp512 NPU
+| lfm2 1.2B Q4_0                 | 661.25 MiB |     1.17 B | OpenCL,HTP |  99 | HTP0         |           pp512 |        865.22 ± 3.75 |
+== pp512 HVX only (NHMX=0)
+| lfm2 1.2B Q4_0                 | 661.25 MiB |     1.17 B | OpenCL,HTP |  99 | HTP0         |           pp512 |         99.47 ± 0.29 |
+== pp512 CPU t4,8
+| lfm2 1.2B Q4_0                 | 661.25 MiB |     1.17 B | OpenCL,HTP |   0 |       4 | none         |           pp512 |        233.93 ± 0.38 |
+| lfm2 1.2B Q4_0                 | 661.25 MiB |     1.17 B | OpenCL,HTP |   0 |       8 | none         |           pp512 |        245.17 ± 0.38 |
+== tg64 NPU
+| lfm2 1.2B Q4_0                 | 661.25 MiB |     1.17 B | OpenCL,HTP |  99 | HTP0         |            tg64 |         33.11 ± 0.77 |
+== tg64 CPU t4,8
+| lfm2 1.2B Q4_0                 | 661.25 MiB |     1.17 B | OpenCL,HTP |   0 |       4 | none         |            tg64 |         38.25 ± 0.10 |
+| lfm2 1.2B Q4_0                 | 661.25 MiB |     1.17 B | OpenCL,HTP |   0 |       8 | none         |            tg64 |         32.84 ± 0.54 |
+== KLD vs CPU 18:10
+0.31.608.661 I Final estimate: PPL = 24.2387 +/- 1.55187
+-- npu
+chunk             PPL               ln(PPL(Q)/PPL(base))          KL Divergence              Δp RMS            Same top p
+Mean PPL(Q)                   :  24.643135 ±   1.585136
+Mean PPL(Q)/PPL(base)         :   1.021511 ±   0.003647
+Mean    KLD:   0.004089 ±   0.000136
+99.9%   KLD:   0.078599
+Same top p: 96.706 ± 0.354 %
+-- stockfp16
+chunk             PPL               ln(PPL(Q)/PPL(base))          KL Divergence              Δp RMS            Same top p
+Mean PPL(Q)                   : 65536.001997 ±   0.000000
+Mean PPL(Q)/PPL(base)         : 2716.608628 ± 172.745859
+Mean    KLD:   8.415294 ±   0.032241
+99.9%   KLD:  11.089097
+Same top p:  0.000 ± 0.000 %
+######## LFM2.5-2.6B-Q4_0 18:11
+== probe
+ggml-hex: FASTRPC_GET_DOMAINS query failed (0x6c), using static CDSP domains
+ggml-hex: HTP0 HMX FP16: no (integer HMX for Q4_0 matmul and attention)
+| lfm2 2.6B Q4_0                 |   1.48 GiB |     2.70 B | OpenCL,HTP |  99 | HTP0         |            pp32 |        137.98 ± 0.00 |
+== pp512 NPU
+| lfm2 2.6B Q4_0                 |   1.48 GiB |     2.70 B | OpenCL,HTP |  99 | HTP0         |           pp512 |        400.49 ± 4.18 |
+== pp512 HVX only (NHMX=0)
+| lfm2 2.6B Q4_0                 |   1.48 GiB |     2.70 B | OpenCL,HTP |  99 | HTP0         |           pp512 |         42.89 ± 0.15 |
+== pp512 CPU t4,8
+| lfm2 2.6B Q4_0                 |   1.48 GiB |     2.70 B | OpenCL,HTP |   0 |       4 | none         |           pp512 |        100.20 ± 0.60 |
+| lfm2 2.6B Q4_0                 |   1.48 GiB |     2.70 B | OpenCL,HTP |   0 |       8 | none         |           pp512 |        108.23 ± 0.82 |
+== tg64 NPU
+| lfm2 2.6B Q4_0                 |   1.48 GiB |     2.70 B | OpenCL,HTP |  99 | HTP0         |            tg64 |         15.58 ± 0.10 |
+== tg64 CPU t4,8
+| lfm2 2.6B Q4_0                 |   1.48 GiB |     2.70 B | OpenCL,HTP |   0 |       4 | none         |            tg64 |         16.66 ± 0.01 |
+| lfm2 2.6B Q4_0                 |   1.48 GiB |     2.70 B | OpenCL,HTP |   0 |       8 | none         |            tg64 |         14.65 ± 0.04 |
+== KLD vs CPU 18:13
+1.15.620.626 I Final estimate: PPL = 55.1785 +/- 4.29387
+-- npu
+chunk             PPL               ln(PPL(Q)/PPL(base))          KL Divergence              Δp RMS            Same top p
+Mean PPL(Q)                   :  53.362352 ±   4.139435
+Mean PPL(Q)/PPL(base)         :   0.974368 ±   0.003972
+Mean    KLD:   0.006242 ±   0.000311
+99.9%   KLD:   0.155931
+Same top p: 95.765 ± 0.399 %
+-- stockfp16
+chunk             PPL               ln(PPL(Q)/PPL(base))          KL Divergence              Δp RMS            Same top p
+Mean PPL(Q)                   : 128000.013985 ±   0.000000
+Mean PPL(Q)/PPL(base)         : 2337.212302 ± 180.684377
+Mean    KLD:   9.781109 ±   0.027412
+99.9%   KLD:  11.759230
+Same top p:  0.000 ± 0.000 %
+######## text 18:15
+== text HTP0
+== text none
+== stock FP16 text
+LFM_DONE 18:15
+
+[exited with code 0]
+
+######## text (rerun after pushing libllama-server-impl.so), greedy, -n 60
+== HTP0 (integer HMX)
+Running a language model on the phone itself enhances privacy by keeping your data local and reducing the risk of it being transmitted to external servers. This minimizes exposure to potential breaches or unauthorized access.
+[ Prompt: 148.3 t/s | Generation: 32.3 t/s ]
+== CPU
+Running a language model on the phone itself enhances privacy by keeping your data local and reducing the risk of it being transmitted to external servers. This minimizes exposure to potential breaches or unauthorized access.
+[ Prompt: 156.1 t/s | Generation: 30.2 t/s ]
+== stock FP16 HMX (GGML_HEXAGON_HMX_FP16=1): empty answer
+[ Prompt: 224.1 t/s | Generation: 31.5 t/s ]
+Build: int-hmx-rebase4 08c83734f on master 5851a8e, toolchain v0.8, phone /data/local/tmp/rk4. Models: LiquidAI/LFM2.5-1.2B-Instruct-GGUF Q4_0, LiquidAI/LFM2.5-2.6B-GGUF Q4_0.

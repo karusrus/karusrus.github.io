@@ -354,6 +354,15 @@ footer{padding:56px 0 80px;color:var(--dim);font-size:14px}
         </tbody></table>
       </div>
     </div>
+    <div class="chartcard rv" id="lfm" style="margin-top:16px;min-width:0">
+      <h3>Liquid AI's LFM2.5 on the same NPU</h3>
+      <div class="cap">Measured on 7 November 2026 on the same Motorola Edge 70 with the rebased branch of <a href="https://github.com/ggml-org/llama.cpp/pull/29740">#29740</a> (commit 08c83734f). llama-bench, 512-token prompt and 64-token generation, 3 runs; the CPU is the best of 4 and 8 threads. Accuracy is the mean KL divergence against the CPU on wikitext-2, 10 × 512 tokens. <a href="lfm25-2026-11-07.txt">Raw log</a>.</div>
+      <div style="overflow-x:auto"><table><thead><tr><th>LFM2.5, Q4_0</th><th>Prompt, NPU / CPU</th><th>vs CPU</th><th>Generation, NPU / CPU</th><th>KLD vs CPU</th></tr></thead><tbody>
+        <tr><td>1.2B-Instruct</td><td><b>865</b> / 245</td><td class="hi">3.5×</td><td>33 / 38</td><td>0.004</td></tr>
+        <tr><td>2.6B</td><td><b>400</b> / 108</td><td class="hi">3.7×</td><td>16 / 17</td><td>0.006</td></tr>
+      </tbody></table></div>
+      <div class="cap">Tokens per second. The 1.2B model's greedy answer to a test prompt matches the CPU word for word. The stock FP16 path on this chip returns garbage for both models (perplexity 65,536 and 128,000). Generation stays slightly faster on the CPU. The KL divergence is higher than for Qwen and Llama (0.0013–0.0031); not investigated yet.</div>
+    </div>
     <div class="chartcard rv" style="margin-top:16px">
       <h3>Side contribution, merged into PrismML</h3>
       <div class="cap">PrismML compresses models so that every weight is −1, 0 or +1. A 27-billion-parameter model then fits in about 6 GB and runs on a phone. On phone and Mac processors (ARM) their format only had a slow generic code path. The new ARM path decodes the weights in 8-bit lanes and uses the processor's int8 dot-product and matrix instructions. The output is the same bit for bit; their maintainer checked it on an M5 Pro. Merged on 7 October as <a href="https://github.com/PrismML-Eng/llama.cpp/pull/290">PR #290</a>.</div>
