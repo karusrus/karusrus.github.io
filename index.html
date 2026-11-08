@@ -435,6 +435,20 @@ footer{padding:60px 0 80px;color:var(--dim);font-size:13px;border-top:1px solid 
       </article>
 
       <article class="pcard wide rv">
+        <div class="metric">v1.2 · open source · checked against a numpy reference</div>
+        <div class="win">
+          <div class="bar"><i></i><i></i><i></i><span>Maple-Preview 20B · 2014 iMac · AVX2 + Radeon via Metal</span></div>
+          <div class="shot"><img loading="lazy" decoding="async" src="assets/w-maple.jpg" alt="From the Maple case: up to 4.4 times faster than llama.cpp on the same 2014 iMac, a step card with the benchmark numbers, and a gauge whose prompt speed climbs from the llama.cpp line to 321 tokens per second"></div>
+        </div>
+        <div class="pbody">
+          <h3>A 20B model on a 2014 iMac, faster than llama.cpp</h3>
+          <p>DeepGrove's Maple-Preview reads only about 1B of its 20B ternary weights per token, but its official code needs CUDA. Working with an AI coding agent, I built a C runtime for an Intel CPU with AVX2 and a 2014 AMD Radeon. On the same iMac it writes 1.9× faster than DeepGrove's own llama.cpp fork, and with the whole prompt on the Radeon it reads 4.4× faster. Every speed-up was checked against a plain numpy reference. The case page shows the reasoning step by step, dead ends included.</p>
+          <div class="tags"><span class="tag">Maple-Preview</span><span class="tag">Ternary MoE</span><span class="tag">Metal</span><span class="tag">On-device AI</span><span class="tag">AI pair work</span></div>
+          <div class="plinks"><a href="maple/">Case →</a><a href="https://github.com/karusrus/maple-runtime" target="_blank" rel="noopener">Repository →</a></div>
+        </div>
+      </article>
+
+      <article class="pcard wide rv">
         <div class="metric">Art. 50 · ledger verified</div>
         <div class="win">
           <div class="bar"><i></i><i></i><i></i><span>n8n · AI Act gate · active</span></div>

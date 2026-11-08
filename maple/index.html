@@ -1,0 +1,523 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Maple on a 2014 iMac · Ruslan Karymov</title>
+<meta name="description" content="A C runtime for DeepGrove's 20B ternary Maple-Preview on a 2014 iMac: 1.9× faster writing than llama.cpp on the same machine, 4.4× faster prompts on an old AMD Radeon.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="A 20B model on a 2014 iMac, 1.9× faster than llama.cpp.">
+<meta property="og:description" content="Our own runtime for Maple-Preview: AVX2 on the CPU, the whole prompt on a 2014 Radeon. Checked against a numpy reference. The reasoning step by step, dead ends included.">
+<meta property="og:url" content="https://karusrus.github.io/maple/">
+<meta property="og:image" content="https://karusrus.github.io/assets/w-maple.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://karusrus.github.io/assets/w-maple.jpg">
+<style>
+@font-face{font-family:'Bricolage';font-style:normal;font-display:swap;font-weight:200 800;src:url(../fonts/bricolage-grotesque-latin-wght-normal.woff2) format('woff2-variations')}
+@font-face{font-family:'Instrument';font-style:normal;font-display:swap;font-weight:400 700;src:url(../fonts/instrument-sans-latin-wght-normal.woff2) format('woff2-variations')}
+@font-face{font-family:'JBMono';font-style:normal;font-display:swap;font-weight:100 800;src:url(../fonts/jetbrains-mono-latin-wght-normal.woff2) format('woff2-variations')}
+:root{
+  --bg:#07080b; --surface:#0c0e13; --surface2:#11141b; --line:#252b36; --line2:#323a4a;
+  --text:#f2f5fa; --muted:#c2ccdb; --dim:#96a1b3;
+  --accent:#5b9dff; --gate:#f0883e; --ok:#3ddc97;
+  --gray1:#707a8c; --gray2:#4b5364;
+  --display:'Bricolage',ui-sans-serif,system-ui,sans-serif;
+  --body:'Instrument',ui-sans-serif,system-ui,sans-serif;
+  --mono:'JBMono',ui-monospace,SFMono-Regular,Menlo,monospace;
+  --r:16px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:var(--body);font-size:16px;line-height:1.55;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+.wrap{width:min(1120px,92vw);margin:0 auto}
+.mono{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--dim)}
+h1,h2{font-family:var(--display);font-weight:600;letter-spacing:-.035em;line-height:1.04}
+h3{font-family:var(--display);font-weight:600;letter-spacing:-.02em;line-height:1.2}
+a{color:inherit}
+p{color:var(--muted)}
+.rv{opacity:0;transform:translateY(14px);transition:opacity .7s cubic-bezier(.2,.7,.2,1),transform .7s cubic-bezier(.2,.7,.2,1)}
+.rv.in{opacity:1;transform:none}
+
+nav{position:sticky;top:0;z-index:50;backdrop-filter:blur(14px);background:rgba(7,8,11,.78);border-bottom:1px solid var(--line)}
+nav .in{display:flex;align-items:center;justify-content:space-between;height:56px}
+nav a{text-decoration:none;font-size:14px;color:var(--muted)}
+nav a:hover{color:var(--text)}
+
+section{padding:88px 0;border-bottom:1px solid var(--line)}
+.shead{margin-bottom:36px}
+.shead h2{font-size:clamp(30px,4.2vw,48px);margin-top:12px}
+.shead p{max-width:720px;margin-top:14px;font-size:17px}
+
+/* hero */
+.hero{padding:96px 0 72px}
+.hero h1{font-size:clamp(38px,6.2vw,76px);max-width:15ch;margin-top:18px}
+.hero .lede{max-width:700px;margin-top:22px;font-size:19px;color:var(--muted)}
+.tiles{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:48px}
+.tile{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:20px 20px 18px}
+.tile .v{font-family:var(--body);font-weight:600;font-size:clamp(30px,3.6vw,44px);letter-spacing:-.02em;line-height:1.05;font-variant-numeric:tabular-nums}
+.tile .v small{font-size:.5em;color:var(--dim);font-weight:500;margin-left:4px}
+.tile .l{margin-top:8px;font-size:14px;color:var(--dim);line-height:1.4}
+.tile.hi .v{color:var(--text)}
+.tile.hi{border-color:rgba(91,157,255,.45);box-shadow:inset 0 0 0 1px rgba(91,157,255,.12)}
+.links{display:flex;flex-wrap:wrap;gap:10px;margin-top:28px}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:10px 14px;border:1px solid var(--line2);border-radius:999px;font-size:14px;text-decoration:none;color:var(--muted);background:var(--surface)}
+.btn:hover{color:var(--text);border-color:var(--dim)}
+
+/* ---------- reasoning trace ---------- */
+.trace{position:relative;display:grid;grid-template-columns:1fr 280px;gap:40px;align-items:start}
+.lanes{position:relative}
+.lanehead{display:grid;grid-template-columns:1fr 56px 1fr;margin-bottom:18px}
+.lanehead div{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--dim)}
+.lanehead div:first-child{text-align:right}
+.lanehead span{display:inline-block;width:8px;height:8px;border-radius:50%;margin:0 8px;vertical-align:1px}
+.steps{position:relative}
+.spine{position:absolute;left:50%;top:0;bottom:0;width:2px;transform:translateX(-1px)}
+.spine svg{position:absolute;inset:0;width:2px;height:100%;overflow:visible}
+.step{position:relative;display:grid;grid-template-columns:1fr 56px 1fr;align-items:center;min-height:118px;margin-bottom:6px}
+.step .card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px 16px;opacity:0;transform:translateY(18px) scale(.98);transition:opacity .6s cubic-bezier(.2,.7,.2,1),transform .6s cubic-bezier(.2,.7,.2,1),border-color .6s}
+.step.on .card{opacity:1;transform:none}
+.step.l .card{grid-column:1;text-align:left}
+.step.r .card{grid-column:3}
+.step .dot{grid-column:2;justify-self:center;width:14px;height:14px;border-radius:50%;background:var(--bg);border:2px solid var(--line2);transition:background .4s,border-color .4s,box-shadow .4s;z-index:2}
+.step.on .dot{background:var(--dotc,var(--accent));border-color:var(--bg);box-shadow:0 0 0 2px var(--dotc,var(--accent)),0 0 18px var(--dotc,var(--accent))}
+.step.r .dot{grid-row:1}
+.step .when{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;color:var(--dim);text-transform:uppercase;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.chip{display:inline-block;padding:2px 7px;border-radius:999px;border:1px solid var(--line2);font-family:var(--mono);font-size:10px;letter-spacing:.08em;color:var(--muted)}
+.step h3{font-size:18px;margin-top:8px}
+.step p{font-size:14.5px;margin-top:6px;line-height:1.5}
+.step .num{font-family:var(--body);font-weight:600;font-variant-numeric:tabular-nums;color:var(--text)}
+.step.dead .card{border-style:dashed;background:transparent}
+.step.dead h3{color:var(--dim);text-decoration:line-through;text-decoration-thickness:1.5px;text-decoration-color:rgba(240,136,62,.7)}
+.step.dead .dot{--dotc:var(--gate)}
+.step.key .card{border-color:rgba(91,157,255,.5)}
+.step.bug .dot{--dotc:#e5534b}
+.q{font-style:italic;color:var(--text)}
+
+/* gauge */
+.gauge{position:sticky;top:84px;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:20px}
+.gauge .t{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--dim)}
+.gauge .big{font-weight:600;font-size:56px;letter-spacing:-.03em;line-height:1;margin-top:14px;font-variant-numeric:tabular-nums}
+.gauge .big small{font-size:16px;color:var(--dim);font-weight:500;margin-left:6px}
+.gauge .sub{font-size:13px;color:var(--dim);margin-top:6px;min-height:38px}
+.gauge svg{display:block;width:100%;height:auto;margin-top:12px}
+.gauge .ver{font-family:var(--mono);font-size:11px;color:var(--muted);margin-top:10px}
+.gauge .state{display:inline-flex;align-items:center;gap:6px;font-family:var(--mono);font-size:11px;margin-top:12px;padding:3px 8px;border-radius:999px;border:1px solid var(--line2);color:var(--muted)}
+.gauge .state i{width:7px;height:7px;border-radius:50%;background:var(--gray1)}
+.gauge .state.bad i{background:#e5534b}
+.gauge .state.good i{background:var(--ok)}
+.replay{margin-top:14px;font-size:13px;background:none;border:1px solid var(--line2);color:var(--muted);border-radius:999px;padding:6px 12px;cursor:pointer;font-family:var(--body)}
+.replay:hover{color:var(--text)}
+
+/* charts */
+.chartcard{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:24px}
+.chartcard h3{font-size:19px}
+.chartcard .cap{font-size:14px;color:var(--dim);margin-top:4px}
+.legend{display:flex;gap:18px;flex-wrap:wrap;margin-top:14px;font-size:13px;color:var(--muted)}
+.legend span{display:inline-flex;align-items:center;gap:7px}
+.legend i{width:10px;height:10px;border-radius:3px;display:inline-block}
+.bars{margin-top:18px}
+.brow{display:grid;grid-template-columns:180px 1fr;gap:14px;align-items:center;padding:10px 0;border-top:1px solid var(--line)}
+.brow:first-child{border-top:0}
+.brow .name{font-size:14px;color:var(--muted);line-height:1.3}
+.brow .name b{display:block;color:var(--text);font-weight:600}
+.btrack{display:flex;flex-direction:column;gap:2px}
+.bar{position:relative;height:18px;display:flex;align-items:center}
+.bar i{display:block;height:100%;width:0;border-radius:0 4px 4px 0;transition:width 1.1s cubic-bezier(.2,.7,.2,1)}
+.bar em{font-style:normal;font-size:12.5px;color:var(--dim);margin-left:8px;white-space:nowrap;font-variant-numeric:tabular-nums;opacity:0;transition:opacity .5s .6s}
+.bar.npu em{color:var(--text);font-weight:600}
+.shown .bar em{opacity:1}
+.bar:hover i{filter:brightness(1.25)}
+.tip{position:fixed;pointer-events:none;z-index:99;background:#151a23;border:1px solid var(--line2);border-radius:8px;padding:7px 10px;font-size:12.5px;color:var(--text);opacity:0;transition:opacity .12s;white-space:nowrap}
+.two{display:grid;grid-template-columns:1.25fr 1fr;gap:16px}
+table{width:100%;border-collapse:collapse;font-size:14px;margin-top:14px;font-variant-numeric:tabular-nums}
+th,td{text-align:right;padding:9px 8px;border-top:1px solid var(--line)}
+th:first-child,td:first-child{text-align:left}
+th{font-weight:500;color:var(--dim);font-size:12.5px}
+td{color:var(--muted)}
+td.hi{color:var(--text);font-weight:600}
+details{margin-top:14px}
+summary{cursor:pointer;font-size:13px;color:var(--dim)}
+.versions svg{width:100%;height:auto;display:block;margin-top:16px}
+
+/* how */
+.pipe{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.pcell{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px;position:relative}
+.pcell .n{font-family:var(--mono);font-size:11px;color:var(--accent)}
+.pcell h3{font-size:17px;margin-top:8px}
+.pcell p{font-size:14px;margin-top:8px}
+.pcell code{font-family:var(--mono);font-size:12px;color:var(--text);background:var(--surface2);border:1px solid var(--line);border-radius:5px;padding:1px 5px}
+
+/* chips */
+.chipgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px;margin-top:18px}
+.cchip{border:1px solid var(--line);border-radius:10px;padding:10px 12px;background:var(--surface);font-size:13px;line-height:1.3}
+.cchip b{display:block;font-weight:600;color:var(--muted)}
+.cchip span{font-family:var(--mono);font-size:10.5px;color:var(--dim)}
+.cchip.no{border-color:rgba(240,136,62,.55);background:rgba(240,136,62,.06)}
+.cchip.no b{color:var(--text)}
+.cchip.me{box-shadow:0 0 0 1px var(--gate)}
+
+/* who */
+.who{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.who .col{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:22px}
+.who h3{font-size:19px;display:flex;align-items:center;gap:10px}
+.who h3 i{width:10px;height:10px;border-radius:50%;display:inline-block}
+.who ul{list-style:none;margin-top:12px}
+.who li{padding:9px 0;border-top:1px solid var(--line);font-size:15px;color:var(--muted)}
+.who li:first-child{border-top:0}
+.limits li{margin:8px 0 0 18px;color:var(--muted)}
+footer{padding:56px 0 80px;color:var(--dim);font-size:14px}
+
+@media(max-width:900px){
+  .tiles{grid-template-columns:repeat(2,1fr)}
+  .trace{grid-template-columns:1fr}
+  .gauge{order:-1;position:sticky;top:60px;z-index:5;display:grid;grid-template-columns:auto 1fr;gap:4px 14px;align-items:center;padding:12px 14px}
+  .gauge .big{font-size:34px;margin-top:0;grid-row:span 2}
+  .gauge svg,.gauge .ver,.gauge .replay{display:none}
+  .gauge .sub{min-height:0;margin:0}
+  .gauge .t{display:none}
+  .gauge .state{margin-top:0;justify-self:start}
+  .lanehead{grid-template-columns:28px 1fr}
+  .lanehead div:first-child{text-align:left;grid-column:2}
+  .lanehead div:last-child{grid-column:2}
+  .spine{left:13px}
+  .step{grid-template-columns:28px 1fr;min-height:0;margin-bottom:12px}
+  .step.l .card,.step.r .card{grid-column:2;grid-row:1}
+  .step .dot,.step.r .dot{grid-column:1;grid-row:1}
+  .two,.pipe,.who{grid-template-columns:1fr}
+  .brow{grid-template-columns:1fr}
+}
+.shot .rv,.shot .step .card{transition:none!important}
+.shot .rv{opacity:1!important;transform:none!important}
+.shot nav,.shot header,.shot footer,.shot section:not(#trace){display:none}
+.shot #trace{border:0;padding-top:0}
+.shot #trace .shead{visibility:hidden}
+.shot .replay{display:none}
+.shotpanel{display:none}
+.shot .shotpanel{display:block;position:fixed;left:calc((100vw - min(1120px,92vw))/2);top:58px;width:318px;z-index:10}
+.shotpanel .k{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--dim)}
+.shotpanel .big{font-family:var(--display);font-weight:600;letter-spacing:-.04em;line-height:.92;font-size:92px;margin-top:10px;color:var(--text)}
+.shotpanel .big span{color:var(--accent)}
+.shotpanel .l1{font-family:var(--display);font-weight:600;font-size:26px;letter-spacing:-.02em;line-height:1.1;margin-top:10px}
+.shotpanel .l2{font-size:15px;color:var(--muted);margin-top:8px;line-height:1.35}
+.shotpanel .up{margin-top:22px;display:flex;flex-direction:column;gap:7px}
+.shotpanel .up div{font-size:14px;color:var(--muted);display:flex;gap:8px;align-items:baseline}
+.shotpanel .up b{color:var(--text);font-weight:600;min-width:150px}
+.shot .gauge{position:fixed;top:78px;right:calc((100vw - min(1120px,92vw))/2);width:280px}
+@media(prefers-reduced-motion:reduce){
+  .rv,.step .card{opacity:1!important;transform:none!important;transition:none!important}
+  .bar i,.bar em{transition:none!important}
+  html{scroll-behavior:auto}
+}
+</style>
+<style>
+/* thumbnail: the left lane sits under the panel */
+.shot .step.l .card,.shot .step.l .dot{visibility:hidden}
+.shot .shotpanel .big{font-size:84px}
+.shot .shotpanel .up{margin-top:16px}
+</style>
+</head>
+<body>
+<nav><div class="wrap in"><a href="../">← Ruslan Karymov</a><a href="https://github.com/karusrus/maple-runtime">Repository →</a></div></nav>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="mono rv">Case · On-device AI · Ternary MoE · 2014 iMac</div>
+    <h1 class="rv">A 20B model on a 2014 iMac, 1.9× faster than llama.cpp.</h1>
+    <p class="lede rv">Maple-Preview is DeepGrove's 20B mixture of experts with ternary weights: only about 1B weights are read per token. Its official code needs CUDA. Working with an AI coding agent, I built a runtime for the machine at hand: an Intel CPU with AVX2 and an AMD Radeon from 2014. On the same iMac it writes 1.9× faster than DeepGrove's own llama.cpp fork, and with the prompt on the old Radeon it reads 4.4× faster.</p>
+    <div class="tiles">
+      <div class="tile hi rv"><div class="v" data-count="1.9" data-dec="1">0<small>×</small></div><div class="l">writing speed vs DeepGrove's llama.cpp fork, same iMac, 3 threads (29.4–30.8 vs 15.9 t/s)</div></div>
+      <div class="tile rv"><div class="v" data-count="4.4" data-dec="1">0<small>×</small></div><div class="l">reading a 2,048-token prompt on the 2014 Radeon (321 vs 74 t/s)</div></div>
+      <div class="tile rv"><div class="v">0.7%</div><div class="l">largest logit gap from a plain numpy reference; same top-1 and top-5 tokens</div></div>
+      <div class="tile rv"><div class="v">8<small>of 256</small></div><div class="l">experts read per token: ~1B of the 20B weights</div></div>
+    </div>
+    <div class="links rv">
+      <a class="btn" href="https://github.com/karusrus/maple-runtime">Code, benchmark and raw log →</a>
+      <a class="btn" href="https://huggingface.co/deepgrove/maple-preview">The model: deepgrove/maple-preview →</a>
+      <a class="btn" href="https://github.com/deepgrove-ai/llama.cpp">The baseline: deepgrove-ai/llama.cpp →</a>
+    </div>
+  </div>
+</header>
+
+<section id="trace">
+  <div class="wrap">
+    <div class="shead rv">
+      <div class="mono">How we got here</div>
+      <h2>The reasoning, step by step.</h2>
+      <p>I worked with an AI coding agent. I set the direction and the checkpoints; the agent wrote the converter, the runtime and the GPU kernels, and measured. Every speed-up had to match a plain numpy reference before it counted. The dead ends stay in the picture.</p>
+    </div>
+    <div class="trace">
+      <div class="lanes">
+        <div class="lanehead"><div>Me · direction <span style="background:var(--gate)"></span></div><div></div><div><span style="background:var(--accent)"></span> Agent · code, kernels, numbers</div></div>
+        <div class="steps" id="steps">
+          <div class="spine"><svg preserveAspectRatio="none"><line x1="1" y1="0" x2="1" y2="100%" stroke="#252b36" stroke-width="2"/><line id="spineFill" x1="1" y1="0" x2="1" y2="0" stroke="#5b9dff" stroke-width="2"/></svg></div>
+          <div class="step l" style="--dotc:var(--gate)" data-g="0" data-s="idle">
+            <div class="card"><div class="when">03.11 <span class="chip">Question</span></div><h3>A 20B model that reads only 1B weights per token. Can it run here?</h3><p>The official code needs CUDA. The machine at hand: a 2014 iMac, i5-4690, 16 GB DDR3, Radeon R9 M290X with 2 GB.</p><p class="q">"Let's build the runtime ourselves."</p></div><div class="dot"></div>
+          </div>
+          <div class="step r key" data-g="71" data-s="good" data-v="v1.1" data-note="843-token prompt, CPU">
+            <div class="dot"></div><div class="card"><div class="when">03.11 <span class="chip">Build</span></div><h3>A C runtime: 2-bit ternary weights times int8 activations.</h3><p>The converter streams the 40 GB BF16 checkpoint into 5.8 GB. AVX2 multiplies 32 weights per instruction. Against a numpy reference: same top-1 and top-5 tokens, logits within <span class="num">0.7%</span>.</p></div>
+          </div>
+          <div class="step r" data-g="71" data-s="good" data-v="v1.1">
+            <div class="dot"></div><div class="card"><div class="when">03.11 <span class="chip">Measure</span></div><h3>41.5 tokens/s writing; 89 together for 64 conversations.</h3><p>The output head runs on the Radeon in BF16, one pass for a whole pack of conversations.</p></div>
+          </div>
+          <div class="step l" style="--dotc:var(--gate)" data-g="71" data-s="good" data-v="v1.1">
+            <div class="card"><div class="when">03.11 <span class="chip">Decision</span></div><h3>Micro-test the card before building anything into it.</h3><p>Every GPU idea had to win a small benchmark first.</p></div><div class="dot"></div>
+          </div>
+          <div class="step r dead" data-g="71" data-s="good" data-v="v1.1">
+            <div class="dot"></div><div class="card"><div class="when">03.11 <span class="chip">Dead end</span></div><h3>Cache the experts on the GPU</h3><p>Exact, but no faster: the card needs ~0.25–0.3 ms per layer just to answer, about what the CPU takes for all 8 experts.</p></div>
+          </div>
+          <div class="step r dead" data-g="71" data-s="good" data-v="v1.1">
+            <div class="dot"></div><div class="card"><div class="when">04.11 <span class="chip">Dead end</span></div><h3>12 or 16 experts per token instead of 8</h3><p>More weights per token, worse answers on an extraction test. The model was trained with 8.</p></div>
+          </div>
+          <div class="step r key" data-g="311" data-s="good" data-v="v1.2" data-note="843-token prompt on the Radeon">
+            <div class="dot"></div><div class="card"><div class="when">06.11 <span class="chip">Build</span></div><h3>The whole prompt on the 2014 Radeon. The CPU only picks experts.</h3><p>Norms, attention, projections and experts run on the card; the CPU chooses 8 of 256 experts per token in ~1 ms per layer. An 843-token prompt: <span class="num">11.8 s → 2.7 s</span>.</p></div>
+          </div>
+          <div class="step r" data-g="311" data-s="good" data-v="v1.2">
+            <div class="dot"></div><div class="card"><div class="when">06.11 <span class="chip">Measure</span></div><h3>The experts are bound by arithmetic, not by the bus.</h3><p>They run at 35–40% of the card's peak. Decoding the 2-bit codes in registers, 1.5 instructions per weight instead of 3: <span class="num">6–7%</span> faster.</p></div>
+          </div>
+          <div class="step r dead" data-g="311" data-s="good" data-v="v1.2">
+            <div class="dot"></div><div class="card"><div class="when">06.11 <span class="chip">Dead end</span></div><h3>Copy the experts into VRAM first</h3><p>8.7 GB/s over PCIe, but the kernels got only 9% faster. Two other kernel layouts ran 1.4× and 2.3× slower.</p></div>
+          </div>
+          <div class="step r" data-g="311" data-s="good" data-v="v1.2">
+            <div class="dot"></div><div class="card"><div class="when">06.11 <span class="chip">Evidence</span></div><h3>Three threads beat four.</h3><p>A video-capture service holds part of one core. A spinning pool of four waits for the worker that got pushed aside.</p></div>
+          </div>
+          <div class="step l key" style="--dotc:var(--gate)" data-g="311" data-s="good" data-v="v1.2">
+            <div class="card"><div class="when">08.11 <span class="chip">Decision</span></div><h3>No claims before the same machine against llama.cpp.</h3><p>DeepGrove's own fork and official GGUF, the same token counts, the same background load.</p></div><div class="dot"></div>
+          </div>
+          <div class="step r key" data-g="321" data-s="good" data-v="v1.2" data-note="2,048-token prompt on the Radeon">
+            <div class="dot"></div><div class="card"><div class="when">08.11 <span class="chip">Measure</span></div><h3>1.9× faster writing, 4.4× faster reading.</h3><p>Fork <span class="num">7e30f3a</span>, TQ2_0 with an FP16 head, 3 threads. Writing: <span class="num">29.4–30.8 vs 15.9 t/s</span>. A 2,048-token prompt: <span class="num">321 t/s</span> on the card vs 73.7. On the CPU both read prompts at the same speed.</p></div>
+          </div>
+          <div class="step l" style="--dotc:var(--gate)" data-g="321" data-s="good" data-v="v1.2">
+            <div class="card"><div class="when">08.11 <span class="chip">Ship</span></div><h3>Code, benchmark script and raw log, public.</h3><p>MIT, like the model.</p></div><div class="dot"></div>
+          </div>
+        </div>
+      </div>
+
+      <aside class="gauge" aria-live="polite">
+        <div class="t">Prompt speed on the iMac</div>
+        <div class="big"><span id="gv">0</span><small>t/s</small></div>
+        <div class="sub" id="gn">scroll the steps</div>
+        <svg id="gsvg" viewBox="0 0 240 150" role="img" aria-label="Prompt speed history: llama.cpp 74 tokens per second, this runtime from 71 on the CPU to 321 on the Radeon"></svg>
+        <div class="state" id="gs"><i></i><span>not started</span></div>
+        <div class="ver" id="gver"></div>
+        <button class="replay" id="replay">Replay</button>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<section id="results">
+  <div class="wrap">
+    <div class="shead rv">
+      <div class="mono">Results</div>
+      <h2>Faster than DeepGrove's own fork, on the same iMac.</h2>
+      <p>8 Nov 2026. deepgrove-ai/llama.cpp at 7e30f3a with the official maple-preview-TQ2_0-head-F16.gguf; this runtime v1.2. Same token counts, 3 threads. A video-capture service used ~64% of one core during both runs.</p>
+    </div>
+    <div class="two">
+      <div class="chartcard rv" id="barcard">
+        <h3>Tokens per second</h3>
+        <div class="cap">Higher is better</div>
+        <div class="legend"><span><i style="background:var(--accent)"></i>this runtime, prompt on the GPU</span><span><i style="background:var(--gray1)"></i>this runtime, CPU</span><span><i style="background:var(--gray2)"></i>llama.cpp fork, CPU</span></div>
+        <div class="bars" id="bars"></div>
+        <details><summary>Table view</summary>
+          <table><thead><tr><th>3 threads</th><th>GPU prompt</th><th>CPU</th><th>llama.cpp</th></tr></thead><tbody>
+          <tr><td>Prompt, 2,048 tokens</td><td class="hi">320.7</td><td>73.0</td><td>73.7</td></tr>
+          <tr><td>Prompt, 512 tokens</td><td class="hi">184.6</td><td>78.6</td><td>78.0</td></tr>
+          <tr><td>Writing, 128 tokens</td><td>27.7–31.5</td><td class="hi">29.4–30.8</td><td>15.9</td></tr>
+          </tbody></table>
+        </details>
+      </div>
+      <div class="chartcard rv">
+        <h3>With 4 threads, and a text check</h3>
+        <div class="cap">The fourth core is shared with the capture service, so both get slower. On the CPU, llama.cpp reads prompts faster here.</div>
+        <table><thead><tr><th>4 threads</th><th>GPU prompt</th><th>CPU</th><th>llama.cpp</th></tr></thead><tbody>
+          <tr><td>Prompt, 2,048 tokens</td><td class="hi">330.1</td><td>44.1</td><td>64.0</td></tr>
+          <tr><td>Prompt, 512 tokens</td><td class="hi">187.9</td><td>51.4</td><td>68.2</td></tr>
+          <tr><td>Writing, 128 tokens</td><td>15.9–19.1</td><td class="hi">16.8–19.6</td><td>8.8</td></tr>
+        </tbody></table>
+        <p style="font-size:14px;margin-top:16px">Same raw prompt, greedy: both begin with "Rayleigh scattering." and then part ways. llama.cpp falls into a loop, this runtime keeps writing coherent text. That is a numerical difference after a few tokens, not proof that either is more exact.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="how">
+  <div class="wrap">
+    <div class="shead rv">
+      <div class="mono">How it works</div>
+      <h2>Read only what the token needs.</h2>
+      <p>Each token goes through 8 of 256 experts per layer. The weights are ternary: −1, 0 or +1.</p>
+    </div>
+    <div class="pipe">
+      <div class="pcell rv"><div class="n">01 · weights</div><h3>2 bits per weight</h3><p>The BF16 checkpoint is streamed and packed: 40 GB in, 5.8 GB out, memory-mapped at run time.</p></div>
+      <div class="pcell rv"><div class="n">02 · CPU</div><h3>int8 × ternary</h3><p>Activations go to int8; <code>maddubs</code> on AVX2 multiplies 32 weights per instruction. Attention keeps an fp16 cache.</p></div>
+      <div class="pcell rv"><div class="n">03 · GPU prompt</div><h3>Every layer on the card</h3><p>The hidden state stays in VRAM. The CPU only reads the router's logits and picks the 8 experts per token, ~1 ms per layer.</p></div>
+      <div class="pcell rv"><div class="n">04 · kernels</div><h3>Decode in registers</h3><p>The 2-bit codes are read over PCIe straight from the mapped shards and unpacked in registers: 1.5 instructions per weight.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="who">
+  <div class="wrap">
+    <div class="shead rv">
+      <div class="mono">Working with an AI agent</div>
+      <h2>Who did what.</h2>
+    </div>
+    <div class="who">
+      <div class="col rv"><h3><i style="background:var(--gate)"></i>Me</h3><ul>
+        <li>Picked the model and the bet: an old iMac and an AMD card as a real engine</li>
+        <li>Asked for a micro-test before anything went onto the card</li>
+        <li>Set the bar: the same tokens as a plain numpy reference</li>
+        <li>Asked for the same-machine comparison before any claim</li>
+        <li>Chose what to publish</li>
+      </ul></div>
+      <div class="col rv"><h3><i style="background:var(--accent)"></i>Agent (Claude Code)</h3><ul>
+        <li>Wrote the converter, the C runtime and the Metal kernels</li>
+        <li>Ran the microbenchmarks and the layer-by-layer checks</li>
+        <li>Measured every version; kept the logs and the dead ends</li>
+        <li>Drafted the write-ups; I edit and publish them</li>
+      </ul></div>
+    </div>
+    <div class="chartcard rv" style="margin-top:16px">
+      <h3>Honest limits</h3>
+      <ul class="limits">
+        <li>A speed result, on one iMac. This page does not benchmark the model's quality.</li>
+        <li>Writing runs on the CPU; only the prompt runs on the GPU.</li>
+        <li>Greedy decoding only, one process per run, no server mode yet.</li>
+        <li>With 4 threads and the capture service running, llama.cpp reads prompts faster on the CPU (64 vs 44 t/s on 2,048 tokens).</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<footer><div class="wrap">Ruslan Karymov · AI Enablement &amp; Automation Lead · <a href="../">karusrus.github.io</a> · November 2026 · Independent work, not affiliated with DeepGrove</div></footer>
+<div class="tip" id="tip"></div>
+<div class="shotpanel" aria-hidden="true">
+  <div class="k">On-device AI · 2014 iMac</div>
+  <div class="big">Up to <span>4.4×</span></div>
+  <div class="l1">vs llama.cpp, same machine</div>
+  <div class="l2">A 20B ternary model on an Intel CPU and a 2014 AMD Radeon. Checked against a numpy reference.</div>
+  <div class="up">
+    <div><b>Writing</b>1.9× faster</div>
+    <div><b>Prompt on the GPU</b>4.4× faster</div>
+    <div><b>Code</b>open source, MIT</div>
+  </div>
+</div>
+
+<script>
+(() => {
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches || location.search.includes('shot=');
+  const io = new IntersectionObserver(es => es.forEach(e => {
+    if (!e.isIntersecting) return;
+    e.target.classList.add('in');
+    const c = e.target.querySelector('[data-count]');
+    if (c) countUp(c);
+    io.unobserve(e.target);
+  }), {threshold: .15});
+  document.querySelectorAll('.rv').forEach(el => io.observe(el));
+  function countUp(el) {
+    const to = +el.dataset.count, dec = +el.dataset.dec, small = el.querySelector('small');
+    const tail = small ? small.outerHTML : '';
+    if (reduce) { el.innerHTML = to.toFixed(dec) + tail; return; }
+    const t0 = performance.now(), d = 1100;
+    (function f(t) { const k = Math.min(1, (t - t0) / d), e = 1 - Math.pow(1 - k, 3);
+      el.innerHTML = (to * e).toFixed(dec) + tail; if (k < 1) requestAnimationFrame(f); })(t0);
+  }
+
+  // ---------- reasoning trace ----------
+  const steps = [...document.querySelectorAll('.step')];
+  const box = document.getElementById('steps');
+  const fill = document.getElementById('spineFill');
+  const gv = document.getElementById('gv'), gn = document.getElementById('gn'), gs = document.getElementById('gs'), gver = document.getElementById('gver');
+  const svg = document.getElementById('gsvg');
+  const BASE = 73.7, MAX = 360;
+  const W = 240, H = 150, P = 8;
+  const y = v => H - P - (Math.min(v, MAX) / MAX) * (H - 2 * P);
+  svg.innerHTML = `
+    <line x1="${P}" x2="${W - P}" y1="${y(0)}" y2="${y(0)}" stroke="#252b36"/>
+    <line x1="${P}" x2="${W - P}" y1="${y(BASE)}" y2="${y(BASE)}" stroke="#707a8c" stroke-dasharray="4 4"/>
+    <text x="${W - P}" y="${y(BASE) - 5}" text-anchor="end" fill="#96a1b3" font-size="10" font-family="JBMono,monospace">llama.cpp 74</text>
+    <path id="gpath" fill="none" stroke="#5b9dff" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+    <circle id="gdot" r="4" fill="#5b9dff" stroke="#0c0e13" stroke-width="2" cx="${P}" cy="${y(0)}"/>`;
+  const gpath = svg.querySelector('#gpath'), gdot = svg.querySelector('#gdot');
+  let cur = 0, target = 0, hist = [], shown = -1;
+  function setState(i) {
+    if (i === shown) return; shown = i;
+    const s = steps[i] || null;
+    target = s ? +s.dataset.g : 0;
+    const st = s ? s.dataset.s : 'idle';
+    gs.className = 'state' + (st === 'good' ? ' good' : '');
+    gs.querySelector('span').textContent = st === 'good' ? 'matches the numpy reference' : (i < 0 ? 'not started' : 'investigating');
+    let note = i < 0 ? 'scroll the steps' : 'no runtime yet';
+    for (let k = i; k >= 0; k--) { if (steps[k].dataset.note) { note = steps[k].dataset.note; break; } if (+steps[k].dataset.g === 0) break; }
+    gn.textContent = note;
+    gver.textContent = s && s.dataset.v ? 'version ' + s.dataset.v : '';
+    hist = steps.slice(0, i + 1).map(e => +e.dataset.g);
+    const step = (W - 2 * P) / (steps.length - 1);
+    gpath.setAttribute('d', hist.map((v, k) => (k ? 'L' : 'M') + (P + k * step).toFixed(1) + ' ' + y(v).toFixed(1)).join(' '));
+    const last = hist.length ? hist.length - 1 : 0;
+    gdot.setAttribute('cx', P + last * step); gdot.setAttribute('cy', y(hist[last] || 0));
+  }
+  function tick() {
+    cur += (target - cur) * (reduce ? 1 : 0.12);
+    if (Math.abs(target - cur) < .5) cur = target;
+    gv.textContent = Math.round(cur);
+    requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+  function onScroll() {
+    const r = box.getBoundingClientRect();
+    const line = innerHeight * 0.62;
+    let last = -1;
+    steps.forEach((s, i) => {
+      const sr = s.getBoundingClientRect();
+      const on = sr.top + sr.height * 0.35 < line;
+      s.classList.toggle('on', on);
+      if (on) last = i;
+    });
+    fill.setAttribute('y2', (Math.max(0, Math.min(1, (line - r.top) / r.height)) * 100).toFixed(2) + '%');
+    setState(last);
+  }
+  const shot = new URLSearchParams(location.search).get('shot');
+  if (shot !== null) {
+    document.body.classList.add('shot');
+    document.getElementById('trace').style.marginTop = -(+shot || 0) + 'px';
+  }
+  addEventListener('scroll', onScroll, {passive: true});
+  addEventListener('resize', onScroll);
+  onScroll();
+  document.getElementById('replay').onclick = () => {
+    document.getElementById('trace').scrollIntoView({behavior: reduce ? 'auto' : 'smooth'});
+  };
+
+  // ---------- bars ----------
+  const data = [
+    {m: 'Prompt, 2,048 tokens', s: '3 threads', gpu: 320.7, cpu: 73.0, ll: 73.7},
+    {m: 'Prompt, 512 tokens', s: '3 threads', gpu: 184.6, cpu: 78.6, ll: 78.0},
+    {m: 'Writing, 128 tokens', s: 'after a 512-token prompt', gpu: null, cpu: 30.8, ll: 15.9},
+  ];
+  const bars = document.getElementById('bars'), tip = document.getElementById('tip');
+  const bmax = 360;
+  const kinds = [['gpu', 'This runtime, prompt on the GPU', 'var(--accent)'], ['cpu', 'This runtime, CPU', 'var(--gray1)'], ['ll', 'llama.cpp fork, CPU', 'var(--gray2)']];
+  bars.innerHTML = data.map(d => `<div class="brow"><div class="name"><b>${d.m}</b>${d.s}</div><div class="btrack">
+    ${kinds.filter(([k]) => d[k] !== null).map(([k, n, c]) => {
+      const best = Math.max(...kinds.map(([kk]) => d[kk] || 0)) === d[k];
+      const x = (d[k] / d.ll).toFixed(1);
+      return `<div class="bar ${best ? 'npu' : ''}" data-tip="${n} · ${d.m}: ${d[k]} t/s${k !== 'll' ? ' · ' + x + '× llama.cpp' : ''}"><i style="background:${c}" data-w="${d[k] / bmax * 100}"></i><em>${d[k]}${best && k !== 'll' ? ' · ' + x + '×' : ''}</em></div>`;
+    }).join('')}
+  </div></div>`).join('');
+  const bio = new IntersectionObserver(es => es.forEach(e => {
+    if (!e.isIntersecting) return;
+    bars.querySelectorAll('i[data-w]').forEach(i => i.style.width = `calc(${i.dataset.w}% - 70px)`);
+    bars.classList.add('shown'); bio.disconnect();
+  }), {threshold: .3});
+  bio.observe(bars);
+  bars.addEventListener('mousemove', e => {
+    const b = e.target.closest('.bar'); if (!b) { tip.style.opacity = 0; return; }
+    tip.textContent = b.dataset.tip; tip.style.opacity = 1;
+    tip.style.left = Math.min(e.clientX + 14, innerWidth - tip.offsetWidth - 8) + 'px'; tip.style.top = (e.clientY - 34) + 'px';
+  });
+  bars.addEventListener('mouseleave', () => tip.style.opacity = 0);
+})();
+</script>
+</body>
+</html>
